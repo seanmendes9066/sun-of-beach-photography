@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sean Photography | Portfolio</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.css">
+    
     <link rel="stylesheet" href="styles.css">
 </head>
-<body id="home"> <nav>
+<body id="home">
+    
+    <nav>
         <a href="#home" class="logo-link" id="logo-btn"><div class="logo">太海</div></a>
 
         <ul class="nav-menu">
@@ -26,7 +31,9 @@
     </section>
 
     <main id="gallery-section">
-        <div class="grid" id="gallery"></div>
+        <div id="gallery">
+            <div class="grid-sizer"></div>
+        </div>
     </main>
 
     <section id="about">
@@ -57,6 +64,9 @@
         <p>&copy; 2026 Sean Photography. Built with GitHub Pages.</p>
     </footer>
 
+    <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+    
     <script src="script.js"></script>
 </body>
 </html>
