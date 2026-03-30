@@ -1,30 +1,31 @@
 // =========================================
-// script.js (全小寫優化 + 展示全部照片版)
+// script.js (精確副檔名配對 + 展示全部照片版)
 // =========================================
 
 let msnry;
 
-// 1. 自動生成連結 (全小寫邏輯)
-function generatePhotoList(folderName, prefix, maxCount = 100) {
+// 生成器：支援不同副檔名
+function generatePhotoList(folderName, prefix, maxCount = 100, ext = 'jpg') {
     let photoArray = [];
     for (let i = 1; i <= maxCount; i++) {
-        // 📍 這裡根據你的截圖設定：資料夾、檔名、副檔名全部小寫
-        photoArray.push(`./images/${folderName}/${prefix} (${i}).jpg`);
+        photoArray.push(`./images/${folderName}/${prefix} (${i}).${ext}`);
     }
     return photoArray;
 }
 
-// 2. 定義資料庫 (自動嘗試抓取 1-100 號，不存在的會被 onerror 濾掉)
+// 📍 關鍵修正區：根據你提供的網址設定正確的副檔名
 const photoDatabase = {
-    people: generatePhotoList('people', 'people', 50),
-    things: generatePhotoList('things', 'things', 50),
-    place: generatePhotoList('place', 'place', 50) 
+    // people 分類是小寫 .jpg
+    people: generatePhotoList('people', 'people', 100, 'jpg'),
+    // things 分類是大寫 .JPG
+    things: generatePhotoList('things', 'things', 100, 'JPG'),
+    // place 分類是大寫 .JPG
+    place: generatePhotoList('place', 'place', 100, 'JPG') 
 };
 
-// 合併所有照片用於首頁
+// 合併所有照片用於首頁展示
 let allPhotosArray = [...photoDatabase.people, ...photoDatabase.things, ...photoDatabase.place];
 
-// 3. 洗牌演算法
 function shuffleArray(array) {
     let arr = [...array];
     for (let i = arr.length - 1; i > 0; i--) {
@@ -34,7 +35,6 @@ function shuffleArray(array) {
     return arr;
 }
 
-// 4. 初始化瀑布流
 function initMasonry() {
     const gallery = document.getElementById('gallery');
     imagesLoaded(gallery, function() {
@@ -48,7 +48,6 @@ function initMasonry() {
     });
 }
 
-// 5. 渲染照片 (核心優化：展示全部)
 function renderPhotos(photoArray) {
     const gallery = document.getElementById('gallery');
     const sizer = gallery.querySelector('.grid-sizer');
@@ -66,8 +65,11 @@ function renderPhotos(photoArray) {
         const img = document.createElement('img');
         img.src = src;
 
-        // 📍 防呆機制：如果圖片路徑不存在 (例如編號超出了你實際擁有的)，就移除該卡片
-        img.onerror = () => card.remove(); 
+        // 防呆：抓不到圖就移除格子，重新排版
+        img.onerror = () => {
+            card.remove();
+            initMasonry();
+        };
         
         img.onload = () => { 
             img.style.opacity = 1; 
@@ -88,18 +90,18 @@ function renderPhotos(photoArray) {
     });
 }
 
-// 6. 事件監聽
+// 事件監聽
 document.querySelectorAll('.filter-link').forEach(link => {
     link.addEventListener('click', function() {
         document.querySelectorAll('.filter-link').forEach(n => n.classList.remove('active'));
         this.classList.add('active');
         const target = this.getAttribute('data-target');
-        // 📍 分類頁面展示該分類的「所有」照片
+        // 展示該分類的「所有」照片
         renderPhotos(photoDatabase[target]);
     });
 });
 
-// Logo 點擊：回到首頁展示「全部照片」隨機洗牌
+// Logo 點擊：展示「全部照片」隨機洗牌
 document.getElementById('logo-btn').addEventListener('click', (e) => {
     e.preventDefault();
     renderPhotos(shuffleArray(allPhotosArray));
@@ -111,5 +113,5 @@ document.getElementById('lightbox').addEventListener('click', () => {
     document.body.style.overflow = '';
 });
 
-// 7. 啟動 (首頁預設展示全部照片洗牌)
+// 啟動：首頁展示全部照片
 renderPhotos(shuffleArray(allPhotosArray));
