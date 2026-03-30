@@ -1,154 +1,176 @@
-/* 引入 Google Fonts 雲端字體 */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
-
-body {
-    font-family: 'Montserrat', sans-serif;
+/* --- 基礎設定 --- */
+* {
     margin: 0;
     padding: 0;
-    background-color: #f9f9f9;
-    color: #333;
-    line-height: 1.8;
+    box-sizing: border-box;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    scroll-behavior: smooth;
 }
 
+body {
+    background-color: #111;
+    color: #fff;
+    line-height: 1.6;
+}
+
+/* --- 頂部導覽列 --- */
 nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 5%;
-    background: #fff;
-    border-bottom: 1px solid #eee;
+    padding: 20px 40px;
+    background-color: rgba(17, 17, 17, 0.95);
     position: sticky;
     top: 0;
-    z-index: 1000;
-}
-
-.logo, h1, h2 {
-    font-family: 'Playfair Display', serif;
-    letter-spacing: 2px;
+    z-index: 100;
+    border-bottom: 1px solid #222;
 }
 
 .logo {
-    font-size: 1.4rem;
-    font-weight: 700;
+    font-size: 1.2rem;
+    font-weight: bold;
+    letter-spacing: 2px;
 }
 
-nav ul { 
-    list-style: none; 
-    display: flex; 
-    margin: 0; 
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
 }
 
-nav ul li { margin-left: 25px; }
-
-nav ul li a { 
-    text-decoration: none; 
-    color: #555; 
-    font-weight: 400;
+nav a {
+    color: #888;
+    text-decoration: none;
     font-size: 0.9rem;
-    transition: color 0.3s;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
 }
 
-nav ul li a:hover { color: #000; }
+nav a:hover {
+    color: #fff;
+}
 
+/* --- 標題區 --- */
 header {
     text-align: center;
-    padding: 120px 20px;
-    background: #fff;
+    padding: 80px 20px 40px;
 }
 
 header h1 {
-    font-size: 3rem;
+    font-size: 2.5rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
     margin-bottom: 10px;
 }
 
 header p {
-    font-weight: 300;
-    color: #777;
-    letter-spacing: 3px;
+    color: #888;
+    letter-spacing: 1px;
+}
+
+/* --- 分類選單 --- */
+.filters {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.filters a {
+    color: #666;
+    margin: 0 15px;
     text-transform: uppercase;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.filters a:hover, .filters a.active {
+    color: #fff;
+}
+
+/* --- 照片自動網格 --- */
+#gallery-section {
+    padding: 0 20px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .grid {
-    column-count: 3;
-    column-gap: 20px;
-    width: 90%;
-    max-width: 1100px;
-    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 永遠保持兩欄 */
+    gap: 10px;
 }
-
-@media (max-width: 900px) { .grid { column-count: 2; } }
-@media (max-width: 600px) { .grid { column-count: 1; } }
 
 .photo-card {
-    margin-bottom: 20px;
-    break-inside: avoid;
+    position: relative;
     overflow: hidden;
-    background: #fff;
-    transition: all 0.4s ease;
+    background-color: #222;
+    aspect-ratio: 1; /* 強制照片區塊保持正方形 */
 }
 
-.photo-card img { 
-    width: 100%; 
-    display: block; 
-    transition: transform 0.6s ease;
-    border-radius: 4px;
+.photo-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0; /* 初始設定透明，等待 JS 載入後淡入 */
+    transition: transform 0.6s ease, opacity 0.5s ease;
 }
 
-.photo-card:hover {
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-
-.photo-card:hover img { 
+.photo-card:hover img {
     transform: scale(1.05);
 }
 
+/* --- 關於我 --- */
 #about {
+    background-color: #1a1a1a;
     padding: 100px 20px;
-    background: transparent;
-}
-
-.about-content {
-    max-width: 600px;
-    margin: 0 auto;
     text-align: center;
 }
 
+.about-content {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.about-content h2 {
+    font-size: 2rem;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+}
+
 .subtitle {
-    font-size: 0.7rem;
+    color: #888;
+    font-size: 0.85rem;
     letter-spacing: 4px;
-    color: #aaa;
-    margin-bottom: 20px;
-    text-transform: uppercase;
+    margin-bottom: 40px;
 }
 
 .main-text {
-    font-size: 1rem;
-    color: #444;
-    line-height: 2;
-    margin-bottom: 25px;
-    font-weight: 300;
+    color: #ddd;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    line-height: 1.8;
 }
 
 .divider {
-    width: 30px;
-    border: none;
-    border-top: 1px solid #333;
+    width: 60px;
+    border: 0;
+    border-top: 1px solid #444;
     margin: 40px auto;
 }
 
 .quote {
-    font-family: 'Playfair Display', serif;
     font-style: italic;
+    color: #aaa;
     font-size: 1.2rem;
-    color: #222;
     line-height: 1.6;
 }
 
+/* --- 頁尾 --- */
 footer {
     text-align: center;
-    padding: 60px 20px;
-    font-size: 0.75rem;
-    color: #bbb;
+    padding: 30px;
+    color: #555;
+    font-size: 0.8rem;
     letter-spacing: 1px;
 }
