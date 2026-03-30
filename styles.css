@@ -3,14 +3,15 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Helvetica Neue', Arial, sans-serif;
+    /* 主要使用現代感的無襯線字體 */
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     scroll-behavior: smooth;
 }
 
 body {
-    background-color: #111;
-    color: #fff;
-    line-height: 1.6;
+    background-color: #ffffff; 
+    color: #111111; /* 極深的灰黑色，對比度高又不會死黑 */
+    line-height: 1.8; /* 增加行距，讓文字有呼吸感 */
 }
 
 /* --- 頂部導覽列 --- */
@@ -18,159 +19,34 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 40px;
-    background-color: rgba(17, 17, 17, 0.95);
+    padding: 25px 40px;
+    background-color: rgba(255, 255, 255, 0.98);
     position: sticky;
     top: 0;
     z-index: 100;
-    border-bottom: 1px solid #222;
 }
 
 .logo {
-    font-size: 1.2rem;
-    font-weight: bold;
-    letter-spacing: 2px;
+    font-size: 1.1rem;
+    font-weight: 800; /* 極粗體 */
+    letter-spacing: 3px; /* 寬字距營造高級感 */
+    text-transform: uppercase;
 }
 
 nav ul {
     list-style: none;
     display: flex;
-    gap: 30px;
+    gap: 40px;
 }
 
 nav a {
-    color: #888;
+    color: #888888;
     text-decoration: none;
-    font-size: 0.9rem;
-    letter-spacing: 1px;
-    transition: color 0.3s ease;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: color 0.4s ease;
 }
 
 nav a:hover {
-    color: #fff;
-}
-
-/* --- 標題區 --- */
-header {
-    text-align: center;
-    padding: 80px 20px 40px;
-}
-
-header h1 {
-    font-size: 2.5rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-}
-
-header p {
-    color: #888;
-    letter-spacing: 1px;
-}
-
-/* --- 分類選單 --- */
-.filters {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.filters a {
-    color: #666;
-    margin: 0 15px;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: 0.3s ease;
-}
-
-.filters a:hover, .filters a.active {
-    color: #fff;
-}
-
-/* --- 照片自動網格 --- */
-#gallery-section {
-    padding: 0 20px 80px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* 永遠保持兩欄 */
-    gap: 10px;
-}
-
-.photo-card {
-    position: relative;
-    overflow: hidden;
-    background-color: #222;
-    aspect-ratio: 1; /* 強制照片區塊保持正方形 */
-}
-
-.photo-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0; /* 初始設定透明，等待 JS 載入後淡入 */
-    transition: transform 0.6s ease, opacity 0.5s ease;
-}
-
-.photo-card:hover img {
-    transform: scale(1.05);
-}
-
-/* --- 關於我 --- */
-#about {
-    background-color: #1a1a1a;
-    padding: 100px 20px;
-    text-align: center;
-}
-
-.about-content {
-    max-width: 700px;
-    margin: 0 auto;
-}
-
-.about-content h2 {
-    font-size: 2rem;
-    letter-spacing: 2px;
-    margin-bottom: 5px;
-}
-
-.subtitle {
-    color: #888;
-    font-size: 0.85rem;
-    letter-spacing: 4px;
-    margin-bottom: 40px;
-}
-
-.main-text {
-    color: #ddd;
-    font-size: 1.1rem;
-    margin-bottom: 20px;
-    line-height: 1.8;
-}
-
-.divider {
-    width: 60px;
-    border: 0;
-    border-top: 1px solid #444;
-    margin: 40px auto;
-}
-
-.quote {
-    font-style: italic;
-    color: #aaa;
-    font-size: 1.2rem;
-    line-height: 1.6;
-}
-
-/* --- 頁尾 --- */
-footer {
-    text-align: center;
-    padding: 30px;
-    color: #555;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-}
