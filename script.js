@@ -1,30 +1,43 @@
 // =========================================
-// script.js (極簡黑白 + 精緻排版版)
+// script.js (藝廊隨機展示 + 防呆版)
 // =========================================
 
 // 1. 自動生成照片網址的機器 
 function generatePhotoList(folderName, prefix, count) {
     let photoArray = [];
+    // 📍 防呆：如果張數小於或等於 0，直接回傳空陣列
+    if (count <= 0) return photoArray; 
+
     for (let i = 1; i <= count; i++) {
-        // 📍 確保指向大寫開頭的資料夾 (People, Things, Place)
+        // 📍 修正點：確保指向大寫開頭的資料夾 (People, Things, Place)
         photoArray.push(`./images/${folderName}/${prefix} (${i}).jpg`);
     }
     return photoArray;
 }
 
-// 2. 定義資料庫 
+// 2. 定義資料庫 (請根據你實際拖進去的照片張數修改數字)
 const photoDatabase = {
+    // 例如：你在 images/People 資料夾放了 11 張照片
     people: generatePhotoList('People', 'people', 11),
-    things: generatePhotoList('Things', 'things', 3),
+
+    // 例如：你在 images/Things 資料夾放了 0 張照片
+    // 📍 修正點：如果資料夾是空的，請務必把數量設為 0
+    things: generatePhotoList('Things', 'things', 0),
+
+    // 例如：你在 images/Place 資料夾放了 1 張照片
     place: generatePhotoList('Place', 'place', 1) 
 };
 
-// 3. 合併所有照片 
-const allPhotosArray = [
-    ...photoDatabase.people,
-    ...photoDatabase.things,
-    ...photoDatabase.place
-];
+// 📍 修正點：只合併「非空」的資料庫，以免 randomArray 合併空陣列
+const availableDatabase = {};
+Object.keys(photoDatabase).forEach(category => {
+    if (photoDatabase[category] && photoDatabase[category].length > 0) {
+        availableDatabase[category] = photoDatabase[category];
+    }
+});
+
+// 3. 合併所有可用的照片 
+const allPhotosArray = Object.values(availableDatabase).flat();
 
 // 4. 洗牌演算法
 function shuffleArray(array) {
@@ -80,14 +93,14 @@ filterLinks.forEach(link => {
         filterLinks.forEach(nav => nav.classList.remove('active'));
         this.classList.add('active');
         const targetCategory = this.getAttribute('data-target');
-        renderPhotos(photoDatabase[targetCategory]);
+        // 📍 修正點：防呆，如果分類沒照片，顯示無照片文字
+        renderPhotos(availableDatabase[targetCategory] || []);
     });
 });
 
 // 📍 監聽：點擊「太海」Logo 時觸發重新洗牌
 if (logoBtn) {
     logoBtn.addEventListener('click', function() {
-        // 點擊 Logo 等同於回到首頁隨機狀態並洗牌
         loadRandomPhotos();
     });
 }
