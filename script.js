@@ -1,31 +1,30 @@
 // =========================================
-// script.js (智能副檔名切換 + 自動置頂)
+// script.js (精確副檔名配對 + 展示全部照片版)
 // =========================================
 
-// 1. 生成路徑 (加入 ext 參數，預設小寫 .jpg)
-function generatePhotoList(folderName, prefix, count, ext = 'jpg') {
+let msnry;
+
+// 生成器：支援不同副檔名
+function generatePhotoList(folderName, prefix, maxCount = 100, ext = 'jpg') {
     let photoArray = [];
-    for (let i = 1; i <= count; i++) {
+    for (let i = 1; i <= maxCount; i++) {
         photoArray.push(`./images/${folderName}/${prefix} (${i}).${ext}`);
     }
     return photoArray;
 }
 
-// 📍 2. 資料庫 (根據你的網址精確設定大小寫)
+// 📍 關鍵修正區：根據你提供的網址設定正確的副檔名
 const photoDatabase = {
-    // people 是小寫 .jpg
-    people: generatePhotoList('people', 'people', 30, 'jpg'),
-    // things 根據你給的網址是大寫 .JPG
-    things: generatePhotoList('things', 'things', 30, 'JPG'),
-    // place 根據你給的網址是大寫 .JPG
-    place: generatePhotoList('place', 'place', 30, 'JPG') 
+    // people 分類是小寫 .jpg
+    people: generatePhotoList('people', 'people', 100, 'jpg'),
+    // things 分類是大寫 .JPG
+    things: generatePhotoList('things', 'things', 100, 'JPG'),
+    // place 分類是大寫 .JPG
+    place: generatePhotoList('place', 'place', 100, 'JPG') 
 };
 
-const allPhotosArray = [
-    ...photoDatabase.people,
-    ...photoDatabase.things,
-    ...photoDatabase.place
-];
+// 合併所有照片用於首頁展示
+let allPhotosArray = [...photoDatabase.people, ...photoDatabase.things, ...photoDatabase.place];
 
 function shuffleArray(array) {
     let arr = [...array];
@@ -36,145 +35,83 @@ function shuffleArray(array) {
     return arr;
 }
 
-const galleryContainer = document.getElementById('gallery');
-const filterLinks = document.querySelectorAll('.filter-link');
-const logoBtn = document.getElementById('logo-btn'); 
-const aboutBtn = document.getElementById('about-btn');
-const aboutSection = document.getElementById('about-section');
-const gallerySection = document.getElementById('gallery-section');
-const frontpageSection = document.getElementById('frontpage');
-const lightbox = document.getElementById('lightbox');
-const lightboxImg = document.getElementById('lightbox-img');
-
-let msnry;
-
 function initMasonry() {
-    if (!galleryContainer) return;
-    imagesLoaded(galleryContainer, function() {
-        if (msnry) msnry.destroy(); 
-        msnry = new Masonry(galleryContainer, {
-            itemSelector: '.photo-card', 
-            columnWidth: '.grid-sizer', 
-            percentPosition: true, 
+    const gallery = document.getElementById('gallery');
+    imagesLoaded(gallery, function() {
+        if (msnry) msnry.destroy();
+        msnry = new Masonry(gallery, {
+            itemSelector: '.photo-card',
+            columnWidth: '.grid-sizer',
+            percentPosition: true,
             transitionDuration: '0.4s'
         });
     });
 }
 
-// 3. 渲染照片
 function renderPhotos(photoArray) {
-    const sizer = galleryContainer.querySelector('.grid-sizer');
-    galleryContainer.innerHTML = ''; 
-    if (sizer) galleryContainer.appendChild(sizer); 
+    const gallery = document.getElementById('gallery');
+    const sizer = gallery.querySelector('.grid-sizer');
+    gallery.innerHTML = ''; 
+    if (sizer) gallery.appendChild(sizer);
 
-    if (!photoArray || photoArray.length === 0) return;
+    if (!photoArray || photoArray.length === 0) {
+        gallery.innerHTML += '<p style="text-align:center; padding: 50px; width: 100%; color: #888;">尚未發現照片。</p>';
+        return;
+    }
 
     photoArray.forEach((src) => {
         const card = document.createElement('div');
-        card.className = 'photo-card'; 
-
+        card.className = 'photo-card';
         const img = document.createElement('img');
         img.src = src;
 
-        // 📍 終極防爆機制：小寫找不到找大寫，大寫找不到才刪除
-        img.onerror = function() {
-            if (!this.dataset.retried) {
-                this.dataset.retried = "true";
-                if (this.src.endsWith('.jpg')) {
-                    this.src = this.src.replace('.jpg', '.JPG');
-                } else if (this.src.endsWith('.JPG')) {
-                    this.src = this.src.replace('.JPG', '.jpg');
-                }
-            } else {
-                card.remove(); 
-                initMasonry();
-            }
-        };
-
-        // 聚光燈功能 (Requirement)
-        card.addEventListener('click', () => {
-            lightboxImg.src = this.querySelector('img').src;
-            lightbox.classList.add('show');
-            document.body.style.overflow = 'hidden'; 
-        });
-
-        img.onload = () => { 
-            img.style.opacity = 1; 
+        // 防呆：抓不到圖就移除格子，重新排版
+        img.onerror = () => {
+            card.remove();
             initMasonry();
         };
+        
+        img.onload = () => { 
+            img.style.opacity = 1; 
+            initMasonry(); 
+        };
+
+        // 點擊放大
+        card.addEventListener('click', () => {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = src;
+            lightbox.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        });
 
         card.appendChild(img);
-        galleryContainer.appendChild(card);
+        gallery.appendChild(card);
     });
 }
 
-function loadHome() {
-    gallerySection.style.display = 'block';
-    aboutSection.style.display = 'none';
-    frontpageSection.style.display = 'flex';
-    filterLinks.forEach(nav => nav.classList.remove('active'));
-    aboutBtn.classList.remove('active');
-    
-    // 首頁展示全部照片洗牌
+// 事件監聽
+document.querySelectorAll('.filter-link').forEach(link => {
+    link.addEventListener('click', function() {
+        document.querySelectorAll('.filter-link').forEach(n => n.classList.remove('active'));
+        this.classList.add('active');
+        const target = this.getAttribute('data-target');
+        // 展示該分類的「所有」照片
+        renderPhotos(photoDatabase[target]);
+    });
+});
+
+// Logo 點擊：展示「全部照片」隨機洗牌
+document.getElementById('logo-btn').addEventListener('click', (e) => {
+    e.preventDefault();
     renderPhotos(shuffleArray(allPhotosArray));
-}
-
-// 📍 事件監聽與置頂 (Requirement 2)
-filterLinks.forEach(link => {
-    link.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // 顯示藝廊，隱藏自我介紹
-        gallerySection.style.display = 'block';
-        aboutSection.style.display = 'none';
-        frontpageSection.style.display = 'flex';
-
-        filterLinks.forEach(nav => nav.classList.remove('active'));
-        aboutBtn.classList.remove('active');
-        this.classList.add('active');
-
-        // 📍 置頂到照片第一排 (扣除導覽列高度)
-        const offsetTop = gallerySection.offsetTop - 80;
-        window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-
-        const targetCategory = this.getAttribute('data-target');
-        renderPhotos(photoDatabase[targetCategory] || []);
-    });
 });
 
-if (aboutBtn) {
-    aboutBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        filterLinks.forEach(nav => nav.classList.remove('active'));
-        this.classList.add('active');
-        
-        gallerySection.style.display = 'none';
-        frontpageSection.style.display = 'none';
-        aboutSection.style.display = 'block';
-
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-}
-
-if (logoBtn) {
-    logoBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        loadHome();
-    });
-}
-
-// 關閉燈箱
-lightbox.addEventListener('click', function(e) {
-    if (e.target !== lightboxImg) {
-        lightbox.classList.remove('show');
-        document.body.style.overflow = ''; 
-    }
-});
-document.querySelector('.close-btn').addEventListener('click', () => {
-    lightbox.classList.remove('show');
-    document.body.style.overflow = ''; 
+// 燈箱關閉
+document.getElementById('lightbox').addEventListener('click', () => {
+    document.getElementById('lightbox').classList.remove('show');
+    document.body.style.overflow = '';
 });
 
-// 初始化
-loadHome();
+// 啟動：首頁展示全部照片
+renderPhotos(shuffleArray(allPhotosArray));
