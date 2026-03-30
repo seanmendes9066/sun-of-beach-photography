@@ -1,163 +1,117 @@
 // =========================================
-// script.js (藝廊隨機洗牌 + Section切換 + 自動置頂版)
+// script.js (精確副檔名配對 + 展示全部照片版)
 // =========================================
 
-function generatePhotoList(folderName, prefix, count) {
+let msnry;
+
+// 生成器：支援不同副檔名
+function generatePhotoList(folderName, prefix, maxCount = 100, ext = 'jpg') {
     let photoArray = [];
-    if (count <= 0) return photoArray; 
-    for (let i = 1; i <= count; i++) {
-        photoArray.push(`./images/${folderName}/${prefix} (${i}).jpg`);
+    for (let i = 1; i <= maxCount; i++) {
+        photoArray.push(`./images/${folderName}/${prefix} (${i}).${ext}`);
     }
     return photoArray;
 }
 
+// 📍 關鍵修正區：根據你提供的網址設定正確的副檔名
 const photoDatabase = {
-    people: generatePhotoList('people', 'people', 11),
-    things: generatePhotoList('Things', 'things', 3), 
-    place: generatePhotoList('Place', 'place', 1) 
+    // people 分類是小寫 .jpg
+    people: generatePhotoList('people', 'people', 100, 'jpg'),
+    // things 分類是大寫 .JPG
+    things: generatePhotoList('things', 'things', 100, 'JPG'),
+    // place 分類是大寫 .JPG
+    place: generatePhotoList('place', 'place', 100, 'JPG') 
 };
 
-const allPhotosArray = [
-    ...photoDatabase.people,
-    ...photoDatabase.things,
-    ...photoDatabase.place
-];
+// 合併所有照片用於首頁展示
+let allPhotosArray = [...photoDatabase.people, ...photoDatabase.things, ...photoDatabase.place];
 
 function shuffleArray(array) {
-    let currentIndex = array.length;
-    let randomIndex;
-    while (currentIndex != 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex--;
-        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    let arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
     }
-    return array;
+    return arr;
 }
 
-const galleryContainer = document.getElementById('gallery');
-const filterLinks = document.querySelectorAll('.filter-link');
-const aboutLink = document.querySelector('a[target-page="about-section"]');
-const logoBtn = document.getElementById('logo-btn'); 
-
-const allSections = document.querySelectorAll('.section-container, #frontpage');
-
-let msnry;
-
 function initMasonry() {
-    if (!galleryContainer) return;
-    imagesLoaded(galleryContainer, function() {
-        if (msnry) msnry.destroy(); 
-        msnry = new Masonry(galleryContainer, {
-            itemSelector: '.photo-card', 
-            columnWidth: '.grid-sizer', 
-            percentPosition: true, 
-            transitionDuration: '0.4s', 
-            gutter: 0 
+    const gallery = document.getElementById('gallery');
+    imagesLoaded(gallery, function() {
+        if (msnry) msnry.destroy();
+        msnry = new Masonry(gallery, {
+            itemSelector: '.photo-card',
+            columnWidth: '.grid-sizer',
+            percentPosition: true,
+            transitionDuration: '0.4s'
         });
     });
 }
 
 function renderPhotos(photoArray) {
-    const sizer = galleryContainer.querySelector('.grid-sizer');
-    galleryContainer.innerHTML = ''; 
-    if (sizer) galleryContainer.appendChild(sizer); 
+    const gallery = document.getElementById('gallery');
+    const sizer = gallery.querySelector('.grid-sizer');
+    gallery.innerHTML = ''; 
+    if (sizer) gallery.appendChild(sizer);
 
     if (!photoArray || photoArray.length === 0) {
-        galleryContainer.innerHTML += '<p class="quote" style="grid-column: 1/-1; text-align:center;">尚無照片內容。</p>';
+        gallery.innerHTML += '<p style="text-align:center; padding: 50px; width: 100%; color: #888;">尚未發現照片。</p>';
         return;
     }
 
     photoArray.forEach((src) => {
         const card = document.createElement('div');
-        card.className = 'photo-card'; 
-
+        card.className = 'photo-card';
         const img = document.createElement('img');
         img.src = src;
 
+        // 防呆：抓不到圖就移除格子，重新排版
+        img.onerror = () => {
+            card.remove();
+            initMasonry();
+        };
+        
+        img.onload = () => { 
+            img.style.opacity = 1; 
+            initMasonry(); 
+        };
+
+        // 點擊放大
+        card.addEventListener('click', () => {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = src;
+            lightbox.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        });
+
         card.appendChild(img);
-        galleryContainer.appendChild(card);
-
-        img.onload = () => { img.style.opacity = 1; };
+        gallery.appendChild(card);
     });
-
-    initMasonry();
 }
 
-function switchToSection(targetSectionId) {
-    allSections.forEach(section => {
-        section.classList.remove('active-section');
-        section.classList.add('section-hidden');
-    });
-
-    const target = document.getElementById(targetSectionId);
-    if (target) {
-        target.classList.remove('section-hidden');
-        target.classList.add('active-section');
-    }
-
-    if (targetSectionId === 'gallery-section') {
-        initMasonry();
-    }
-}
-
-function loadRandomPhotosAndShowGallery() {
-    switchToSection('frontpage');
-    filterLinks.forEach(nav => nav.classList.remove('active'));
-    if(aboutLink) aboutLink.classList.remove('active'); 
-
-    const shuffledPhotos = shuffleArray([...allPhotosArray]); 
-    renderPhotos(shuffledPhotos);
-}
-
-// ============================================================
-// 📍 事件監聽與「自動置頂」邏輯
-// ============================================================
-
-// 1. 監聽：點擊分類選單
-filterLinks.forEach(link => {
-    link.addEventListener('click', function(e) {
-        e.preventDefault(); // 防止預設跳轉
-
-        filterLinks.forEach(nav => nav.classList.remove('active'));
-        if(aboutLink) aboutLink.classList.remove('active'); 
+// 事件監聽
+document.querySelectorAll('.filter-link').forEach(link => {
+    link.addEventListener('click', function() {
+        document.querySelectorAll('.filter-link').forEach(n => n.classList.remove('active'));
         this.classList.add('active');
-
-        const targetPage = this.getAttribute('target-page');
-        switchToSection(targetPage); 
-
-        if (targetPage === 'gallery-section') {
-            const targetCategory = this.getAttribute('data-target');
-            renderPhotos(photoDatabase[targetCategory]);
-        }
-
-        // 📍 關鍵新增：每次切換分類，平滑滾動到網頁最上方
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        const target = this.getAttribute('data-target');
+        // 展示該分類的「所有」照片
+        renderPhotos(photoDatabase[target]);
     });
 });
 
-// 2. 監聽：點擊 About Me
-if (aboutLink) {
-    aboutLink.addEventListener('click', function(e) {
-        e.preventDefault(); 
-        filterLinks.forEach(nav => nav.classList.remove('active')); 
-        this.classList.add('active');
-        switchToSection('about-section');
+// Logo 點擊：展示「全部照片」隨機洗牌
+document.getElementById('logo-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    renderPhotos(shuffleArray(allPhotosArray));
+});
 
-        // 📍 關鍵新增：切換到 About Me 時，也平滑滾動到最上方
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-}
+// 燈箱關閉
+document.getElementById('lightbox').addEventListener('click', () => {
+    document.getElementById('lightbox').classList.remove('show');
+    document.body.style.overflow = '';
+});
 
-// 3. 監聽：點擊 Logo 按鈕
-if (logoBtn) {
-    logoBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        loadRandomPhotosAndShowGallery();
-
-        // 📍 關鍵新增：點擊 Logo 回首頁時，平滑滾動到最上方
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-}
-
-// 初始化載入
-loadRandomPhotosAndShowGallery();
+// 啟動：首頁展示全部照片
+renderPhotos(shuffleArray(allPhotosArray));
