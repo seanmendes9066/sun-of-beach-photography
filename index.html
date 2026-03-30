@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Photography | Portfolio</title>
+    <title>Sean Photography | Portfolio</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <nav>
-        <div class="logo">PHOTO BY ME</div>
+        <div class="logo">SEAN.PHOTO</div>
         <ul>
-            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#gallery-section">Gallery</a></li>
             <li><a href="#about">About</a></li>
         </ul>
     </nav>
@@ -20,14 +20,15 @@
         <p>Welcome to my visual world</p>
     </header>
 
-    <main id="gallery">
-        <div class="grid">
-            <div class="photo-card"><img src="images/photo1.jpg" alt="Gallery Photo 1"></div>
-            <div class="photo-card"><img src="images/photo2.jpg" alt="Gallery Photo 2"></div>
-            <div class="photo-card"><img src="images/photo3.jpg" alt="Gallery Photo 3"></div>
-            <div class="photo-card"><img src="images/photo4.jpg" alt="Gallery Photo 4"></div>
-            <div class="photo-card"><img src="images/photo5.jpg" alt="Gallery Photo 5"></div>
+    <main id="gallery-section">
+        <div class="filters" id="category-nav">
+            <a class="active" data-target="latest">Latest</a>
+            <a data-target="perthLife">Perth Life</a>
+            <a data-target="automotive">Automotive</a>
+            <a data-target="fitness">Fitness</a>
         </div>
+
+        <div class="grid" id="gallery"></div>
     </main>
 
     <section id="about">
@@ -55,7 +56,7 @@
     </section>
 
     <footer>
-        <p>&copy; 2026 My Photography. Built with GitHub Pages.</p>
+        <p>&copy; 2026 Sean Photography. Built with GitHub Pages.</p>
     </footer>
 
     <script src="script.js"></script>
