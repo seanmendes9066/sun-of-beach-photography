@@ -1,22 +1,31 @@
-/* --- 基礎設定 --- */
+/* =========================================
+   styles.css (白底黑字 + 太海復古 Logo 版)
+   ========================================= */
+
+/* --- 0. 載入 Google 字體 (核心魂魄) --- */
+/* 我們使用 Special Elite 來呈現 Logo 的復古墨水暈染感 */
+/* 我們使用 Courier Prime 來呈現選單的乾淨打字機感 */
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@400;700&display=swap');
+
+/* --- 1. 基礎設定 --- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     scroll-behavior: smooth;
 }
 
 body {
-    background-color: #ffffff; 
-    color: #111111; 
-    line-height: 1.8; 
+    background-color: #ffffff; /* 經典純白背景 */
+    color: #111111; /* 柔和的深黑色文字 */
+    line-height: 1.8;
 }
 
-/* --- 左上角導覽列 --- */
+/* --- 2. 左上角導覽列 (整合 Logo 與選單) --- */
 nav {
     display: flex;
-    justify-content: flex-start; /* 設定為靠左對齊 */
+    justify-content: flex-start; /* 統一靠左對齊 */
+    align-items: center; /* 讓 Logo 和文字選單垂直對齊 */
     padding: 30px 40px;
     background-color: rgba(255, 255, 255, 0.98);
     position: sticky;
@@ -24,19 +33,36 @@ nav {
     z-index: 100;
 }
 
+/* --- 📍 3. 「太海」Logo 的設計神髓 (對應你的訴求) --- */
+.logo {
+    /* 使用復古打字機/墨水暈染字體 */
+    font-family: 'Special Elite', cursive; 
+    color: #111111;
+    font-size: 1.9rem; /* 字體放大一點，大器且清晰 */
+    font-weight: normal; /* 打字機字體通常不需要加粗 */
+    letter-spacing: 4px; /* 【關鍵】超寬字距，瞬間提升設計高級感 */
+    text-transform: uppercase; /* 將中文字視為全大寫處理 (風格化) */
+    
+    /* 在 Logo 和右邊選單之間留出呼吸空間 */
+    margin-right: 50px; 
+}
+
+/* --- 4. 選單按鈕設計 (延續早上設計感) --- */
 .nav-menu {
     list-style: none;
     display: flex;
-    gap: 40px; /* 選項之間的距離 */
+    gap: 35px; /* 選項之間的距離 */
     flex-wrap: wrap;
 }
 
 .nav-menu a {
+    /* 使用乾淨的打字機字體，跟 Peter McKinnon 的選單一樣 */
+    font-family: 'Courier Prime', monospace;
     color: #888888;
     text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 2px;
+    font-size: 0.9rem;
+    font-weight: 700; /* 讓選單字體稍微粗一點點，方便閱讀 */
+    letter-spacing: 1.5px;
     text-transform: uppercase;
     cursor: pointer;
     transition: color 0.3s ease;
@@ -48,12 +74,12 @@ nav {
     color: #111111;
 }
 
-/* 針對 filter-link 加上的底線特效 */
+/* 針對照片分類選單加上的精緻底線特效 */
 .nav-menu a.filter-link.active {
     border-bottom: 2px solid #111111;
 }
 
-/* --- 標題區 --- */
+/* --- 5. 標題與照片網格 (保留你的倉庫排版與故事) --- */
 header {
     text-align: center;
     padding: 60px 20px 60px;
@@ -75,7 +101,6 @@ header p {
     text-transform: uppercase;
 }
 
-/* --- 照片自動網格 --- */
 #gallery-section {
     padding: 0 20px 100px;
     max-width: 1200px;
@@ -84,7 +109,8 @@ header p {
 
 .grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr; /* 倉庫排版：一橫排4張照片 */
+    /* 倉庫排版：一橫排4張照片塞滿畫面 */
+    grid-template-columns: 1fr 1fr 1fr 1fr; 
     gap: 15px; 
 }
 
@@ -107,7 +133,7 @@ header p {
     transform: scale(1.03);
 }
 
-/* --- About Me --- */
+/* --- 6. About Me 故事區 --- */
 #about {
     background-color: #fdfdfd; 
     padding: 120px 20px;
@@ -149,6 +175,7 @@ header p {
 }
 
 .quote {
+    /* 襯線字體，帶出老相機的故事感 */
     font-family: 'Georgia', 'Times New Roman', serif; 
     font-style: italic;
     color: #555555;
@@ -156,7 +183,7 @@ header p {
     line-height: 1.8;
 }
 
-/* --- 頁尾 --- */
+/* --- 7. 頁尾 --- */
 footer {
     text-align: center;
     padding: 40px;
