@@ -1,96 +1,131 @@
 /* =========================================
-   styles.css (高端簡約 + 文藝中西結合版)
+   styles.css (高端瀑布流藝廊 + 燈箱回歸 VER.20.1)
    ========================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Special+Elite&display=swap');
-
-/* --- 0. 基礎設定 --- */
+/* --- 1. 基礎設定 --- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    scroll-behavior: smooth; /* 📍 雖然 JS 控制，但保留 smooth 提升體驗 */
+    /* 📍 移除平滑捲動，因為我們改用頁面切換 */
+    /* scroll-behavior: smooth; */
 }
 
 body {
-    background-color: #ffffff;
-    color: #111111;
+    background-color: #ffffff; /* 純白簡約背景 */
+    color: #111111; 
     line-height: 1.8;
-    font-family: 'Lato', -apple-system, BlinkMacSystemFont, sans-serif;
+    /* 預設使用乾淨的現代黑體 */
+    font-family: 'Lato', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
 }
 
-/* --- 1. 導覽列與 Logo (Noto Serif TC 宋體Logo) --- */
+/* --- 2. 導覽列與 Logo (東方文藝：思源宋體) --- */
 nav {
     display: flex;
-    justify-content: flex-start;
-    align-items: center;
+    justify-content: flex-start; /* 靠左對齊 */
+    align-items: center; 
     padding: 20px 40px;
     background-color: rgba(255, 255, 255, 0.98);
-    position: fixed;
+    position: sticky;
     top: 0;
-    width: 100%;
     z-index: 1000;
 }
 
 .logo-link {
     text-decoration: none !important;
     color: #111111 !important;
-    margin-right: 50px;
+    margin-right: 50px; 
+    display: inline-block;
 }
 
+/* 📍 「太海」Logo (思源宋體) */
 .logo {
-    font-family: 'Noto Serif TC', serif;
-    font-size: 1.8rem;
-    font-weight: 700;
-    letter-spacing: 6px;
-    text-transform: uppercase;
-    position: relative;
+    font-family: 'Noto Serif TC', serif; /* 宋體自帶東方文藝墨香感 */
+    color: #111111;
+    font-size: 1.8rem; 
+    font-weight: 700; /* 加粗很有氣勢 */
+    letter-spacing: 6px; /* 加寬字距呈現浩瀚感 */
+    text-transform: uppercase; 
+    position: relative; 
     z-index: 2;
 }
 
+/* 移除紅色圓圈::after 背景 (保持簡約) */
+.logo::after {
+    display: none !important;
+}
+
+/* --- 4. 選單按鈕 --- */
 .nav-menu {
     list-style: none;
     display: flex;
-    gap: 30px;
+    gap: 25px; 
+    flex-wrap: wrap;
 }
 
 .nav-menu a {
-    font-family: 'Lato', sans-serif;
-    color: #aaaaaa;
+    font-family: 'Lato', sans-serif; /* 現代黑體選單 */
+    color: #888888;
     text-decoration: none;
-    font-size: 0.8rem;
-    letter-spacing: 2px;
+    font-size: 0.8rem; 
+    font-weight: 700; 
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    font-weight: 700;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: color 0.3s ease;
+    padding-bottom: 5px;
+    position: relative;
 }
 
 .nav-menu a:hover, .nav-menu a.active {
     color: #111111;
 }
 
-.nav-menu a.filter-link.active {
-    border-bottom: 2px solid #111111;
-    padding-bottom: 5px;
+/* 分類按鈕的精緻底線特效 */
+.nav-menu a.active::after,
+.nav-menu a:hover::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1.5px;
+    background-color: #111111;
+    bottom: 0;
+    left: 0;
+    transform: scaleX(1);
 }
 
-/* --- 📍 2. 要求 3: 滿版首頁大標 (空間優化) --- */
+.nav-menu a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1.5px;
+    background-color: transparent;
+    bottom: 0;
+    left: 0;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.contact-btn {
+    color: #aaaaaa;
+}
+
+/* --- 5. Section 切換與 Hero 大標優化 --- */
 #frontpage {
-    height: 60vh; /* 📍 從 100vh 縮減為 60vh，讓下方照片露出 */
+    /* 📍 關鍵修正：縮減高度，從 100vh 縮減為 60vh，讓訪客知道下方有照片 */
+    height: 60vh; 
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 0 20px;
-    margin-top: 85px; /* 扣除 fixed nav 高度 */
 }
 
 .hero-content h1 {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 2.8rem;
-    letter-spacing: 10px;
+    font-family: 'Montserrat', sans-serif; /* 大器、現代大黑體 */
+    font-size: 3rem; /* 放大字體呈現氣場 */
+    font-weight: 800; /* 極粗體 */
+    letter-spacing: 8px; /* 極寬字距呈現氣場 */
     text-transform: uppercase;
     margin-bottom: 15px;
     color: #111111;
@@ -99,68 +134,90 @@ nav {
 .hero-content p {
     font-family: 'Montserrat', sans-serif;
     color: #777777;
-    font-size: 1rem;
+    font-size: 1.1rem;
     letter-spacing: 4px;
     text-transform: uppercase;
+    font-weight: 300; /* 極細體 */
 }
 
-/* --- 📍 3. 要求 1: 照片網格 (剛性底層貼齊不裁切) --- */
-#gallery-section {
-    padding: 60px 40px; /* 稍微放大間距，呈現專業氣勢 */
+/* --- 6. Section 切換控制 (不放在每一頁的要求) --- */
+.section-container {
+    padding: 0 20px;
     max-width: 1400px;
     margin: 0 auto;
 }
 
-.grid {
-    display: grid;
-    /* 📍 電腦版一排 4 張照片塞滿畫面 */
-    grid-template-columns: repeat(4, 1fr); 
-    gap: 15px; /* 照片之間的間距 */
+.active-section {
+    display: block; /* 📍 顯示 */
 }
 
-/* 手機端適配：一排兩張 */
+.section-hidden {
+    display: none !important; /* 📍 完全隱藏 */
+}
+
+/* --- 📍 要求 1: 底層貼齊不裁切的瀑布流區塊 (Masonry CSS) --- */
+#gallery-section {
+    width: 100%; 
+}
+
+#gallery {
+    width: 100%;
+}
+
+/* .grid-sizer 與 .photo-card 的寬度設定必須一致 */
+.grid-sizer, .photo-card {
+    /* 📍 電腦版預設 3 列 (100% / 3 = 33.333%)，呈現 Peter M. 的大器質感 */
+    width: 33.333%; 
+}
+
+/* 手機適配：螢幕寬度小於 768px 改為兩列 (50%) */
 @media (max-width: 768px) {
-    .grid {
-        grid-template-columns: repeat(2, 1fr);
+    .grid-sizer, .photo-card {
+        width: 50%; 
     }
 }
 
 .photo-card {
+    /* 📍 關鍵設定：Masonry 需要 float: left 進行排版計算 */
+    float: left;
     position: relative;
     overflow: hidden;
-    background-color: #f9f9f9;
-    /* 📍 關鍵：強制照片為正方形，Masonry 鏈接不啟用，CSS Grid 優先確保底層水平對齊 */
-    aspect-ratio: 1; 
+    /* 📍 Gutter 間距設定 */
+    padding: 8px; 
+    transition: all 0.3s ease;
+    background-color: #fcfcfc;
+    /* 📍 回歸：聚光燈效果需要 zoom 指標 */
+    cursor: zoom-in; 
 }
 
 .photo-card img {
     width: 100%;
-    height: 100%;
-    /* 📍 關鍵：不裁切照片，而是依據比例縮放填充格子，完全滿足「底層貼齊」需求 */
-    object-fit: contain; 
+    /* 📍 關鍵設定：高度設為 auto，不截圖，保持照片比例，Masonry 鏈接 */
+    height: auto; 
+    display: block; /* 防止圖片下方有空隙 */
     opacity: 0; /* JS載入後淡入 */
-    transition: transform 0.6s ease, opacity 0.6s ease;
+    transition: transform 0.8s ease, opacity 0.6s ease;
 }
 
 .photo-card:hover img {
-    transform: scale(1.03);
+    transform: scale(1.02); /* 輕微放大效果 */
 }
 
-/* --- 4. About Me (Crimson Pro 文藝故事字) --- */
-#about {
+/* --- 7. About Me (Crimson Pro 文藝襯線字) --- */
+#about-section {
     background-color: #fdfdfd; 
-    padding: 100px 20px;
     text-align: center;
+    padding: 100px 20px; /* 📍 獨立 Section 間距 */
 }
 
 .about-content {
-    max-width: 650px;
+    max-width: 650px; 
     margin: 0 auto;
 }
 
 .about-content h2 {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 2rem;
+    font-family: 'Montserrat', sans-serif; /* 大黑體 */
+    font-size: 2rem; 
     font-weight: 700;
     letter-spacing: 4px;
     margin-bottom: 10px;
@@ -169,17 +226,17 @@ nav {
 .subtitle {
     font-family: 'Lato', sans-serif;
     color: #999999;
-    font-size: 0.7rem;
+    font-size: 0.7rem; 
     font-weight: 600;
     letter-spacing: 5px;
-    margin-bottom: 40px;
+    margin-bottom: 40px; 
 }
 
-/* 📍 About Me 本文使用文藝襯線字 (Crimson Pro) 呈現故事感 */
+/* 📍 要求 4: About Me 本文使用文藝襯線字 (Crimson Pro) 呈現故事感 */
 .main-text {
-    font-family: 'Crimson Pro', serif;
+    font-family: 'Crimson Pro', serif; /* 優雅衬线，帶出故事感 */
     color: #333333;
-    font-size: 1.1rem;
+    font-size: 1.05rem; 
     margin-bottom: 20px;
     text-align: justify; 
 }
@@ -188,26 +245,78 @@ nav {
     width: 40px;
     border: 0;
     border-top: 2px solid #111111;
-    margin: 40px auto;
+    margin: 40px auto; 
 }
 
-/* 📍 引用文字使用襯線斜體更顯氣質 */
+/* 📍 引用文字使用斜體更顯氣質 */
 .quote {
-    font-family: 'Crimson Pro', serif;
-    font-style: italic;
+    font-family: 'Crimson Pro', serif; 
+    font-style: italic; /* 斜體更顯氣質 */
     font-weight: 300;
     color: #555555;
-    font-size: 1.3rem;
+    font-size: 1.2rem; 
     line-height: 1.8;
 }
 
-/* --- 5. 頁尾 --- */
+/* --- 8. 頁尾 --- */
 footer {
     font-family: 'Lato', sans-serif;
     text-align: center;
     padding: 40px;
     color: #bbbbbb;
-    font-size: 0.7rem;
+    font-size: 0.7rem; 
     letter-spacing: 2px;
     text-transform: uppercase;
+}
+
+/* --- 📍 要求 2: 回歸：極簡燈箱 (Lightbox) 樣式 --- */
+.lightbox {
+    display: none; /* 預設隱藏 */
+    position: fixed;
+    z-index: 2000; /* 📍 確保在導覽列之上 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9); /* 半透明黑背景，突出照片 */
+    overflow: hidden; /* 📍 防止燈箱背景捲動 */
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.lightbox.show {
+    display: flex; /* 顯示時使用 flex 置中 */
+    opacity: 1;
+}
+
+.lightbox-content {
+    max-width: 90%; /* 限制最大寬度，保留呼吸空間 */
+    max-height: 90vh; /* 限制最大高度，不超出視窗 */
+    object-fit: contain; /* 📍 關鍵：保持照片原始比例，不截圖 */
+    transform: scale(0.95); /* 進場縮放動畫 */
+    transition: transform 0.4s ease;
+    border: 2px solid rgba(255, 255, 255, 0.05);
+}
+
+.lightbox.show .lightbox-content {
+    transform: scale(1); /* 回到原始大小 */
+}
+
+/* 關閉按鈕 */
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: #ffffff;
+    font-size: 40px;
+    font-weight: 300;
+    cursor: pointer;
+    transition: 0.3s;
+    z-index: 2001;
+}
+
+.close-btn:hover {
+    color: #aaaaaa;
 }
