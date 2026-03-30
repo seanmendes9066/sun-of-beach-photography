@@ -1,167 +1,61 @@
-/* --- 基礎設定 --- */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    scroll-behavior: smooth;
+// 1. 自動生成照片網址的機器
+function generatePhotoList(folderName, prefix, count) {
+    let photoArray = [];
+    for (let i = 1; i <= count; i++) {
+        photoArray.push(`./images/${folderName}/${prefix}-${i}.jpg`);
+    }
+    return photoArray;
 }
 
-body {
-    background-color: #ffffff; 
-    color: #111111; 
-    line-height: 1.8; 
+// 2. 你的新版影像資料庫 (對應 People / Things / Place)
+const photoDatabase = {
+    // 假設你在 images/people/ 資料夾放了 4 張連號照片 (people-1.jpg ~ people-4.jpg)
+    people: generatePhotoList('people', 'people', 4),
+
+    // 假設你在 images/things/ 資料夾放了 4 張連號照片 (things-1.jpg ~ things-4.jpg)
+    things: generatePhotoList('things', 'things', 4),
+
+    // 假設你在 images/place/ 資料夾放了 4 張連號照片 (place-1.jpg ~ place-4.jpg)
+    place: generatePhotoList('place', 'place', 4)
+};
+
+// 3. 取得網頁元素 (這次只抓取帶有 filter-link 的按鈕)
+const filterLinks = document.querySelectorAll('.filter-link');
+const galleryContainer = document.getElementById('gallery');
+
+// 4. 定義「渲染照片」的動作
+function renderPhotos(category) {
+    galleryContainer.innerHTML = ''; 
+    const photos = photoDatabase[category];
+
+    photos.forEach((src) => {
+        const card = document.createElement('div');
+        card.className = 'photo-card';
+
+        const img = document.createElement('img');
+        img.src = src;
+
+        card.appendChild(img);
+        galleryContainer.appendChild(card);
+
+        img.onload = () => {
+            img.style.opacity = 1;
+        };
+    });
 }
 
-/* --- 左上角導覽列 --- */
-nav {
-    display: flex;
-    justify-content: flex-start; /* 設定為靠左對齊 */
-    padding: 30px 40px;
-    background-color: rgba(255, 255, 255, 0.98);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
+// 5. 點擊照片分類選單的切換邏輯
+filterLinks.forEach(link => {
+    link.addEventListener('click', function() {
+        // 切換按鈕的黑體發光狀態
+        filterLinks.forEach(nav => nav.classList.remove('active'));
+        this.classList.add('active');
 
-.nav-menu {
-    list-style: none;
-    display: flex;
-    gap: 40px; /* 選項之間的距離 */
-    flex-wrap: wrap;
-}
+        // 讀取點擊的分類，並呼叫渲染函數重新畫圖
+        const targetCategory = this.getAttribute('data-target');
+        renderPhotos(targetCategory);
+    });
+});
 
-.nav-menu a {
-    color: #888888;
-    text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: color 0.3s ease;
-    padding-bottom: 5px;
-}
-
-/* 滑鼠移過去，或是目前選中的照片分類 */
-.nav-menu a:hover, .nav-menu a.active {
-    color: #111111;
-}
-
-/* 針對 filter-link 加上的底線特效 */
-.nav-menu a.filter-link.active {
-    border-bottom: 2px solid #111111;
-}
-
-/* --- 標題區 --- */
-header {
-    text-align: center;
-    padding: 60px 20px 60px;
-}
-
-header h1 {
-    font-size: 3rem;
-    font-weight: 800;
-    letter-spacing: 6px;
-    text-transform: uppercase;
-    margin-bottom: 15px;
-    color: #111111;
-}
-
-header p {
-    color: #777777;
-    font-size: 1rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-}
-
-/* --- 照片自動網格 --- */
-#gallery-section {
-    padding: 0 20px 100px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px; 
-}
-
-.photo-card {
-    position: relative;
-    overflow: hidden;
-    background-color: #f9f9f9; 
-    aspect-ratio: 1;
-}
-
-.photo-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    transition: transform 0.8s ease, opacity 0.6s ease;
-}
-
-.photo-card:hover img {
-    transform: scale(1.03);
-}
-
-/* --- About Me --- */
-#about {
-    background-color: #fdfdfd; 
-    padding: 120px 20px;
-    text-align: center;
-}
-
-.about-content {
-    max-width: 650px; 
-    margin: 0 auto;
-}
-
-.about-content h2 {
-    font-size: 2.2rem;
-    font-weight: 700;
-    letter-spacing: 4px;
-    margin-bottom: 10px;
-}
-
-.subtitle {
-    color: #999999;
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 5px;
-    margin-bottom: 50px;
-}
-
-.main-text {
-    color: #333333;
-    font-size: 1.05rem;
-    margin-bottom: 25px;
-    text-align: justify; 
-}
-
-.divider {
-    width: 40px;
-    border: 0;
-    border-top: 2px solid #111111;
-    margin: 50px auto;
-}
-
-.quote {
-    font-family: 'Georgia', 'Times New Roman', serif; 
-    font-style: italic;
-    color: #555555;
-    font-size: 1.3rem;
-    line-height: 1.8;
-}
-
-/* --- 頁尾 --- */
-footer {
-    text-align: center;
-    padding: 40px;
-    color: #bbbbbb;
-    font-size: 0.75rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-}
+// 6. 網頁一打開時，預設先載入 'people' 分類的照片
+renderPhotos('people');
