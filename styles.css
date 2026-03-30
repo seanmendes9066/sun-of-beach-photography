@@ -1,44 +1,228 @@
-@import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@700&family=Montserrat:wght@800&display=swap');
+/* =========================================
+   styles.css (高端瀑布流 + 文藝中西結合版)
+   ========================================= */
 
-* { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-body { background-color: #ffffff; color: #111111; line-height: 1.8; font-family: -apple-system, sans-serif; }
-
-nav { display: flex; align-items: center; padding: 15px 40px; background-color: white; position: sticky; top: 0; z-index: 100; }
-.logo-link { text-decoration: none !important; color: #111111 !important; margin-right: 50px; }
-.logo { font-family: 'Special Elite', cursive; font-size: 1.6rem; letter-spacing: 4px; text-transform: uppercase; }
-
-.nav-menu { list-style: none; display: flex; gap: 25px; }
-.nav-menu a { font-family: 'Courier Prime', monospace; color: #888888; text-decoration: none; font-size: 0.8rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; transition: 0.3s; }
-.nav-menu a:hover, .nav-menu a.active { color: #111111; }
-.nav-menu a.filter-link.active { border-bottom: 2px solid #111111; }
-
-#frontpage { height: 60vh; display: flex; justify-content: center; align-items: center; text-align: center; }
-.hero-content h1 { font-family: 'Montserrat', sans-serif; font-size: 3rem; letter-spacing: 8px; text-transform: uppercase; margin-bottom: 15px; }
-.hero-content p { color: #777777; font-size: 1.1rem; letter-spacing: 4px; text-transform: uppercase; }
-
-/* 📍 解決「鳥樣」的關鍵區域 */
-#gallery-section { 
-    width: 100%; 
-    display: flow-root; /* 核心修復：清除浮動，防止 About Me 擠上來 */
-    padding-bottom: 50px;
+/* --- 1. 基礎設定 --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
 }
 
-#gallery { width: 100%; }
-.grid-sizer, .photo-card { width: 33.333%; } /* 一排改為三張，照片會更大、更自然 */
+body {
+    background-color: #ffffff; /* 純白簡約背景 */
+    color: #111111; 
+    line-height: 1.8;
+    /* 預設使用乾淨的現代黑體 */
+    font-family: 'Lato', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
 
-@media (max-width: 768px) { .grid-sizer, .photo-card { width: 100%; } } /* 手機端一排一張 */
+/* --- 2. 導覽列 --- */
+nav {
+    display: flex;
+    justify-content: flex-start; /* 靠左對齊 */
+    align-items: center; 
+    padding: 20px 40px;
+    background-color: rgba(255, 255, 255, 0.98);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
 
-.photo-card { padding: 10px; float: left; }
-.photo-card img { width: 100%; height: auto; display: block; opacity: 0; transition: 0.6s; border-radius: 2px; }
+.logo-link {
+    text-decoration: none !important;
+    color: #111111 !important;
+    margin-right: 50px; 
+    display: inline-block;
+}
 
-#about { 
-    clear: both; /* 雙重保險：確保上方內容已清空 */
+/* 📍 「太海」Logo (東方文藝：思源宋體) */
+.logo {
+    font-family: 'Noto Serif TC', serif; /*宋體自帶文藝墨香感 */
+    color: #111111;
+    font-size: 1.8rem; 
+    font-weight: 700; /* 加粗更有氣勢 */
+    letter-spacing: 6px; /* 加寬字距呈現浩瀚感 */
+    text-transform: uppercase; 
+    position: relative; 
+    z-index: 2;
+}
+
+/* 移除紅色筆刷 (保持簡約) */
+.logo::after {
+    display: none !important;
+}
+
+/* --- 4. 選單按鈕 --- */
+.nav-menu {
+    list-style: none;
+    display: flex;
+    gap: 25px; 
+    flex-wrap: wrap;
+}
+
+.nav-menu a {
+    font-family: 'Lato', sans-serif; /* 現代黑體選單 */
+    color: #888888;
+    text-decoration: none;
+    font-size: 0.8rem; 
+    font-weight: 700; 
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    padding-bottom: 5px;
+}
+
+.nav-menu a:hover, .nav-menu a.active {
+    color: #111111;
+}
+
+.nav-menu a.filter-link.active {
+    border-bottom: 2px solid #111111;
+}
+
+/* --- 📍 5. 首頁大標 (西方簡約：Montserrat 現代黑體) --- */
+#frontpage {
+    height: 75vh; /* 縮減高度讓照片露出 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.hero-content h1 {
+    font-family: 'Montserrat', sans-serif; /* 大器、現代、西方簡約 */
+    font-size: 3rem; /* 放大字體 */
+    font-weight: 800; /* 極粗體 */
+    letter-spacing: 8px; /* 極寬字距呈現氣場 */
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    color: #111111;
+}
+
+.hero-content p {
+    font-family: 'Montserrat', sans-serif;
+    color: #777777;
+    font-size: 1.1rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-weight: 300; /* 極細體呼應簡約 */
+}
+
+/* --- 📍 6. 畫廊 section (瀑布流關鍵 CSS) --- */
+#gallery-section {
+    padding: 0; /* 📍 移除 padding 讓照片撐滿畫面 */
+    width: 100%; /* 📍 寬度設為 100% */
+}
+
+/* Masonry 的容器 */
+#gallery {
+    /* 如果照片太少，可以加上這行讓它居中，但我建議撐滿比較震撼 */
+    /* max-width: 1400px; margin: 0 auto; */ 
+    width: 100%;
+}
+
+/* 📍 用於確定列寬的空元素 (Masonry 需要) */
+/* 📍 定義一排四張照片 (佔 25%)，它們會自然根據大小排列 */
+.grid-sizer, .photo-card {
+    width: 25%; 
+}
+
+/* 手機端適配 (改為兩列) */
+@media (max-width: 768px) {
+    .grid-sizer, .photo-card {
+        width: 50%; 
+    }
+}
+
+.photo-card {
+    background-color: #f9f9f9; 
+    /* 📍 關鍵修改：移除了原本固定的 aspect-ratio，讓它根據圖片自然顯示 */
+    
+    /* 📍 關鍵修改：加上 padding 作為照片之間的間距 (Gutter) */
+    padding: 5px; 
+    float: left; /* Masonry 需要的浮動 */
+}
+
+.photo-card img {
+    width: 100%;
+    /* height: 100%; object-fit: cover; */ /* 📍 移除原本的裁切設定 */
+    
+    height: auto; /* 📍 關鍵：高度設為 auto，不截圖，不裁切，只調整大小 */
+    display: block; /* 防止圖片下方有空隙 */
+    opacity: 0;
+    transition: transform 0.8s ease, opacity 0.6s ease;
+}
+
+.photo-card:hover img {
+    transform: scale(1.03);
+}
+
+/* --- 7. About Me 故事區 --- */
+#about {
     background-color: #fdfdfd; 
-    padding: 100px 20px; 
-    text-align: center; 
+    padding: 100px 20px; /* 稍微縮減間距 */
+    text-align: center;
 }
-.about-content { max-width: 650px; margin: 0 auto; }
-.about-content h2 { font-family: 'Montserrat', sans-serif; font-size: 2rem; margin-bottom: 20px; }
-.main-text { margin-bottom: 20px; text-align: justify; color: #333; }
-.divider { width: 40px; margin: 40px auto; border-top: 2px solid #111; }
-footer { text-align: center; padding: 50px; color: #bbb; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; }
+
+.about-content {
+    max-width: 650px; 
+    margin: 0 auto;
+}
+
+.about-content h2 {
+    font-family: 'Montserrat', sans-serif; /* 與首頁大標呼應 */
+    font-size: 2rem; 
+    font-weight: 700;
+    letter-spacing: 4px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-family: 'Lato', sans-serif;
+    color: #999999;
+    font-size: 0.7rem; 
+    font-weight: 600;
+    letter-spacing: 5px;
+    margin-bottom: 40px; 
+}
+
+/* 📍 About Me 本文 (文藝襯線：Crimson Pro) */
+.main-text {
+    font-family: 'Crimson Pro', serif; /* 優雅的襯線，帶出故事感 */
+    color: #333333;
+    font-size: 1.1rem; 
+    margin-bottom: 20px;
+    text-align: justify; 
+}
+
+.divider {
+    width: 40px;
+    border: 0;
+    border-top: 2px solid #111111;
+    margin: 40px auto; 
+}
+
+/* 📍 引用文字 (文藝襯線斜體) */
+.quote {
+    font-family: 'Crimson Pro', serif; 
+    font-style: italic; /* 斜體更顯氣質 */
+    font-weight: 300;
+    color: #555555;
+    font-size: 1.3rem; 
+    line-height: 1.8;
+}
+
+/* --- 8. 頁尾 --- */
+footer {
+    font-family: 'Lato', sans-serif;
+    text-align: center;
+    padding: 30px;
+    color: #bbbbbb;
+    font-size: 0.7rem; 
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
