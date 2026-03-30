@@ -1,11 +1,12 @@
 // =========================================
-// script.js (神人級藝廊隨機展示版)
+// script.js (極簡黑白 + 精緻排版版)
 // =========================================
 
 // 1. 自動生成照片網址的機器 
 function generatePhotoList(folderName, prefix, count) {
     let photoArray = [];
     for (let i = 1; i <= count; i++) {
+        // 📍 確保指向大寫開頭的資料夾 (People, Things, Place)
         photoArray.push(`./images/${folderName}/${prefix} (${i}).jpg`);
     }
     return photoArray;
@@ -13,9 +14,9 @@ function generatePhotoList(folderName, prefix, count) {
 
 // 2. 定義資料庫 
 const photoDatabase = {
-    people: generatePhotoList('people', 'people', 11),
-    things: generatePhotoList('things', 'things', 3),
-    place: generatePhotoList('place', 'place', 1) 
+    people: generatePhotoList('People', 'people', 11),
+    things: generatePhotoList('Things', 'things', 3),
+    place: generatePhotoList('Place', 'place', 1) 
 };
 
 // 3. 合併所有照片 
@@ -86,6 +87,7 @@ filterLinks.forEach(link => {
 // 📍 監聽：點擊「太海」Logo 時觸發重新洗牌
 if (logoBtn) {
     logoBtn.addEventListener('click', function() {
+        // 點擊 Logo 等同於回到首頁隨機狀態並洗牌
         loadRandomPhotos();
     });
 }
