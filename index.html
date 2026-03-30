@@ -3,62 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sean Photography | 太海</title>
+    <title>高階攝影作品集 - Premium Photography Portfolio</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Noto+Serif+TC:wght@700&family=Crimson+Pro:italic,wght@0,400;1,400&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body id="home">
-    
-    <nav>
-        <a href="#home" class="logo-link" id="logo-btn"><div class="logo">太海</div></a>
-        <ul class="nav-menu">
-            <li><a class="filter-link" data-target="people">People</a></li>
-            <li><a class="filter-link" data-target="things">Things</a></li>
-            <li><a class="filter-link" data-target="place">Place</a></li>
-            <li><a href="#about">About Me</a></li>
-            <li><a href="https://www.instagram.com/sun_of_orange/" target="_blank" class="contact-btn">Contact</a></li>
-        </ul>
-    </nav>
+<body id="top">
 
-    <section id="frontpage">
-        <div class="hero-content">
-            <h1>Capturing the Light</h1>
-            <p>Welcome to my visual world</p>
-        </div>
-    </section>
+    <header>
+        <h1>Lens & Light</h1>
+        <nav>
+            <button class="filter-btn active" data-filter="all">All Works</button>
+            <button class="filter-btn" data-filter="people">People</button>
+            <button class="filter-btn" data-filter="things">Things</button>
+            <button class="filter-btn" data-filter="place">Place</button>
+        </nav>
+    </header>
 
-    <main id="gallery-section">
-        <div id="gallery">
-            <div class="grid-sizer"></div>
+    <main>
+        <div class="gallery-grid" id="gallery">
+            
+            <div class="gallery-item place">
+                <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1200&auto=format&fit=crop" alt="Yosemite Valley Landscape">
+                <div class="item-overlay">
+                    <h3>Yosemite</h3>
+                    <p>Place / Nature</p>
+                </div>
+            </div>
+            
+            <div class="gallery-item people">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1200&auto=format&fit=crop" alt="Fashion Portrait of a Woman">
+                <div class="item-overlay">
+                    <h3>Gaze</h3>
+                    <p>People / Editorial</p>
+                </div>
+            </div>
+
+            <div class="gallery-item things">
+                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1200&auto=format&fit=crop" alt="Minimalist Headphones">
+                <div class="item-overlay">
+                    <h3>Acoustic</h3>
+                    <p>Things / Product</p>
+                </div>
+            </div>
+
+            <div class="gallery-item place">
+                <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=1200&auto=format&fit=crop" alt="Serene Lake View">
+                <div class="item-overlay">
+                    <h3>Tranquility</h3>
+                    <p>Place / Landscape</p>
+                </div>
+            </div>
+
+            <div class="gallery-item people">
+                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1200&auto=format&fit=crop" alt="Black and White Studio Portrait">
+                <div class="item-overlay">
+                    <h3>Shadows</h3>
+                    <p>People / Studio</p>
+                </div>
+            </div>
+
+            <div class="gallery-item things">
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1200&auto=format&fit=crop" alt="Luxury Wristwatch">
+                <div class="item-overlay">
+                    <h3>Timepiece</h3>
+                    <p>Things / Still Life</p>
+                </div>
+            </div>
+            
         </div>
     </main>
 
-    <section id="about">
-        <div class="about-content">
-            <h2>ABOUT ME</h2>
-            <p class="subtitle">THE STORY BEHIND MY GEAR</p>
-            <p class="main-text">It started with a simple, secondhand DSLR — a gift from a friend back in college. A true <strong>"legacy"</strong> that lacks even the luxury of autofocus.</p>
-            <p class="main-text">I have to manually dial in the focus to capture every fleeting moment. It’s slow, it’s intentional, and every photo carries a weight of sentimental value that no high-end gear could ever replace.</p>
-            <hr class="divider">
-            <p class="quote">"You don't need a high-end camera to find happiness in photography; <br>you just need the one that speaks to your soul."</p>
-        </div>
-    </section>
-
-    <footer>
-        <p>&copy; 2026 Sean Photography. Built with GitHub Pages.</p>
-    </footer>
-
-    <div id="lightbox" class="lightbox">
-        <span class="close-btn">&times;</span>
-        <img class="lightbox-content" id="lightbox-img" src="">
-    </div>
-
-    <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
-    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -1,70 +1,151 @@
-/* --- 1. 基礎設定 --- */
-* { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-body { background-color: #ffffff; color: #111111; line-height: 1.8; font-family: 'Lato', sans-serif; -webkit-font-smoothing: antialiased; }
-
-/* --- 2. 導覽列 (解決手機跑版) --- */
-nav { 
-    display: flex; 
-    align-items: center; 
-    padding: 25px 40px; 
-    background-color: white; 
-    position: sticky; 
-    top: 0; 
-    z-index: 100; 
-    flex-wrap: wrap; /* 手機版自動換行 */
-}
-.logo-link { text-decoration: none !important; color: #111111 !important; margin-right: 50px; }
-.logo { font-family: 'Noto Serif TC', serif; font-size: 1.8rem; font-weight: 700; letter-spacing: 6px; }
-
-.nav-menu { list-style: none; display: flex; gap: 20px; flex-wrap: wrap; }
-.nav-menu a { font-family: 'Lato', sans-serif; color: #888; text-decoration: none; font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; transition: 0.3s; }
-.nav-menu a:hover, .nav-menu a.active { color: #111; }
-.nav-menu a.filter-link.active { border-bottom: 2px solid #111; }
-
-/* --- 3. 首頁大標 (自動縮放字體) --- */
-#frontpage { height: 60vh; display: flex; justify-content: center; align-items: center; text-align: center; padding: 0 20px; }
-.hero-content h1 { 
-    font-family: 'Montserrat', sans-serif; 
-    font-size: clamp(1.8rem, 8vw, 2.8rem); 
-    letter-spacing: 8px; 
-    text-transform: uppercase; 
-    margin-bottom: 15px; 
-}
-.hero-content p { font-family: 'Montserrat', sans-serif; color: #777; font-size: clamp(0.8rem, 3vw, 1rem); letter-spacing: 4px; text-transform: uppercase; }
-
-/* --- 4. 瀑布流藝廊 (底層貼齊) --- */
-#gallery-section { width: 100%; display: flow-root; padding-bottom: 60px; }
-#gallery { width: 100%; }
-
-/* 電腦版 3 列 */
-.grid-sizer, .photo-card { width: 33.333%; } 
-
-/* 平板 2 列 */
-@media (max-width: 1024px) { .grid-sizer, .photo-card { width: 50%; } }
-
-/* 手機 1 列 */
-@media (max-width: 600px) { 
-    .grid-sizer, .photo-card { width: 100%; } 
-    nav { justify-content: center; padding: 15px 20px; }
-    .logo-link { margin-right: 0; margin-bottom: 10px; width: 100%; text-align: center; }
-    .nav-menu { justify-content: center; gap: 15px; }
+/* ==========================================
+   1. CSS 變數系統與基礎重置 (Variables & Reset)
+   ========================================== */
+:root {
+    /* 字體設定 */
+    --font-heading: 'Cormorant Garamond', serif;
+    --font-body: 'Montserrat', sans-serif;
+    
+    /* 色彩系統 - 採用極簡藝廊灰白與深炭黑 */
+    --color-bg: #fcfcfc;
+    --color-text: #1a1a1a;
+    --color-text-muted: #8e8e8e;
+    --color-overlay: rgba(10, 10, 10, 0.65);
+    
+    /* 空間間距系統 - 基於 8pt 網格 */
+    --spacing-base: 8px;
+    --grid-gap: 32px; /* 微觀留白設定 */
 }
 
-.photo-card { padding: 8px; float: left; cursor: zoom-in; }
-.photo-card img { width: 100%; height: auto; display: block; opacity: 0; transition: 0.6s; border-radius: 2px; }
+/* 針對支援的瀏覽器開啟原生平滑捲動備案 */
+html {
+    scroll-behavior: smooth;
+    box-sizing: border-box;
+    font-size: 16px;
+}
 
-/* --- 5. About Me --- */
-#about { clear: both; background-color: #fdfdfd; padding: 100px 20px; text-align: center; }
-.about-content { max-width: 650px; margin: 0 auto; }
-.about-content h2 { font-family: 'Montserrat', sans-serif; font-size: 2.2rem; margin-bottom: 20px; }
-.main-text { font-family: 'Crimson Pro', serif; font-size: 1.15rem; color: #333; margin-bottom: 25px; text-align: justify; }
-.divider { width: 40px; margin: 50px auto; border-top: 2px solid #111; }
-.quote { font-family: 'Crimson Pro', serif; font-style: italic; font-size: 1.3rem; color: #555; }
+*, *::before, *::after {
+    box-sizing: inherit;
+    margin: 0;
+    padding: 0;
+}
 
-/* --- 6. 燈箱 --- */
-.lightbox { display: none; position: fixed; z-index: 1000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); justify-content: center; align-items: center; opacity: 0; transition: 0.4s; }
-.lightbox.show { display: flex; opacity: 1; }
-.lightbox-content { max-width: 90%; max-height: 85vh; object-fit: contain; }
-.close-btn { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; }
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    line-height: 1.6; /* 確保內文呼吸感 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-y: scroll; /* 避免捲動軸出現時的畫面跳動 */
+}
 
-footer { text-align: center; padding: 60px; color: #bbb; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; }
+/* ==========================================
+   2. 頂部導覽區與分類標籤 (Header & Navigation)
+   ========================================== */
+header {
+    position: sticky;
+    top: 0;
+    background-color: rgba(252, 252, 252, 0.92);
+    backdrop-filter: blur(12px); /* 現代毛玻璃特效 */
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 1000;
+    padding: calc(var(--spacing-base) * 6) 0 calc(var(--spacing-base) * 4) 0;
+    text-align: center;
+    /* 底部精緻的分割線 */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+h1 {
+    font-family: var(--font-heading);
+    font-size: 3.2rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    margin-bottom: 1.5rem;
+    color: var(--color-text);
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    gap: calc(var(--spacing-base) * 5);
+}
+
+.filter-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 500;
+    /* 高階感的關鍵：大寫搭配寬字距 */
+    letter-spacing: 0.2em; 
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    padding: 8px 4px;
+    transition: color 0.4s ease;
+    position: relative;
+    outline: none;
+}
+
+/* 標籤底部動態底線微互動 */
+.filter-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 1px;
+    background-color: var(--color-text);
+    transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.4s ease;
+    transform: translateX(-50%);
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    color: var(--color-text);
+}
+
+.filter-btn:hover::after,
+.filter-btn.active::after {
+    width: 100%;
+}
+
+/* ==========================================
+   3. 滿版 CSS Grid 相片網格 (Full-width Grid Layout)
+   ========================================== */
+main {
+    /* 宏觀留白：維持左右邊界與頂部間距 */
+    padding: calc(var(--spacing-base) * 6) calc(var(--spacing-base) * 4);
+    max-width: 100%; /* 確保滿版佈局 */
+    min-height: 100vh;
+}
+
+.gallery-grid {
+    display: grid;
+    /* 強制三欄佈局演算法，等分剩餘空間 */
+    grid-template-columns: repeat(3, 1fr); 
+    gap: var(--grid-gap);
+}
+
+/* 響應式降級：平板尺寸轉為 2 欄 */
+@media (max-width: 1024px) {
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* 響應式降級：行動裝置轉為 1 欄 */
+@media (max-width: 650px) {
+    main {
+        padding: calc(var(--spacing-base) * 3) calc(var(--spacing-base) * 2);
+    }
+    .gallery-grid {
+        grid-template-columns: 1fr;
+        gap: calc(var(--spacing-base) * 2);
+    }
+}
+
+/* ==========================================
+   4. 影像項目、濾鏡與懸停微互動 (Image Items & Hover)
+   ========================================== */
