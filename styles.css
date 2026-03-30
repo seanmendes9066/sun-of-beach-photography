@@ -1,3 +1,7 @@
+/* =========================================
+   styles.css (高端文藝瀑布流 + 極簡燈箱版)
+   ========================================= */
+
 /* --- 1. 基礎設定 --- */
 * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
 body { 
@@ -8,55 +12,48 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* --- 2. 導覽列與 Logo (東方文藝：思源宋體) --- */
+/* --- 2. 導覽列與 Logo (思源宋體) --- */
 nav { display: flex; align-items: center; padding: 20px 40px; background-color: white; position: sticky; top: 0; z-index: 100; }
 .logo-link { text-decoration: none !important; color: #111111 !important; margin-right: 50px; }
-.logo { 
-    font-family: 'Noto Serif TC', serif; 
-    font-size: 1.8rem; 
-    font-weight: 700; 
-    letter-spacing: 6px; 
-    text-transform: uppercase; 
-}
+.logo { font-family: 'Noto Serif TC', serif; font-size: 1.8rem; font-weight: 700; letter-spacing: 6px; text-transform: uppercase; }
 
 .nav-menu { list-style: none; display: flex; gap: 30px; }
 .nav-menu a { font-family: 'Lato', sans-serif; color: #888; text-decoration: none; font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; transition: 0.3s; }
 .nav-menu a:hover, .nav-menu a.active { color: #111; }
 .nav-menu a.filter-link.active { border-bottom: 2px solid #111; }
 
-/* --- 3. 首頁大標 (西方簡約：Montserrat) --- */
+/* --- 3. 首頁大標 (Montserrat) --- */
 #frontpage { height: 65vh; display: flex; justify-content: center; align-items: center; text-align: center; }
 .hero-content h1 { font-family: 'Montserrat', sans-serif; font-size: 3rem; letter-spacing: 8px; text-transform: uppercase; margin-bottom: 15px; }
 .hero-content p { font-family: 'Montserrat', sans-serif; color: #777; font-size: 1.1rem; letter-spacing: 4px; text-transform: uppercase; font-weight: 300; }
 
-/* --- 📍 4. 瀑布流關鍵：解決排版崩潰 (鳥樣) --- */
+/* --- 4. 瀑布流區塊 (Masonry) --- */
 #gallery-section { 
     width: 100%; 
-    display: flow-root; /* 核心修復：確保下方元素不會擠上來 */
+    display: flow-root; /* 清除浮動防止排版鳥樣 */
     padding-bottom: 60px;
 }
-
 #gallery { width: 100%; }
-.grid-sizer, .photo-card { width: 33.333%; } /* 調整為 3 列，讓照片有大有小自然排列 */
+.grid-sizer, .photo-card { width: 33.333%; } /* 3 列排版 */
 
 @media (max-width: 768px) { .grid-sizer, .photo-card { width: 100%; } }
 
-.photo-card { padding: 8px; float: left; }
+.photo-card { 
+    padding: 8px; 
+    float: left; 
+    cursor: zoom-in; /* 📍 新增：滑鼠移上去顯示放大鏡指標 */
+}
 .photo-card img { 
     width: 100%; 
-    height: auto; /* 不裁切照片，依據比例縮放 */
+    height: auto; 
     display: block; 
-    opacity: 0; 
-    transition: 0.6s; 
+    opacity: 0; /* JS載入後淡入 */
+    transition: transform 0.6s ease, opacity 0.6s ease; 
 }
+.photo-card:hover img { transform: scale(1.02); } /* 輕微放大效果 */
 
-/* --- 📍 5. About Me 區塊 (文藝襯線：Crimson Pro) --- */
-#about { 
-    clear: both; /* 雙重保險：強制清空上方浮動照片 */
-    background-color: #fdfdfd; 
-    padding: 120px 20px; 
-    text-align: center; 
-}
+/* --- 5. About Me 區塊 (Crimson Pro) --- */
+#about { clear: both; background-color: #fdfdfd; padding: 120px 20px; text-align: center; }
 .about-content { max-width: 650px; margin: 0 auto; }
 .about-content h2 { font-family: 'Montserrat', sans-serif; font-size: 2.2rem; margin-bottom: 20px; }
 .main-text { font-family: 'Crimson Pro', serif; font-size: 1.15rem; color: #333; margin-bottom: 25px; text-align: justify; }
@@ -64,3 +61,55 @@ nav { display: flex; align-items: center; padding: 20px 40px; background-color: 
 .quote { font-family: 'Crimson Pro', serif; font-style: italic; font-size: 1.35rem; color: #555555; }
 
 footer { text-align: center; padding: 50px; color: #bbbbbb; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; }
+
+/* --- 📍 6. 新增：極簡燈箱 (Lightbox) 樣式 --- */
+.lightbox {
+    display: none; /* 預設隱藏 */
+    position: fixed;
+    z-index: 1000; /* 確保在導覽列之上 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9); /* 半透明黑背景，突出照片 */
+    overflow: hidden; /* 防止燈箱背景捲動 */
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.lightbox.show {
+    display: flex; /* 顯示時使用 flex 置中 */
+    opacity: 1;
+}
+
+.lightbox-content {
+    max-width: 90%; /* 限制最大寬度，保留呼吸空間 */
+    max-height: 90vh; /* 限制最大高度，不超出視窗 */
+    object-fit: contain; /* 📍 關鍵：保持照片原始比例，不截圖 */
+    transform: scale(0.9); /* 進場縮放動畫 */
+    transition: transform 0.4s ease;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.lightbox.show .lightbox-content {
+    transform: scale(1); /* 回到原始大小 */
+}
+
+/* 關閉按鈕 */
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: #ffffff;
+    font-size: 40px;
+    font-weight: 300;
+    cursor: pointer;
+    transition: 0.3s;
+    z-index: 1001;
+}
+
+.close-btn:hover {
+    color: #aaaaaa;
+}
