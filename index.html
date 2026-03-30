@@ -15,8 +15,9 @@
     
     <nav>
         <a href="#home" class="logo-link" id="logo-btn"><div class="logo">太海</div></a>
+
         <ul class="nav-menu">
-            <li><a class="filter-link" data-target="people">People</a></li>
+            <li><a class="filter-link active" data-target="people">People</a></li>
             <li><a class="filter-link" data-target="things">Things</a></li>
             <li><a class="filter-link" data-target="place">Place</a></li>
             <li><a href="#about">About Me</a></li>
@@ -32,9 +33,9 @@
     </section>
 
     <main id="gallery-section">
-        <div id="gallery">
+        <div id="gallery" class="grid">
             <div class="grid-sizer"></div>
-        </div>
+            </div>
     </main>
 
     <section id="about">
@@ -51,11 +52,6 @@
     <footer>
         <p>&copy; 2026 Sean Photography. Built with GitHub Pages.</p>
     </footer>
-
-    <div id="lightbox" class="lightbox">
-        <span class="close-btn">&times;</span>
-        <img class="lightbox-content" id="lightbox-img" src="">
-    </div>
 
     <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
     <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>

@@ -1,117 +1,157 @@
 // =========================================
-// script.js (精確副檔名配對 + 展示全部照片版)
+// script.js (全明星洗牌 + 分類置頂 + 展示全部版)
 // =========================================
 
-let msnry;
-
-// 生成器：支援不同副檔名
-function generatePhotoList(folderName, prefix, maxCount = 100, ext = 'jpg') {
+// 1. 自動生成照片網址的機器 (防呆修正版：確保 prefix 小寫)
+function generatePhotoList(folderName, prefix, count) {
     let photoArray = [];
-    for (let i = 1; i <= maxCount; i++) {
-        photoArray.push(`./images/${folderName}/${prefix} (${i}).${ext}`);
+    if (count <= 0) return photoArray; 
+
+    for (let i = 1; i <= count; i++) {
+        //📍這裡的 folderName 必須和 GitHub 上實際資料夾大小寫一致
+        //例如：./images/People/people (1).jpg
+        photoArray.push(`./images/${folderName}/${prefix} (${i}).jpg`);
     }
     return photoArray;
 }
 
-// 📍 關鍵修正區：根據你提供的網址設定正確的副檔名
+// 2. 定義資料庫 (張數請根據你實際拖進去的照片填寫)
 const photoDatabase = {
-    // people 分類是小寫 .jpg
-    people: generatePhotoList('people', 'people', 100, 'jpg'),
-    // things 分類是大寫 .JPG
-    things: generatePhotoList('things', 'things', 100, 'JPG'),
-    // place 分類是大寫 .JPG
-    place: generatePhotoList('place', 'place', 100, 'JPG') 
+    // 📍 根據你的截圖設定路徑 (資料夾大寫首字，Prefix 小寫)
+    people: generatePhotoList('People', 'people', 11),
+    // 提醒：如果你在 images/Things 放了 3 張照片
+    things: generatePhotoList('Things', 'things', 3), 
+    // 提醒：如果你在 images/Place 放了 1 張照片
+    place: generatePhotoList('Place', 'place', 1) 
 };
 
-// 合併所有照片用於首頁展示
-let allPhotosArray = [...photoDatabase.people, ...photoDatabase.things, ...photoDatabase.place];
+// ============================================================
+// 📍 合併所有照片 (創造全明星陣容) - 防呆版
+// ============================================================
+// 我們利用展開運算子 (...) 把三個陣列扁平化合併成一個超大陣列
+const allPhotosArray = [
+    ...photoDatabase.people,
+    ...photoDatabase.things,
+    ...photoDatabase.place
+];
 
+// ============================================================
+// 📍 神級洗牌演算法 (Fisher-Yates Shuffle)
+// ============================================================
+// 這是一個統計學上證明最完美的公平洗牌演算法。
 function shuffleArray(array) {
-    let arr = [...array];
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
+    // 複製一份陣列，以免弄亂原始資料
+    let currentIndex = array.length;
+    let randomIndex;
+
+    // 當還有元素等待洗牌...
+    while (currentIndex != 0) {
+        // 挑選一個剩餘的元素...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // 並將它與當前元素交換位置。
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
     }
-    return arr;
+    return array;
 }
 
-function initMasonry() {
-    const gallery = document.getElementById('gallery');
-    imagesLoaded(gallery, function() {
-        if (msnry) msnry.destroy();
-        msnry = new Masonry(gallery, {
-            itemSelector: '.photo-card',
-            columnWidth: '.grid-sizer',
-            percentPosition: true,
-            transitionDuration: '0.4s'
-        });
-    });
-}
+// ============================================================
+// 取得網頁元素
+// ============================================================
+const filterLinks = document.querySelectorAll('.filter-link');
+const galleryContainer = document.getElementById('gallery');
+const logoBtn = document.getElementById('logo-btn'); 
 
+// ============================================================
+// 📍 渲染照片 (不裁切照片，底層貼齊瀑布流版)
+// ============================================================
 function renderPhotos(photoArray) {
-    const gallery = document.getElementById('gallery');
-    const sizer = gallery.querySelector('.grid-sizer');
-    gallery.innerHTML = ''; 
-    if (sizer) gallery.appendChild(sizer);
+    // 清空畫廊 (但保留 grid-sizer)
+    const sizer = galleryContainer.querySelector('.grid-sizer');
+    galleryContainer.innerHTML = ''; 
+    if (sizer) galleryContainer.appendChild(sizer); // 把 grid-sizer 放回去
 
+    // 如果沒照片，就顯示一句話
     if (!photoArray || photoArray.length === 0) {
-        gallery.innerHTML += '<p style="text-align:center; padding: 50px; width: 100%; color: #888;">尚未發現照片。</p>';
+        galleryContainer.innerHTML += '<p class="quote" style="grid-column: 1/-1; text-align:center;">資料夾中尚無照片。</p>';
         return;
     }
 
     photoArray.forEach((src) => {
+        // 1. 創造卡片容器 (Masonry 依靠這個類別排版)
         const card = document.createElement('div');
-        card.className = 'photo-card';
+        card.className = 'photo-card'; 
+
+        // 2. 創造圖片
         const img = document.createElement('img');
         img.src = src;
 
-        // 防呆：抓不到圖就移除格子，重新排版
+        // 📍 防呆機制：如果圖片路徑不存在 (例如編號超出了你實際擁有的)，就移除該卡片
         img.onerror = () => {
-            card.remove();
-            initMasonry();
-        };
-        
-        img.onload = () => { 
-            img.style.opacity = 1; 
-            initMasonry(); 
+            card.remove(); 
         };
 
-        // 點擊放大
-        card.addEventListener('click', () => {
-            const lightbox = document.getElementById('lightbox');
-            const lightboxImg = document.getElementById('lightbox-img');
-            lightboxImg.src = src;
-            lightbox.classList.add('show');
-            document.body.style.overflow = 'hidden';
-        });
-
+        // 3. 組合
         card.appendChild(img);
-        gallery.appendChild(card);
+        galleryContainer.appendChild(card);
+
+        // 圖片載入完成後的淡入效果
+        img.onload = () => {
+            img.style.opacity = 1; 
+        };
     });
 }
 
-// 事件監聽
-document.querySelectorAll('.filter-link').forEach(link => {
+// ============================================================
+// 📍 載入隨機照片 (全明星陣容) - 核心修正：全展示
+// ============================================================
+function loadRandomPhotos() {
+    // 移除分類按鈕的 active 狀態
+    filterLinks.forEach(nav => nav.classList.remove('active'));
+    
+    // 將全明星陣列洗牌
+    const shuffledPhotos = shuffleArray([...allPhotosArray]); 
+    
+    // 📍 修正點：移除原本的 .slice(0, 5)，展示洗牌後的「所有」照片
+    renderPhotos(shuffledPhotos);
+}
+
+// ============================================================
+// 📍 要求 2: 事件監聽與分類自動置頂
+// ============================================================
+
+// 監聽：點擊分類選單
+filterLinks.forEach(link => {
     link.addEventListener('click', function() {
-        document.querySelectorAll('.filter-link').forEach(n => n.classList.remove('active'));
+        // 切換按鈕的白色底線
+        filterLinks.forEach(nav => nav.classList.remove('active'));
         this.classList.add('active');
-        const target = this.getAttribute('data-target');
-        // 展示該分類的「所有」照片
-        renderPhotos(photoDatabase[target]);
+
+        // 如果點擊了選單，就需要自動捲動回最上方，確保看到第一排照片
+        // 📍 關鍵新增：平滑滾動到網頁最上方
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+
+        // 讀取點擊的分類，並呼叫渲染函數重新畫圖
+        const targetCategory = this.getAttribute('data-target');
+        renderPhotos(photoDatabase[targetCategory]);
     });
 });
 
-// Logo 點擊：展示「全部照片」隨機洗牌
-document.getElementById('logo-btn').addEventListener('click', (e) => {
-    e.preventDefault();
-    renderPhotos(shuffleArray(allPhotosArray));
-});
+// 📍 監聽：點擊「太海」Logo 按鈕時觸發重新洗牌
+if (logoBtn) {
+    logoBtn.addEventListener('click', function() {
+        // 點擊 Logo 等同於回到首頁隨機狀態並重新洗牌
+        loadRandomPhotos();
+    });
+}
 
-// 燈箱關閉
-document.getElementById('lightbox').addEventListener('click', () => {
-    document.getElementById('lightbox').classList.remove('show');
-    document.body.style.overflow = '';
-});
-
-// 啟動：首頁展示全部照片
-renderPhotos(shuffleArray(allPhotosArray));
+// ============================================================
+// 初始化載入
+// ============================================================
+// 網頁一打開，預設載入合併洗牌後的「全明星陣列」
+loadRandomPhotos();
