@@ -1,15 +1,20 @@
+/* 引入 Google Fonts 雲端字體 */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
 body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    /* 預設內文字體 */
+    font-family: 'Montserrat', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f9f9f9;
     color: #333;
-    line-height: 1.6;
+    line-height: 1.8; /* 稍微調寬行高，閱讀更舒服 */
 }
 
 nav {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 20px 5%;
     background: #fff;
     border-bottom: 1px solid #eee;
@@ -18,46 +23,62 @@ nav {
     z-index: 1000;
 }
 
-nav ul { list-style: none; display: flex; margin: 0; }
-nav ul li { margin-left: 20px; }
-nav ul li a { text-decoration: none; color: #333; font-weight: bold; }
+/* Logo 和 標題 使用高級感襯線體 */
+.logo, h1, h2 {
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 2px; /* 增加字距，更有雜誌質感 */
+}
+
+.logo {
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+nav ul { 
+    list-style: none; 
+    display: flex; 
+    margin: 0; 
+}
+
+nav ul li { margin-left: 25px; }
+
+nav ul li a { 
+    text-decoration: none; 
+    color: #555; 
+    font-weight: 400;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover { color: #000; }
 
 header {
     text-align: center;
-    padding: 100px 20px;
+    padding: 120px 20px;
     background: #fff;
+}
+
+header h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+header p {
+    font-weight: 300;
+    color: #777;
+    letter-spacing: 3px;
+    text-transform: uppercase; /* 英文變成大寫會更有設計感 */
+    font-size: 0.8rem;
 }
 
 .grid {
-    display: column; /* 瀑布流基本設定 */
-    columns: 3 250px;
-    column-gap: 15px;
+    column-count: 3; /* 瀑布流欄數 */
+    column-gap: 20px;
     width: 90%;
-    max-width: 1200px;
+    max-width: 1100px;
     margin: 0 auto;
 }
 
-.photo-card {
-    margin-bottom: 15px;
-    break-inside: avoid;
-    overflow: hidden;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
-}
-
-.photo-card:hover { transform: scale(1.02); }
-.photo-card img { width: 100%; display: block; }
-
-#about {
-    padding: 80px 20px;
-    text-align: center;
-    background: #fff;
-}
-
-footer {
-    text-align: center;
-    padding: 40px;
-    font-size: 0.8rem;
-    color: #888;
-}
+/* 針對平板和手機調整欄數 */
+@media (max-width: 900px) { .grid { column-count: 2; } }
+@media (max-width: 600px
