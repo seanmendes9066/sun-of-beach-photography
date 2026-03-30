@@ -1,95 +1,212 @@
-// =========================================
-// script.js (神人級藝廊隨機展示版)
-// =========================================
+/* --- 0. 載入 Google 字體 --- */
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@400;700&display=swap');
 
-// 1. 自動生成照片網址的機器 
-function generatePhotoList(folderName, prefix, count) {
-    let photoArray = [];
-    for (let i = 1; i <= count; i++) {
-        // ⚠️ 已經幫你加上了反引號 ( ` ) 就不會報錯了！
-        photoArray.push(`./images/${folderName}/${prefix} (${i}).jpg`);
-    }
-    return photoArray;
+/* --- 1. 基礎設定 --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth; /* 點擊 Logo 回首頁時會平滑捲動 */
 }
 
-// 2. 定義資料庫 
-const photoDatabase = {
-    people: generatePhotoList('people', 'people', 11),
-    things: generatePhotoList('things', 'things', 3),
-    place: generatePhotoList('place', 'place', 1) 
-};
-
-// 3. 合併所有照片 
-const allPhotosArray = [
-    ...photoDatabase.people,
-    ...photoDatabase.things,
-    ...photoDatabase.place
-];
-
-// 4. 洗牌演算法
-function shuffleArray(array) {
-    let currentIndex = array.length;
-    let randomIndex;
-    while (currentIndex != 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex--;
-        [array[currentIndex], array[randomIndex]] = [
-            array[randomIndex], array[currentIndex]];
-    }
-    return array;
+body {
+    background-color: #ffffff; 
+    color: #111111; 
+    line-height: 1.8;
 }
 
-// 5. 取得網頁元素
-const filterLinks = document.querySelectorAll('.filter-link');
-const galleryContainer = document.getElementById('gallery');
-const logoBtn = document.getElementById('logo-btn'); // 取得 Logo 超連結按鈕
-
-// 6. 渲染照片
-function renderPhotos(photoArray) {
-    galleryContainer.innerHTML = ''; 
-    if (!photoArray || photoArray.length === 0) {
-        galleryContainer.innerHTML = '<p class="subtitle" style="grid-column: 1/-1; text-align:center;">資料夾中尚無照片。</p>';
-        return;
-    }
-    photoArray.forEach((src) => {
-        const card = document.createElement('div');
-        card.className = 'photo-card';
-
-        const img = document.createElement('img');
-        img.src = src;
-
-        card.appendChild(img);
-        galleryContainer.appendChild(card);
-
-        img.onload = () => {
-            img.style.opacity = 1; 
-        };
-    });
+/* --- 2. 導覽列 --- */
+nav {
+    display: flex;
+    justify-content: flex-start; 
+    align-items: center; 
+    padding: 30px 40px;
+    background-color: rgba(255, 255, 255, 0.98);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
-// 7. 載入隨機照片
-function loadRandomPhotos() {
-    filterLinks.forEach(nav => nav.classList.remove('active'));
-    const shuffledPhotos = shuffleArray([...allPhotosArray]); 
-    renderPhotos(shuffledPhotos);
+/* --- 📍 3. 「太海」Logo 與紅色筆刷 --- */
+.logo-link {
+    text-decoration: none !important;
+    color: #111111 !important;
+    margin-right: 50px; 
+    display: inline-block;
 }
 
-// 8. 事件監聽
-filterLinks.forEach(link => {
-    link.addEventListener('click', function() {
-        filterLinks.forEach(nav => nav.classList.remove('active'));
-        this.classList.add('active');
-        const targetCategory = this.getAttribute('data-target');
-        renderPhotos(photoDatabase[targetCategory]);
-    });
-});
-
-// 📍 監聽：點擊「太海」Logo 時觸發重新洗牌
-if (logoBtn) {
-    logoBtn.addEventListener('click', function() {
-        loadRandomPhotos();
-    });
+.logo {
+    font-family: 'Special Elite', cursive; 
+    color: #111111;
+    font-size: 2rem; 
+    font-weight: normal; 
+    letter-spacing: 4px; 
+    position: relative; /* 為了讓紅色筆刷可以對齊 */
+    z-index: 2;
 }
 
-// 9. 初始化載入隨機照片
-loadRandomPhotos();
+/* 用 CSS 畫出來的不規則紅色筆刷 */
+.logo::after {
+    content: '';
+    position: absolute;
+    bottom: 2px; /* 筆刷高度 */
+    left: -5px; /* 稍微往左凸出去一點比較隨性 */
+    width: calc(100% + 10px);
+    height: 12px; /* 筆刷粗細 */
+    background-color: #d32f2f; /* 經典印章紅 */
+    /* 創造不規則的邊緣，像真的筆刷 */
+    border-radius: 5px 15px 5px 20px / 10px 5px 15px 5px; 
+    z-index: -1; /* 墊在文字正下方 */
+    transform: rotate(-3deg); /* 微微傾斜更有藝術感 */
+}
+
+/* --- 4. 選單按鈕 --- */
+.nav-menu {
+    list-style: none;
+    display: flex;
+    gap: 35px; 
+    flex-wrap: wrap;
+}
+
+.nav-menu a {
+    font-family: 'Courier Prime', monospace;
+    color: #888888;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 700; 
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    padding-bottom: 5px;
+}
+
+.nav-menu a:hover, .nav-menu a.active {
+    color: #111111;
+}
+
+.nav-menu a.filter-link.active {
+    border-bottom: 2px solid #111111;
+}
+
+/* --- 📍 5. 滿版首頁 (Frontpage) --- */
+#frontpage {
+    height: 100vh; /* 滿版視窗高度 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    /* 為了扣掉上方導覽列的高度，讓文字完美置中 */
+    margin-top: -95px; 
+}
+
+.hero-content h1 {
+    font-size: 4rem; /* 標題超級放大 */
+    font-weight: 800;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    color: #111111;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.hero-content p {
+    color: #777777;
+    font-size: 1.2rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* --- 6. 照片網格 --- */
+#gallery-section {
+    padding: 20px 20px 100px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr; 
+    gap: 15px; 
+}
+
+.photo-card {
+    position: relative;
+    overflow: hidden;
+    background-color: #f9f9f9; 
+    aspect-ratio: 1;
+}
+
+.photo-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: transform 0.8s ease, opacity 0.6s ease;
+}
+
+.photo-card:hover img {
+    transform: scale(1.03);
+}
+
+/* --- 7. About Me 故事區 --- */
+#about {
+    background-color: #fdfdfd; 
+    padding: 120px 20px;
+    text-align: center;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.about-content {
+    max-width: 650px; 
+    margin: 0 auto;
+}
+
+.about-content h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #999999;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 5px;
+    margin-bottom: 50px;
+}
+
+.main-text {
+    color: #333333;
+    font-size: 1.05rem;
+    margin-bottom: 25px;
+    text-align: justify; 
+}
+
+.divider {
+    width: 40px;
+    border: 0;
+    border-top: 2px solid #111111;
+    margin: 50px auto;
+}
+
+.quote {
+    font-family: 'Georgia', 'Times New Roman', serif; 
+    font-style: italic;
+    color: #555555;
+    font-size: 1.3rem;
+    line-height: 1.8;
+}
+
+/* --- 8. 頁尾 --- */
+footer {
+    text-align: center;
+    padding: 40px;
+    color: #bbbbbb;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
