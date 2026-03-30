@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Noto+Serif+TC:wght@700&family=Crimson+Pro:italic,wght@0,400;1,400&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:italic,wght@0,400;1,400&family=Lato:wght@400;700&family=Noto+Serif+TC:wght@700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -15,50 +15,63 @@
     
     <nav>
         <a href="#home" class="logo-link" id="logo-btn"><div class="logo">太海</div></a>
+
         <ul class="nav-menu">
-            <li><a class="filter-link" data-target="people">People</a></li>
-            <li><a class="filter-link" data-target="things">Things</a></li>
-            <li><a class="filter-link" data-target="place">Place</a></li>
-            <li><a href="#about">About Me</a></li>
+            <li><a class="filter-link active" data-target="people" target-page="gallery-section">People</a></li>
+            <li><a class="filter-link" data-target="things" target-page="gallery-section">Things</a></li>
+            <li><a class="filter-link" data-target="place" target-page="gallery-section">Place</a></li>
+            <li><a href="#" target-page="about-section">About Me</a></li>
             <li><a href="https://www.instagram.com/sun_of_orange/" target="_blank" class="contact-btn">Contact</a></li>
         </ul>
     </nav>
 
-    <section id="frontpage">
-        <div class="hero-content">
-            <h1>Capturing the Light</h1>
-            <p>Welcome to my visual world</p>
-        </div>
-    </section>
+    <div id="content-container">
 
-    <main id="gallery-section">
-        <div id="gallery">
-            <div class="grid-sizer"></div>
-        </div>
-    </main>
+        <section id="frontpage" class="active-section">
+            <div class="hero-content">
+                <h1>Capturing the Light</h1>
+                <p>Welcome to my visual world</p>
+            </div>
+        </section>
 
-    <section id="about">
-        <div class="about-content">
-            <h2>ABOUT ME</h2>
-            <p class="subtitle">THE STORY BEHIND MY GEAR</p>
-            <p class="main-text">It started with a simple, secondhand DSLR — a gift from a friend back in college. A true <strong>"legacy"</strong> that lacks even the luxury of autofocus.</p>
-            <p class="main-text">I have to manually dial in the focus to capture every fleeting moment. It’s slow, it’s intentional, and every photo carries a weight of sentimental value that no high-end gear could ever replace.</p>
-            <hr class="divider">
-            <p class="quote">"You don't need a high-end camera to find happiness in photography; <br>you just need the one that speaks to your soul."</p>
-        </div>
-    </section>
+        <main id="gallery-section" class="section-container section-hidden">
+            <div id="gallery" class="grid">
+                <div class="grid-sizer"></div>
+                </div>
+        </main>
+
+        <section id="about-section" class="section-container section-hidden">
+            <div class="about-content">
+                <h2>ABOUT ME</h2>
+                <p class="subtitle">THE STORY BEHIND MY GEAR</p>
+                
+                <p class="main-text">
+                    It started with a simple, secondhand DSLR — a gift from a friend back in college. 
+                    A true <strong>"legacy"</strong> that lacks even the luxury of autofocus. 
+                </p>
+
+                <p class="main-text">
+                    I have to manually dial in the focus to capture every fleeting moment. 
+                    It’s slow, it’s intentional, and every photo carries a weight of sentimental value that no high-end gear could ever replace.
+                </p>
+
+                <hr class="divider">
+
+                <p class="quote">
+                    "You don't need a high-end camera to find happiness in photography; <br>
+                    you just need the one that speaks to your soul."
+                </p>
+            </div>
+        </section>
+    </div>
 
     <footer>
         <p>&copy; 2026 Sean Photography. Built with GitHub Pages.</p>
     </footer>
 
-    <div id="lightbox" class="lightbox">
-        <span class="close-btn">&times;</span>
-        <img class="lightbox-content" id="lightbox-img" src="">
-    </div>
-
     <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
     <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+    
     <script src="script.js"></script>
 </body>
 </html>

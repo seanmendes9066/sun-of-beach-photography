@@ -1,70 +1,237 @@
-/* --- 1. 基礎設定 --- */
-* { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-body { background-color: #ffffff; color: #111111; line-height: 1.8; font-family: 'Lato', sans-serif; -webkit-font-smoothing: antialiased; }
-
-/* --- 2. 導覽列 (解決手機跑版) --- */
-nav { 
-    display: flex; 
-    align-items: center; 
-    padding: 25px 40px; 
-    background-color: white; 
-    position: sticky; 
-    top: 0; 
-    z-index: 100; 
-    flex-wrap: wrap; /* 手機版自動換行 */
-}
-.logo-link { text-decoration: none !important; color: #111111 !important; margin-right: 50px; }
-.logo { font-family: 'Noto Serif TC', serif; font-size: 1.8rem; font-weight: 700; letter-spacing: 6px; }
-
-.nav-menu { list-style: none; display: flex; gap: 20px; flex-wrap: wrap; }
-.nav-menu a { font-family: 'Lato', sans-serif; color: #888; text-decoration: none; font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; transition: 0.3s; }
-.nav-menu a:hover, .nav-menu a.active { color: #111; }
-.nav-menu a.filter-link.active { border-bottom: 2px solid #111; }
-
-/* --- 3. 首頁大標 (自動縮放字體) --- */
-#frontpage { height: 60vh; display: flex; justify-content: center; align-items: center; text-align: center; padding: 0 20px; }
-.hero-content h1 { 
-    font-family: 'Montserrat', sans-serif; 
-    font-size: clamp(1.8rem, 8vw, 2.8rem); 
-    letter-spacing: 8px; 
-    text-transform: uppercase; 
-    margin-bottom: 15px; 
-}
-.hero-content p { font-family: 'Montserrat', sans-serif; color: #777; font-size: clamp(0.8rem, 3vw, 1rem); letter-spacing: 4px; text-transform: uppercase; }
-
-/* --- 4. 瀑布流藝廊 (底層貼齊) --- */
-#gallery-section { width: 100%; display: flow-root; padding-bottom: 60px; }
-#gallery { width: 100%; }
-
-/* 電腦版 3 列 */
-.grid-sizer, .photo-card { width: 33.333%; } 
-
-/* 平板 2 列 */
-@media (max-width: 1024px) { .grid-sizer, .photo-card { width: 50%; } }
-
-/* 手機 1 列 */
-@media (max-width: 600px) { 
-    .grid-sizer, .photo-card { width: 100%; } 
-    nav { justify-content: center; padding: 15px 20px; }
-    .logo-link { margin-right: 0; margin-bottom: 10px; width: 100%; text-align: center; }
-    .nav-menu { justify-content: center; gap: 15px; }
+/* --- 0. 基礎設定 --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* 📍 移除平滑捲動，因為我們改用頁面切換 */
+    /* scroll-behavior: smooth; */
 }
 
-.photo-card { padding: 8px; float: left; cursor: zoom-in; }
-.photo-card img { width: 100%; height: auto; display: block; opacity: 0; transition: 0.6s; border-radius: 2px; }
+body {
+    background-color: #ffffff;
+    color: #111111;
+    line-height: 1.8;
+    font-family: 'Lato', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
 
-/* --- 5. About Me --- */
-#about { clear: both; background-color: #fdfdfd; padding: 100px 20px; text-align: center; }
-.about-content { max-width: 650px; margin: 0 auto; }
-.about-content h2 { font-family: 'Montserrat', sans-serif; font-size: 2.2rem; margin-bottom: 20px; }
-.main-text { font-family: 'Crimson Pro', serif; font-size: 1.15rem; color: #333; margin-bottom: 25px; text-align: justify; }
-.divider { width: 40px; margin: 50px auto; border-top: 2px solid #111; }
-.quote { font-family: 'Crimson Pro', serif; font-style: italic; font-size: 1.3rem; color: #555; }
+/* --- 1. 導覽列與 Logo (Noto Serif TC 宋體) --- */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
 
-/* --- 6. 燈箱 --- */
-.lightbox { display: none; position: fixed; z-index: 1000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); justify-content: center; align-items: center; opacity: 0; transition: 0.4s; }
-.lightbox.show { display: flex; opacity: 1; }
-.lightbox-content { max-width: 90%; max-height: 85vh; object-fit: contain; }
-.close-btn { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; }
+.logo-link {
+    text-decoration: none !important;
+    color: #111111 !important;
+}
 
-footer { text-align: center; padding: 60px; color: #bbb; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; }
+.logo {
+    font-family: 'Noto Serif TC', serif;
+    color: #111111;
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 2;
+}
+
+/* 📍 移除醜醜的紅色圓圈::after 背景 */
+
+.nav-menu {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+.nav-menu a {
+    color: #aaaaaa;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding-bottom: 5px;
+    position: relative;
+}
+
+.nav-menu a:hover, .nav-menu a.active {
+    color: #111111;
+}
+
+/* 選單與分類的底線特效 */
+.nav-menu a.active::after,
+.nav-menu a:hover::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1.5px;
+    background-color: #111111;
+    bottom: 0;
+    left: 0;
+    transform: scaleX(1);
+}
+
+.nav-menu a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1.5px;
+    background-color: transparent;
+    bottom: 0;
+    left: 0;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.contact-btn {
+    color: #aaaaaa;
+}
+
+/* --- 2. Section 切換樣式 --- */
+.section-container {
+    padding: 80px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.active-section {
+    display: block; /* 📍 顯示 */
+}
+
+.section-hidden {
+    display: none !important; /* 📍 完全隱藏 */
+}
+
+/* --- 3. 滿版首頁大標 --- */
+#frontpage {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #fafafa;
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: 12px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+    color: #777777;
+    font-size: 1.1rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+/* --- 📍 要求 1: 底層貼齊的瀑布流排版 (Masonry CSS) --- */
+#gallery {
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* .grid-sizer 與 .photo-card 的寬度設定必須一致 */
+.grid-sizer, .photo-card {
+    width: 33.333%; /* 📍 電腦版一排3張 */
+}
+
+/* 手機版適配：一排兩張 */
+@media (max-width: 768px) {
+    .grid-sizer, .photo-card {
+        width: 50%;
+    }
+}
+
+.photo-card {
+    /* 📍 移除固定的 aspect-ratio，Masonry 會自動處理 */
+    float: left;
+    position: relative;
+    overflow: hidden;
+    padding: 10px; /* 📍 Gutter 間距 */
+    transition: all 0.3s ease;
+}
+
+.photo-card img {
+    width: 100%;
+    /* 📍 關鍵設定：高度設為 auto，不截圖，保持原始比例 */
+    height: auto; 
+    display: block;
+    border-radius: 4px;
+    opacity: 0; /* JS載入後淡入 */
+    transition: transform 0.8s ease, opacity 0.6s ease;
+}
+
+.photo-card:hover img {
+    transform: scale(1.03);
+}
+
+/* --- 4. About Me (Crimson Text 文藝故事字) --- */
+#about-section {
+    background-color: white;
+    text-align: center;
+}
+
+.about-content {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.about-content h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 5px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 7px;
+    color: #aaaaaa;
+    margin-bottom: 50px;
+}
+
+.main-text {
+    font-family: 'Crimson Text', serif; /* 文藝故事字 */
+    font-size: 1.05rem;
+    color: #444444;
+    text-align: justify;
+    margin-bottom: 25px;
+}
+
+.divider {
+    width: 50px;
+    border: 0;
+    border-top: 1.5px solid #111111;
+    margin: 50px auto;
+}
+
+.quote {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    color: #666666;
+    font-size: 1.2rem;
+    line-height: 1.8;
+}
+
+/* --- 5. 頁尾 --- */
+footer {
+    text-align: center;
+    padding: 50px;
+    color: #bbbbbb;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
