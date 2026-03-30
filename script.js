@@ -6,7 +6,7 @@
 function generatePhotoList(folderName, prefix, count) {
     let photoArray = [];
     for (let i = 1; i <= count; i++) {
-        photoArray.push(`./images/${folderName}/${prefix}-${i}.jpg`);
+        photoArray.push(./images/${folderName}/${prefix} (${i}).jpg);
     }
     return photoArray;
 }
