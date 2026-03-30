@@ -7,14 +7,14 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&family=Noto+Serif+TC:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600;800&family=Noto+Serif+TC:wght@700&family=Crimson+Pro:italic,wght@0,400;1,400&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="styles.css">
 </head>
 <body id="top">
     
     <header>
-        <a href="#" id="logo-btn" style="text-decoration: none;">
+        <a href="#top" id="logo-btn" style="text-decoration: none;">
             <h1 class="logo">太海</h1>
         </a>
         <nav>
@@ -22,9 +22,17 @@
             <button class="filter-btn" data-target="people">People</button>
             <button class="filter-btn" data-target="things">Things</button>
             <button class="filter-btn" data-target="place">Place</button>
-            <button class="filter-btn" id="about-btn">About</button>
+            <button class="filter-btn" id="about-btn">About Me</button>
+            <a href="https://www.instagram.com/sun_of_orange/" target="_blank" class="filter-btn" style="text-decoration: none;">Contact</a>
         </nav>
     </header>
+
+    <section id="frontpage" style="text-align: center; padding: 60px 20px 20px;">
+        <div class="hero-content">
+            <h2 style="font-family: 'Montserrat', sans-serif; font-weight: 300; letter-spacing: 6px; text-transform: uppercase; margin-bottom: 10px;">Capturing the Light</h2>
+            <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.2rem; color: #888;">Welcome to my visual world</p>
+        </div>
+    </section>
 
     <main id="gallery-section">
         <div class="gallery-grid" id="gallery">
@@ -38,4 +46,19 @@
             <p class="main-text">It started with a simple, secondhand DSLR — a gift from a friend back in college. A true <strong>"legacy"</strong> that lacks even the luxury of autofocus.</p>
             <p class="main-text">I have to manually dial in the focus to capture every fleeting moment. It’s slow, it’s intentional, and every photo carries a weight of sentimental value that no high-end gear could ever replace.</p>
             <hr class="divider">
-            <p class="quote">"You don't need a high-end
+            <p class="quote">"You don't need a high-end camera to find happiness in photography; <br>you just need the one that speaks to your soul."</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Sean Photography. Built with GitHub Pages.</p>
+    </footer>
+
+    <div id="lightbox" class="lightbox">
+        <span class="close-btn">&times;</span>
+        <img class="lightbox-content" id="lightbox-img" src="">
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
