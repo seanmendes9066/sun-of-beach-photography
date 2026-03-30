@@ -1,21 +1,18 @@
 let msnry;
 
-// 生成機器：支援大寫副檔名與正確空格
 function generatePhotoList(folderName, prefix, count, ext = 'jpg') {
     let photoArray = [];
     for (let i = 1; i <= count; i++) {
-        //例如：./images/Things/Things (1).JPG
         photoArray.push(`./images/${folderName}/${prefix} (${i}).${ext}`);
     }
     return photoArray;
 }
 
 const photoDatabase = {
-    people: generatePhotoList('people', 'people', 11, 'jpg'), //
-    // 📍 修正：對齊 GitHub 大寫路徑與 .JPG，張數設為 11 確保抓到 Things (11)
+    people: generatePhotoList('People', 'people', 11, 'jpg'),
+    // 📍 修正：對齊 GitHub 大寫路徑與大寫 .JPG
     things: generatePhotoList('Things', 'Things', 11, 'JPG'), 
-    // 📍 按照 Things 邏輯設定 Place
-    place: generatePhotoList('Place', 'Place', 5, 'JPG') 
+    place: generatePhotoList('Place', 'Place', 11, 'JPG') 
 };
 
 let allPhotosArray = [...photoDatabase.people, ...photoDatabase.things, ...photoDatabase.place];
@@ -24,7 +21,7 @@ function shuffleArray(array) {
     let arr = [...array];
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[arr.length - 1]] = [arr[arr.length - 1], arr[i]];
+        [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;
 }
@@ -48,20 +45,23 @@ function renderPhotos(photoArray) {
         card.className = 'photo-card';
         const img = document.createElement('img');
         img.src = src;
-        img.onerror = () => card.remove(); // 抓不到圖就隱藏
+        img.onerror = () => card.remove();
         img.onload = () => { img.style.opacity = 1; initMasonry(); };
-        // 📍 點擊放大邏輯
+        
         card.addEventListener('click', () => {
             document.getElementById('lightbox-img').src = src;
             document.getElementById('lightbox').classList.add('show');
+            document.body.style.overflow = 'hidden';
         });
+        
         card.appendChild(img);
         gallery.appendChild(card);
     });
 }
 
-// 📍 首頁：隨機挑選 5 張
+// 📍 首頁：隨機精選 5 張
 function loadHome() {
+    document.querySelectorAll('.filter-link').forEach(n => n.classList.remove('active'));
     renderPhotos(shuffleArray(allPhotosArray).slice(0, 5));
 }
 
@@ -76,6 +76,7 @@ document.querySelectorAll('.filter-link').forEach(link => {
 document.getElementById('logo-btn').addEventListener('click', (e) => { e.preventDefault(); loadHome(); });
 document.getElementById('lightbox').addEventListener('click', () => {
     document.getElementById('lightbox').classList.remove('show');
+    document.body.style.overflow = '';
 });
 
 loadHome();
