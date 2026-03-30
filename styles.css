@@ -154,7 +154,7 @@ nav {
     width: 100%;
     /* 📍 移除固定的 height 和 object-fit */
     
-    height: auto; /* 📍 關鍵：高度設為 auto，保持照片原始長寬比例 */
+    height: auto; /* 📍 關鍵：高度設為 auto，保持照片比例 */
     display: block; /* 防止圖片下方有空隙 */
     opacity: 0;
     transition: transform 0.8s ease, opacity 0.6s ease;

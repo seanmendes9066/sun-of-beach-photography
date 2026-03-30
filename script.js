@@ -1,12 +1,12 @@
 // =========================================
-// script.js (高端瀑布流藝術藝廊版 + 最終路徑修正版)
+// script.js (高端瀑布流藝術藝廊版 + JPG 路徑修正版)
 // =========================================
 
 // 📍 關鍵修改：定義一個變數來存放 Masonry 實體
 let msnry;
 
-// 1. 自動生成照片網址的機器 (防呆修正版：確保 prefix 空格)
-function generatePhotoList(folderName, prefix, count) {
+// 1. 自動生成照片網址的機器 (防呆修正版：確保 prefix 空格與自定義副檔名)
+function generatePhotoList(folderName, prefix, count, ext = 'jpg') {
     let photoArray = [];
     // 📍 防呆：如果張數小於或等於 0，直接回傳空陣列
     if (count <= 0) return photoArray; 
@@ -14,9 +14,9 @@ function generatePhotoList(folderName, prefix, count) {
     for (let i = 1; i <= count; i++) {
         // 📍 關鍵修正點：
         // A. folderName 指向大寫開頭資料夾 (People, Things, Place)
-        // B. prefix 保持小寫字串 (對應 ${prefix})
-        // C. 我在 `${prefix}` 和 `(${i})` 之間加上了空白鍵，對齊你的命名習慣：people (1).jpg
-        photoArray.push(`./images/${folderName}/${prefix} (${i}).jpg`);
+        // B.我在 `${prefix}` 和 `(${i})` 之間加上了空白鍵，對齊你的命名習慣：people (1).jpg
+        // C. 我幫副檔名加上了自定義參數 (${ext})，對齊 Things 資料夾的大寫 .JPG
+        photoArray.push(`./images/${folderName}/${prefix} (${i}).${ext}`);
     }
     return photoArray;
 }
@@ -26,9 +26,10 @@ const photoDatabase = {
     // 例如：你在 images/People 資料夾放了 11 張照片，命名為 people (1).jpg ~ people (11).jpg
     people: generatePhotoList('People', 'people', 11),
 
-    // 例如：你在 images/Things 資料夾放了 3 張照片，命名為 things (1).jpg ~ things (3).jpg
-    // 📍 提醒：你說 things 改回從 1 編號了，所以這裡設定張數即可 (請根據你實際張數填寫，範例設為 3)
-    things: generatePhotoList('Things', 'things', 3),
+    // 例如：你在 images/Things 資料夾放了 1 張照片，命名為 Things (1).JPG
+    // 📍 關鍵修正點：根據你的截圖，我幫副檔名加上了參數 'JPG' (大寫)
+    // 提醒：你說 things 改回從 1 編號了，所以這裡設定張數即可 (請根據你實際張數填寫，範例設為 1)
+    things: generatePhotoList('Things', 'Things', 1, 'JPG'),
 
     // 例如：你在 images/Place 資料夾放了 1 張照片，命名為 place (1).jpg
     // 📍 提醒：如果資料夾是空的，請務必把張數設為 0，以免程式報錯
