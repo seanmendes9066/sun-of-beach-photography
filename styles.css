@@ -2,13 +2,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
 
 body {
-    /* 預設內文字體 */
     font-family: 'Montserrat', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f9f9f9;
     color: #333;
-    line-height: 1.8; /* 稍微調寬行高，閱讀更舒服 */
+    line-height: 1.8;
 }
 
 nav {
@@ -23,10 +22,9 @@ nav {
     z-index: 1000;
 }
 
-/* Logo 和 標題 使用高級感襯線體 */
 .logo, h1, h2 {
     font-family: 'Playfair Display', serif;
-    letter-spacing: 2px; /* 增加字距，更有雜誌質感 */
+    letter-spacing: 2px;
 }
 
 .logo {
@@ -67,18 +65,90 @@ header p {
     font-weight: 300;
     color: #777;
     letter-spacing: 3px;
-    text-transform: uppercase; /* 英文變成大寫會更有設計感 */
+    text-transform: uppercase;
     font-size: 0.8rem;
 }
 
 .grid {
-    column-count: 3; /* 瀑布流欄數 */
+    column-count: 3;
     column-gap: 20px;
     width: 90%;
     max-width: 1100px;
     margin: 0 auto;
 }
 
-/* 針對平板和手機調整欄數 */
 @media (max-width: 900px) { .grid { column-count: 2; } }
-@media (max-width: 600px
+@media (max-width: 600px) { .grid { column-count: 1; } }
+
+.photo-card {
+    margin-bottom: 20px;
+    break-inside: avoid;
+    overflow: hidden;
+    background: #fff;
+    transition: all 0.4s ease;
+}
+
+.photo-card img { 
+    width: 100%; 
+    display: block; 
+    transition: transform 0.6s ease;
+    border-radius: 4px;
+}
+
+.photo-card:hover {
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.photo-card:hover img { 
+    transform: scale(1.05);
+}
+
+#about {
+    padding: 100px 20px;
+    background: transparent;
+}
+
+.about-content {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.subtitle {
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+    color: #aaa;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.main-text {
+    font-size: 1rem;
+    color: #444;
+    line-height: 2;
+    margin-bottom: 25px;
+    font-weight: 300;
+}
+
+.divider {
+    width: 30px;
+    border: none;
+    border-top: 1px solid #333;
+    margin: 40px auto;
+}
+
+.quote {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    color: #222;
+    line-height: 1.6;
+}
+
+footer {
+    text-align: center;
+    padding: 60px 20px;
+    font-size: 0.75rem;
+    color: #bbb;
+    letter-spacing: 1px;
+}
