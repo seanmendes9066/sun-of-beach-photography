@@ -1,0 +1,63 @@
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 5%;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav ul { list-style: none; display: flex; margin: 0; }
+nav ul li { margin-left: 20px; }
+nav ul li a { text-decoration: none; color: #333; font-weight: bold; }
+
+header {
+    text-align: center;
+    padding: 100px 20px;
+    background: #fff;
+}
+
+.grid {
+    display: column; /* 瀑布流基本設定 */
+    columns: 3 250px;
+    column-gap: 15px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.photo-card {
+    margin-bottom: 15px;
+    break-inside: avoid;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.photo-card:hover { transform: scale(1.02); }
+.photo-card img { width: 100%; display: block; }
+
+#about {
+    padding: 80px 20px;
+    text-align: center;
+    background: #fff;
+}
+
+footer {
+    text-align: center;
+    padding: 40px;
+    font-size: 0.8rem;
+    color: #888;
+}
