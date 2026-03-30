@@ -1,8 +1,8 @@
 // =========================================
-// script.js (結合 Premium UI 結構與動態加載邏輯)
+// script.js (原汁原味路徑 + 靜默移除空圖版)
 // =========================================
 
-// 生成器：支援不同副檔名
+// 1. 完全遵照你原本的路徑規則 (包含空格與副檔名)
 function generatePhotoList(folderName, prefix, maxCount = 100, ext = 'jpg') {
     let photoArray = [];
     for (let i = 1; i <= maxCount; i++) {
@@ -14,14 +14,13 @@ function generatePhotoList(folderName, prefix, maxCount = 100, ext = 'jpg') {
     return photoArray;
 }
 
-// 照片資料庫
+// 2. 嚴格對應你設定的大小寫
 const photoDatabase = {
-    people: generatePhotoList('people', 'people', 100, 'jpg'),
-    things: generatePhotoList('things', 'things', 100, 'JPG'),
-    place: generatePhotoList('place', 'place', 100, 'JPG') 
+    people: generatePhotoList('people', 'people', 100, 'jpg'), 
+    things: generatePhotoList('things', 'things', 100, 'JPG'), 
+    place: generatePhotoList('place', 'place', 100, 'JPG')     
 };
 
-// 合併所有照片
 let allPhotosArray = [...photoDatabase.people, ...photoDatabase.things, ...photoDatabase.place];
 
 function shuffleArray(array) {
@@ -33,82 +32,92 @@ function shuffleArray(array) {
     return arr;
 }
 
-// 渲染照片邏輯 (結合新版的 HTML 結構)
+// 3. 渲染邏輯：抓不到的圖會「徹底刪除節點」，不會留白洞
 function renderPhotos(photoArray) {
     const gallery = document.getElementById('gallery');
     gallery.innerHTML = ''; 
 
-    if (!photoArray || photoArray.length === 0) {
-        gallery.innerHTML = '<p style="text-align:center; grid-column: 1 / -1; padding: 50px; color: #888;">尚未發現照片。</p>';
-        return;
-    }
-
     photoArray.forEach((photo) => {
-        // 創建外層容器
         const card = document.createElement('div');
         card.className = `gallery-item ${photo.category}`;
         
-        // 創建圖片
         const img = document.createElement('img');
         img.src = photo.src;
         img.alt = `${photo.category} photography`;
 
-        // 創建懸停漸層與文字區塊
         const overlay = document.createElement('div');
         overlay.className = 'item-overlay';
-        
-        // 根據分類給予優雅的標題
         const titleText = photo.category.charAt(0).toUpperCase() + photo.category.slice(1);
         overlay.innerHTML = `
             <h3>${titleText}</h3>
             <p>Collection / ${titleText}</p>
         `;
 
-        // 防呆：圖片讀取失敗時自動移除該格子，保持版面整潔
+        // 🚨 核心 Debug：如果 GitHub 回傳 404 (找不到這張照片)，直接把整個相框拔掉
         img.onerror = () => {
-            card.remove();
+            card.remove(); 
         };
         
-        // 讀取成功時淡入顯示
+        // 載入成功才淡入顯示
         img.onload = () => { 
             img.style.opacity = 1; 
         };
 
-        // 點擊觸發燈箱
         card.addEventListener('click', () => {
             const lightbox = document.getElementById('lightbox');
             const lightboxImg = document.getElementById('lightbox-img');
-            lightboxImg.src = photo.src;
+            lightboxImg.src = img.src;
             lightbox.classList.add('show');
             document.body.style.overflow = 'hidden';
         });
 
-        // 組裝 DOM
         card.appendChild(img);
         card.appendChild(overlay);
         gallery.appendChild(card);
     });
 }
 
-// 導覽列過濾與事件監聽
+// 事件監聽：分類按鈕
 document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', function(e) {
         e.preventDefault();
-        
         const target = this.getAttribute('data-target');
         
-        // 處理 About 錨點跳轉
         if (target === null && this.id === 'about-btn') {
             document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
             return;
         }
 
-        // 狀態更新：切換 active 視覺
         document.querySelectorAll('.filter-btn').forEach(n => n.classList.remove('active'));
         this.classList.add('active');
         
-        // 動態渲染對應照片
         if (target === 'all') {
             renderPhotos(shuffleArray(allPhotosArray));
         } else {
-            renderPhotos(
+            renderPhotos(photoDatabase[target]);
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+});
+
+// 事件監聽：Logo 點擊回首頁
+document.getElementById('logo-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.querySelectorAll('.filter-btn').forEach(n => n.classList.remove('active'));
+    document.querySelector('[data-target="all"]').classList.add('active');
+    renderPhotos(shuffleArray(allPhotosArray));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// 事件監聽：關閉燈箱
+document.getElementById('lightbox').addEventListener('click', (e) => {
+    if (e.target !== document.getElementById('lightbox-img')) {
+        document.getElementById('lightbox').classList.remove('show');
+        document.body.style.overflow = '';
+    }
+});
+
+// 網頁初始啟動：載入全部並洗牌
+document.addEventListener('DOMContentLoaded', () => {
+    renderPhotos(shuffleArray(allPhotosArray));
+});

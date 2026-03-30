@@ -1,130 +1,32 @@
-/* ==========================================
-   1. CSS 變數系統與基礎重置
-   ========================================== */
 :root {
     --font-heading: 'Cormorant Garamond', serif;
     --font-body: 'Montserrat', sans-serif;
     --font-logo: 'Noto Serif TC', serif;
-    
     --color-bg: #fcfcfc;
     --color-text: #1a1a1a;
     --color-text-muted: #8e8e8e;
     --color-overlay: rgba(10, 10, 10, 0.65);
-    
     --spacing-base: 8px;
     --grid-gap: 32px;
 }
 
-html {
-    scroll-behavior: smooth;
-    box-sizing: border-box;
-    font-size: 16px;
-}
+html { scroll-behavior: smooth; box-sizing: border-box; font-size: 16px; }
+*, *::before, *::after { box-sizing: inherit; margin: 0; padding: 0; }
+body { background-color: var(--color-bg); color: var(--color-text); font-family: var(--font-body); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-y: scroll; }
 
-*, *::before, *::after {
-    box-sizing: inherit;
-    margin: 0;
-    padding: 0;
-}
+header { position: sticky; top: 0; background-color: rgba(252, 252, 252, 0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 100; padding: 32px 0 24px 0; text-align: center; border-bottom: 1px solid rgba(0, 0, 0, 0.04); }
+.logo { font-family: var(--font-logo); font-size: 2.5rem; font-weight: 700; letter-spacing: 8px; margin-bottom: 1.2rem; color: var(--color-text); }
 
-body {
-    background-color: var(--color-bg);
-    color: var(--color-text);
-    font-family: var(--font-body);
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    overflow-y: scroll;
-}
+nav { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; padding: 0 20px; }
+.filter-btn { background: none; border: none; cursor: pointer; font-family: var(--font-body); font-size: 0.85rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-text-muted); padding: 8px 4px; transition: color 0.4s ease; position: relative; outline: none; }
+.filter-btn::after { content: ''; position: absolute; bottom: 0; left: 50%; width: 0; height: 1px; background-color: var(--color-text); transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.4s ease; transform: translateX(-50%); }
+.filter-btn:hover, .filter-btn.active { color: var(--color-text); }
+.filter-btn:hover::after, .filter-btn.active::after { width: 100%; }
 
-/* ==========================================
-   2. 頂部導覽區 (Header & Navigation)
-   ========================================== */
-header {
-    position: sticky;
-    top: 0;
-    background-color: rgba(252, 252, 252, 0.92);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    z-index: 100;
-    padding: calc(var(--spacing-base) * 4) 0 calc(var(--spacing-base) * 3) 0;
-    text-align: center;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-}
+main { padding: 32px 32px 48px; max-width: 100%; min-height: 80vh; }
+.gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--grid-gap); }
 
-.logo {
-    font-family: var(--font-logo);
-    font-size: 2.5rem;
-    font-weight: 700;
-    letter-spacing: 8px;
-    margin-bottom: 1.2rem;
-    color: var(--color-text);
-}
-
-nav {
-    display: flex;
-    justify-content: center;
-    gap: calc(var(--spacing-base) * 4);
-    flex-wrap: wrap;
-    padding: 0 20px;
-}
-
-.filter-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    font-weight: 500;
-    letter-spacing: 0.2em; 
-    text-transform: uppercase;
-    color: var(--color-text-muted);
-    padding: 8px 4px;
-    transition: color 0.4s ease;
-    position: relative;
-    outline: none;
-}
-
-.filter-btn::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 0;
-    height: 1px;
-    background-color: var(--color-text);
-    transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.4s ease;
-    transform: translateX(-50%);
-}
-
-.filter-btn:hover,
-.filter-btn.active {
-    color: var(--color-text);
-}
-
-.filter-btn:hover::after,
-.filter-btn.active::after {
-    width: 100%;
-}
-
-/* ==========================================
-   3. 滿版 CSS Grid 相片網格 
-   ========================================== */
-main {
-    padding: calc(var(--spacing-base) * 4) calc(var(--spacing-base) * 4) calc(var(--spacing-base) * 6);
-    max-width: 100%;
-    min-height: 80vh;
-}
-
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); 
-    gap: var(--grid-gap);
-}
-
-@media (max-width: 1024px) {
-    .gallery-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 650px) {
-    main { padding: calc(var(--spacing-base) * 3) calc(var(--spacing-base) * 2); }
-    .gallery-grid { grid-template-columns: 1fr; gap: calc(var(--spacing-base) * 2); }
+@media (max-width: 1024px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 650px) { 
+    main { padding: 24px 16px; } 
+    .gallery-grid { grid-template-columns: 1fr; gap: 16px; }
