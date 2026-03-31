@@ -22,18 +22,18 @@
     
     <style>
         /* ==========================================
-           4. CSS 變數與基礎設定
+           3. CSS 變數與基礎設定 (Pixel -> Refined Retro)
            ========================================== */
         :root {
             /* 字體變數 */
             --font-logo: 'Noto Serif TC', serif;
-            --font-heading: 'Cormorant Garamond', serif; /* 塊狀像素化標題 */
+            --font-heading: 'Cormorant Garamond', serif; /* 精緻復古標題 */
             --font-body: 'Crimson Pro', serif; /* 內文和小文字 */
             
             /* 色彩系統 - 模仿參考圖片的復古米色紙張質感 */
             --color-bg: #f5f0e1;
             --color-text: #1a1a1a;
-            --color-pixel: #1a1a1a; /* 像素陰影顏色 */
+            /* 移除 --color-pixel 變數 */
             --color-overlay: rgba(10, 10, 10, 0.7);
             
             --spacing-base: 8px;
@@ -62,7 +62,7 @@
         }
 
         /* ==========================================
-           5. 頂部導覽區
+           4. 頂部導覽區
            ========================================== */
         header {
             position: sticky;
@@ -83,8 +83,7 @@
             letter-spacing: 0.1em;
             margin-bottom: 1rem;
             color: var(--color-text);
-            /* 輕微像素化處理 */
-            text-shadow: 1px 1px 0 var(--color-pixel), -1px -1px 0 var(--color-pixel), 1px -1px 0 var(--color-pixel), -1px 1px 0 var(--color-pixel);
+            /* 移除 text-shadow */
         }
 
         nav {
@@ -132,7 +131,7 @@
         }
 
         /* ==========================================
-           6. 首頁大標區 (模仿參考圖片，像素化處理)
+           5. 首頁大標區 (移除重影與 BUG)
            ========================================== */
         #frontpage {
             height: 60vh;
@@ -155,13 +154,7 @@
             text-transform: uppercase;
             margin-bottom: 1.2rem;
             color: var(--color-text);
-            /* 複雜的多重陰影，模仿塊狀、粗糙像素邊緣的復古 Serif */
-            text-shadow: 
-                2px 2px 0 var(--color-pixel), -2px -2px 0 var(--color-pixel), 2px -2px 0 var(--color-pixel), -2px 2px 0 var(--color-pixel),
-                0px 4px 0 var(--color-pixel), 0px -4px 0 var(--color-pixel), 4px 0px 0 var(--color-pixel), -4px 0px 0 var(--color-pixel),
-                4px 4px 0 var(--color-pixel), -4px -4px 0 var(--color-pixel), 4px -4px 0 var(--color-pixel), -4px 4px 0 var(--color-pixel),
-                2px 4px 0 var(--color-pixel), -2px -4px 0 var(--color-pixel), 2px -4px 0 var(--color-pixel), -2px 4px 0 var(--color-pixel),
-                4px 2px 0 var(--color-pixel), -4px -2px 0 var(--color-pixel), 4px -2px 0 var(--color-pixel), -4px 2px 0 var(--color-pixel);
+            /* 移除複雜的多重陰影，保持精緻粗體 */
         }
 
         .hero-content p {
@@ -172,27 +165,10 @@
             text-transform: uppercase;
         }
 
-        /* 添加 Y2K 小圖標 (增強效果) */
-        .hero-content::before {
-            content: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHBhdGggZmlsbD0iIzExMSIgZD0iTTEyLjUgMy41TTEwIDEzLjVsMS41IDEuNUw4IDE2TDQuNSA4TDEuNSAxLjVMNCA0TDguMTMzMzMzM3ogTSAxMC41IDEuNSBMIDEzLjUgNCBMIDE2IDguMSBMIDE0LjUgMTAuMSBMIDEzLjUgOSBMIDExIDExIEwgOS41IDkuNSBMIDEyLjUgNi41IEwgIgnTEyLjEMzMzMzMzIDYuNSBMIDEwLjUgNyBMIDEwIDEwIEwgMTIuMDUgMTIgTCAoazEuMDk5OTk5OSBMIDExIDE0IEwgOSAxMyBMIDggNyBMIDEwIDUgTCA4LjI0MTM3OTM4IDIuOTY1NTE3MnoiLz48L3N2Zz4=');
-            position: absolute;
-            top: -20px;
-            left: -30px;
-            width: 20px;
-            opacity: 0.5;
-        }
-
-        .hero-content::after {
-            content: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHBhdGggZmlsbD0iIzExMSIgZD0iTTggMEw4IDE2TDQgOEw4IDB6IE0gOCAwIEwgOCAxNiBMIDEyIDggTCA4IDB6Ii8+PHBhdGggZmlsbD0iIzExMSIgZD0iTTEwIDhMOCAxMEM4IDEwIDggMTAgOCAxMEM4IDEwIDggMTAgOCAxMEM4IDEwIDggMTAgOCAxMEw4IDhaIi8+PC9zdmc+');
-            position: absolute;
-            top: -20px;
-            right: -30px;
-            width: 20px;
-            opacity: 0.5;
-        }
+        /* BUG 修正：徹底移除 Y2K 小圖標 (::before 和 ::after) */
 
         /* ==========================================
-           7. 滿版 CSS Grid 相片網格 (取代 Masonry)
+           6. 滿版 CSS Grid 相片網格 (取代 Masonry)
            ========================================== */
         main {
             padding: 0 calc(var(--spacing-base) * 4) calc(var(--spacing-base) * 6);
@@ -234,7 +210,7 @@
         }
 
         /* ==========================================
-           8. 影像項目與懸停微互動
+           7. 影像項目、懸停放大與微互動
            ========================================== */
         .gallery-item {
             position: relative;
@@ -250,12 +226,14 @@
             height: 100%;
             object-fit: cover;
             filter: brightness(0.9) grayscale(15%);
-            transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+            /* 添加 transform transition 實現懸停放大 */
+            transition: transform 0.6s ease-in-out, filter 0.6s ease, opacity 0.5s ease;
             opacity: 0; /* 預設透明，載入後由 JS 淡入 */
         }
 
         .gallery-item:hover img {
-            transform: scale(1.06);
+            /* 懸停放大效果 */
+            transform: scale(1.08); 
             filter: brightness(1.05) grayscale(0%);
         }
 
@@ -296,7 +274,7 @@
         }
 
         /* ==========================================
-           9. About Me (保留原本設定，像素化標題)
+           8. About Me (保留原本設定)
            ========================================== */
         #about {
             clear: both;
@@ -316,8 +294,7 @@
             font-family: var(--font-heading);
             font-size: 2.2rem;
             margin-bottom: 20px;
-            /* 塊狀像素化標題 */
-            text-shadow: 2px 2px 0 var(--color-pixel), -2px -2px 0 var(--color-pixel);
+            /* 移除 text-shadow */
         }
 
         .subtitle {
@@ -351,7 +328,7 @@
         }
 
         /* ==========================================
-           10. 燈箱與 Footer
+           9. 燈箱
            ========================================== */
         .lightbox {
             display: none;
@@ -486,7 +463,7 @@
             return arr;
         }
 
-        // 渲染照片逻辑
+        // 渲染照片逻辑 (結合新的 Grid 佈局)
         function renderPhotos(photoArray) {
             const gallery = document.getElementById('gallery');
             gallery.innerHTML = ''; // 清空畫廊
@@ -517,7 +494,7 @@
                     <p>Collection / ${titleText}</p>
                 `;
 
-                // 防呆：圖片讀取失敗時自動移除該格子，不留空洞
+                // 防呆：圖片讀取失敗時自動移除該格子，不留漏洞
                 img.onerror = () => {
                     card.remove(); 
                 };
