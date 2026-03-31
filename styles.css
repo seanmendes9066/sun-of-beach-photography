@@ -30,7 +30,7 @@ nav { display: flex; justify-content: center; gap: calc(var(--spacing-base) * 4)
 .filter-btn:hover::after, .filter-btn.active::after { width: 100%; }
 
 /* ==========================================
-   首頁大標區 (🚨 加入平滑收合動畫)
+   首頁大標區 (🚨 修復卡頓：加入 padding 的平滑過渡)
    ========================================== */
 #frontpage { 
     height: 60vh; 
@@ -41,14 +41,15 @@ nav { display: flex; justify-content: center; gap: calc(var(--spacing-base) * 4)
     padding: 0 20px; 
     position: relative; 
     overflow: hidden;
-    transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+    /* 確保高度和內邊距同步動畫，才不會有瞬間跳動的感覺 */
+    transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, padding 0.6s ease;
 }
 
-/* 當加上 .hide 時，標題區塊高度歸零並隱藏 */
 #frontpage.hide {
     height: 0 !important;
     opacity: 0;
-    padding: 0;
+    padding-top: 0;
+    padding-bottom: 0;
     pointer-events: none;
 }
 

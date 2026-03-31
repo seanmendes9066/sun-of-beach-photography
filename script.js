@@ -1,5 +1,5 @@
 // =========================================
-// script.js (乾淨 Grid 渲染 + 標題動態隱藏)
+// script.js (乾淨 Grid 渲染 + 標題動態隱藏修復版)
 // =========================================
 
 function generatePhotoList(folderName, prefix, maxCount = 100, ext = 'jpg') {
@@ -90,7 +90,7 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// 過濾按鈕 (🚨 加入動態隱藏標題邏輯)
+// 過濾按鈕 (🚨 修復衝突：移除 behavior: 'smooth' 讓動畫交給 CSS 負責)
 document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', function(e) {
         if (this.id === 'about-btn') {
@@ -111,31 +111,28 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
         const frontpage = document.getElementById('frontpage');
 
         if (target === 'all') {
-            // 點擊 ALL WORKS：顯示大標題
             frontpage.classList.remove('hide');
             renderPhotos(shuffleArray(allPhotosArray));
         } else {
-            // 點擊特定分類：隱藏大標題，讓畫廊貼齊頂部
             frontpage.classList.add('hide');
             renderPhotos(photoDatabase[target]);
         }
 
-        // 滾動到最上方 (隱藏標題後，最上方就是照片排)
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // 🚨 瞬間置頂，解決與 CSS 高度動畫打架的問題
+        window.scrollTo(0, 0); 
     });
 });
 
-// Logo 點擊回到首頁 (🚨 加入恢復標題邏輯)
+// Logo 點擊回到首頁
 document.getElementById('logo-btn').addEventListener('click', (e) => {
     e.preventDefault();
-    
-    // 點擊 Logo 恢復大標題
     document.getElementById('frontpage').classList.remove('hide');
-    
     renderPhotos(shuffleArray(allPhotosArray));
     document.querySelectorAll('.filter-btn').forEach(n => n.classList.remove('active'));
     document.querySelector('[data-target="all"]').classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // 🚨 瞬間置頂
+    window.scrollTo(0, 0); 
 });
 
 // 燈箱關閉
