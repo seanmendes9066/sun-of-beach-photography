@@ -1,7 +1,3 @@
-// =========================================
-// script.js (動態載入與 Grid 排版)
-// =========================================
-
 function generatePhotoList(folderName, prefix, maxCount = 100, ext = 'jpg') {
     let photoArray = [];
     for (let i = 1; i <= maxCount; i++) {
@@ -73,7 +69,6 @@ function renderPhotos(photoArray) {
     });
 }
 
-// 事件監聽：過濾按鈕
 document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         if (this.id === 'about-btn') {
@@ -97,22 +92,15 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
     });
 });
 
-// 📍 Logo 點擊邏輯：回到首頁並將底線強制跳回 "ALL WORKS"
+// Logo 點擊回到首頁並強制底線回 ALL WORKS
 document.getElementById('logo-btn').addEventListener('click', (e) => {
     e.preventDefault();
-    
-    // 重新渲染全部照片並洗牌
     renderPhotos(shuffleArray(allPhotosArray));
-    
-    // 將所有按鈕取消 active，並強制把 active 加給 "ALL WORKS" (data-target="all")
     document.querySelectorAll('.filter-btn').forEach(n => n.classList.remove('active'));
     document.querySelector('[data-target="all"]').classList.add('active');
-    
-    // 平滑回到頂部
     window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-// 燈箱關閉邏輯
 document.getElementById('lightbox').addEventListener('click', (e) => {
     if (e.target !== document.getElementById('lightbox-img')) {
         document.getElementById('lightbox').classList.remove('show');
@@ -120,7 +108,6 @@ document.getElementById('lightbox').addEventListener('click', (e) => {
     }
 });
 
-// 網頁初始啟動：首頁展示全部照片
 document.addEventListener('DOMContentLoaded', () => {
     renderPhotos(shuffleArray(allPhotosArray));
 });
