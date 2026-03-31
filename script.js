@@ -146,3 +146,34 @@ document.getElementById('lightbox').addEventListener('click', (e) => {
 document.addEventListener('DOMContentLoaded', () => {
     renderPhotos(shuffleArray(allPhotosArray));
 });
+// =========================================
+// 防護罩：防右鍵、防拖曳、防偷看原始碼
+// =========================================
+
+// 1. 徹底禁用滑鼠右鍵 (阻止另存圖片選單)
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+});
+
+// 2. 雙重保險：再次強制禁用所有圖片的拖曳行為
+document.addEventListener('dragstart', function(e) {
+    if (e.target.tagName.toLowerCase() === 'img') {
+        e.preventDefault();
+    }
+});
+
+// 3. 禁用常見的駭客/偷圖快捷鍵 (F12, Ctrl+Shift+I, Ctrl+S)
+document.addEventListener('keydown', function(e) {
+    // 禁用 F12
+    if (e.key === 'F12') {
+        e.preventDefault();
+    }
+    // 禁用 Ctrl+Shift+I (Windows) 或 Cmd+Option+I (Mac) 打開開發者工具
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'i')) {
+        e.preventDefault();
+    }
+    // 禁用 Ctrl+S 或 Cmd+S (另存網頁)
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'S' || e.key === 's')) {
+        e.preventDefault();
+    }
+});

@@ -74,3 +74,22 @@ main { padding: 0 calc(var(--spacing-base) * 4) calc(var(--spacing-base) * 6); m
 .lightbox-content { max-width: 90%; max-height: 85vh; object-fit: contain; }
 .close-btn { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; }
 footer { text-align: center; padding: 60px; color: #bbb; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; }
+/* ==========================================
+   防護罩：禁用圖片拖曳與反白選取
+   ========================================== */
+img {
+    -webkit-user-drag: none; /* 禁用滑鼠拖曳圖片 */
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+    
+    -webkit-user-select: none; /* 禁用反白選取 */
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+
+    /* 禁用手機端長按彈出的系統選單 (如儲存圖片) */
+    -webkit-touch-callout: none; 
+}
