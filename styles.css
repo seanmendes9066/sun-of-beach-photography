@@ -24,6 +24,18 @@ nav { display: flex; justify-content: center; gap: calc(var(--spacing-base) * 4)
 .filter-btn:hover, .filter-btn.active { color: var(--color-text); }
 .filter-btn:hover::after, .filter-btn.active::after { width: 100%; }
 
+/* 👇 新增這段：設定選單左側小 Icon 的大小與樣式 */
+.nav-icon {
+    width: 28px;        /* Icon 的寬度，你可以依喜好微調數字 */
+    height: 28px;       /* Icon 的高度 */
+    object-fit: contain;
+    border-radius: 6px; /* 讓邊角稍微圓潤一點 */
+    transition: transform 0.3s ease;
+}
+
+.nav-icon:hover {
+    transform: scale(1.1); /* 滑鼠游標移上去時會有微微放大的特效 */
+}
 #frontpage { height: 60vh; display: flex; justify-content: center; align-items: center; text-align: center; padding: 0 20px; position: relative; }
 .hero-content h1 { font-family: var(--font-heading); font-size: clamp(2.5rem, 8vw, 4.5rem); font-weight: 600; text-transform: uppercase; margin-bottom: 1.2rem; color: var(--color-text); }
 .hero-content p { font-family: var(--font-body); color: #777; font-size: clamp(0.9rem, 3vw, 1.15rem); font-style: italic; text-transform: uppercase; }

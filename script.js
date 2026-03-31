@@ -133,6 +133,14 @@ document.getElementById('logo-btn').addEventListener('click', (e) => {
     document.querySelector('[data-target="all"]').classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 });
+// 👇 新增這段：讓選單左邊的小 Icon 點擊時也有一樣的效果
+document.getElementById('nav-icon-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    renderPhotos(shuffleArray(allPhotosArray));
+    document.querySelectorAll('.filter-btn').forEach(n => n.classList.remove('active'));
+    document.querySelector('[data-target="all"]').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 
 // 燈箱關閉邏輯
 document.getElementById('lightbox').addEventListener('click', (e) => {
