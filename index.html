@@ -9,24 +9,400 @@
 
     <meta property="og:title" content="Sean Photography | 太海">
     <meta property="og:description" content="Capturing the Light. Welcome to my visual world.">
-    <meta property="og:image" content="https://seanmendes9066.github.io/sun-of-beach-photography/images/preview.jpg">
+    <meta property="og:image" content="https://seanmendes9066.github.io/sun-of-beach-photography/images/og-image.png">
     <meta property="og:url" content="https://seanmendes9066.github.io/sun-of-beach-photography/">
     <meta property="og:type" content="website">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://seanmendes9066.github.io/sun-of-beach-photography/images/preview.jpg">
+    <meta name="twitter:image" content="https://seanmendes9066.github.io/sun-of-beach-photography/images/og-image.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600;800&family=Noto+Serif+TC:wght@700&family=Crimson+Pro:italic,wght@0,400;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Crimson+Pro:italic,wght@0,400;1,400&family=Noto+Serif+TC:wght@700&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* ==========================================
+           4. CSS 變數與基礎設定
+           ========================================== */
+        :root {
+            /* 字體變數 */
+            --font-logo: 'Noto Serif TC', serif;
+            --font-heading: 'Cormorant Garamond', serif; /* 塊狀像素化標題 */
+            --font-body: 'Crimson Pro', serif; /* 內文和小文字 */
+            
+            /* 色彩系統 - 模仿參考圖片的復古米色紙張質感 */
+            --color-bg: #f5f0e1;
+            --color-text: #1a1a1a;
+            --color-pixel: #1a1a1a; /* 像素陰影顏色 */
+            --color-overlay: rgba(10, 10, 10, 0.7);
+            
+            --spacing-base: 8px;
+            --grid-gap: 32px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        *, *::before, *::after {
+            box-sizing: inherit;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-y: scroll;
+        }
+
+        /* ==========================================
+           5. 頂部導覽區
+           ========================================== */
+        header {
+            position: sticky;
+            top: 0;
+            background-color: rgba(245, 240, 225, 0.9); /* 模仿毛玻璃但使用米色 */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 1000;
+            padding: calc(var(--spacing-base) * 6) 0 calc(var(--spacing-base) * 4) 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .logo {
+            font-family: var(--font-logo);
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            color: var(--color-text);
+            /* 輕微像素化處理 */
+            text-shadow: 1px 1px 0 var(--color-pixel), -1px -1px 0 var(--color-pixel), 1px -1px 0 var(--color-pixel), -1px 1px 0 var(--color-pixel);
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: calc(var(--spacing-base) * 4);
+        }
+
+        .filter-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--color-text);
+            padding: 8px 4px;
+            transition: color 0.4s ease;
+            position: relative;
+            outline: none;
+        }
+
+        .filter-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 1px;
+            background-color: var(--color-text);
+            transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.4s ease;
+            transform: translateX(-50%);
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            color: var(--color-text);
+        }
+
+        .filter-btn:hover::after,
+        .filter-btn.active::after {
+            width: 100%;
+        }
+
+        /* ==========================================
+           6. 首頁大標區 (模仿參考圖片，像素化處理)
+           ========================================== */
+        #frontpage {
+            height: 60vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .hero-content {
+            position: relative;
+        }
+
+        .hero-content h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(2.5rem, 8vw, 4.5rem); /* 自動縮放字體 */
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 1.2rem;
+            color: var(--color-text);
+            /* 複雜的多重陰影，模仿塊狀、粗糙像素邊緣的復古 Serif */
+            text-shadow: 
+                2px 2px 0 var(--color-pixel), -2px -2px 0 var(--color-pixel), 2px -2px 0 var(--color-pixel), -2px 2px 0 var(--color-pixel),
+                0px 4px 0 var(--color-pixel), 0px -4px 0 var(--color-pixel), 4px 0px 0 var(--color-pixel), -4px 0px 0 var(--color-pixel),
+                4px 4px 0 var(--color-pixel), -4px -4px 0 var(--color-pixel), 4px -4px 0 var(--color-pixel), -4px 4px 0 var(--color-pixel),
+                2px 4px 0 var(--color-pixel), -2px -4px 0 var(--color-pixel), 2px -4px 0 var(--color-pixel), -2px 4px 0 var(--color-pixel),
+                4px 2px 0 var(--color-pixel), -4px -2px 0 var(--color-pixel), 4px -2px 0 var(--color-pixel), -4px 2px 0 var(--color-pixel);
+        }
+
+        .hero-content p {
+            font-family: var(--font-body);
+            color: #777;
+            font-size: clamp(0.9rem, 3vw, 1.15rem);
+            font-style: italic;
+            text-transform: uppercase;
+        }
+
+        /* 添加 Y2K 小圖標 (增強效果) */
+        .hero-content::before {
+            content: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHBhdGggZmlsbD0iIzExMSIgZD0iTTEyLjUgMy41TTEwIDEzLjVsMS41IDEuNUw4IDE2TDQuNSA4TDEuNSAxLjVMNCA0TDguMTMzMzMzM3ogTSAxMC41IDEuNSBMIDEzLjUgNCBMIDE2IDguMSBMIDE0LjUgMTAuMSBMIDEzLjUgOSBMIDExIDExIEwgOS41IDkuNSBMIDEyLjUgNi41IEwgIgnTEyLjEMzMzMzMzIDYuNSBMIDEwLjUgNyBMIDEwIDEwIEwgMTIuMDUgMTIgTCAoazEuMDk5OTk5OSBMIDExIDE0IEwgOSAxMyBMIDggNyBMIDEwIDUgTCA4LjI0MTM3OTM4IDIuOTY1NTE3MnoiLz48L3N2Zz4=');
+            position: absolute;
+            top: -20px;
+            left: -30px;
+            width: 20px;
+            opacity: 0.5;
+        }
+
+        .hero-content::after {
+            content: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHBhdGggZmlsbD0iIzExMSIgZD0iTTggMEw4IDE2TDQgOEw4IDB6IE0gOCAwIEwgOCAxNiBMIDEyIDggTCA4IDB6Ii8+PHBhdGggZmlsbD0iIzExMSIgZD0iTTEwIDhMOCAxMEM4IDEwIDggMTAgOCAxMEM4IDEwIDggMTAgOCAxMEM4IDEwIDggMTAgOCAxMEw4IDhaIi8+PC9zdmc+');
+            position: absolute;
+            top: -20px;
+            right: -30px;
+            width: 20px;
+            opacity: 0.5;
+        }
+
+        /* ==========================================
+           7. 滿版 CSS Grid 相片網格 (取代 Masonry)
+           ========================================== */
+        main {
+            padding: 0 calc(var(--spacing-base) * 4) calc(var(--spacing-base) * 6);
+            max-width: 100%;
+            min-height: 100vh;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); 
+            gap: var(--grid-gap);
+        }
+
+        /* 平板尺寸轉為 2 欄 */
+        @media (max-width: 1024px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* 行動裝置轉為 1 欄 */
+        @media (max-width: 650px) {
+            main {
+                padding: calc(var(--spacing-base) * 3) calc(var(--spacing-base) * 2);
+            }
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: calc(var(--spacing-base) * 2);
+            }
+            .gallery-item {
+                height: 60vh;
+            }
+            #frontpage {
+                height: 40vh;
+            }
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* ==========================================
+           8. 影像項目與懸停微互動
+           ========================================== */
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            height: calc(100vh - 180px);
+            background-color: #efefef;
+            cursor: zoom-in;
+            border-radius: 2px;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.9) grayscale(15%);
+            transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+            opacity: 0; /* 預設透明，載入後由 JS 淡入 */
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.06);
+            filter: brightness(1.05) grayscale(0%);
+        }
+
+        .item-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 3rem 2rem 2rem 2rem;
+            background: linear-gradient(to top, var(--color-overlay) 0%, rgba(0,0,0,0) 100%);
+            color: #ffffff;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        .gallery-item:hover .item-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .item-overlay h3 {
+            font-family: var(--font-heading);
+            font-size: 1.7rem;
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.2rem;
+        }
+
+        .item-overlay p {
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        /* ==========================================
+           9. About Me (保留原本設定，像素化標題)
+           ========================================== */
+        #about {
+            clear: both;
+            background-color: #fdfdfd;
+            padding: 100px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .about-content {
+            max-width: 650px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .about-content h2 {
+            font-family: var(--font-heading);
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            /* 塊狀像素化標題 */
+            text-shadow: 2px 2px 0 var(--color-pixel), -2px -2px 0 var(--color-pixel);
+        }
+
+        .subtitle {
+            font-family: var(--font-body);
+            color: #777;
+            font-size: 0.85rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+        }
+
+        .main-text {
+            font-family: var(--font-body);
+            font-size: 1.15rem;
+            color: #333;
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+
+        .divider {
+            width: 40px;
+            margin: 50px auto;
+            border-top: 2px solid #111;
+        }
+
+        .quote {
+            font-family: var(--font-body);
+            font-style: italic;
+            font-size: 1.3rem;
+            color: #555;
+        }
+
+        /* ==========================================
+           10. 燈箱與 Footer
+           ========================================== */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .lightbox.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 85vh;
+            object-fit: contain;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px;
+            color: #bbb;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+    </style>
 </head>
 <body id="top">
-    
+
     <header>
         <a href="#top" id="logo-btn" style="text-decoration: none;">
-            <h1 class="logo">太海</h1>
+            <div class="logo">太海</div>
         </a>
         <nav>
             <button class="filter-btn active" data-target="all">All Works</button>
@@ -38,10 +414,10 @@
         </nav>
     </header>
 
-    <section id="frontpage" style="text-align: center; padding: 60px 20px 20px;">
+    <section id="frontpage">
         <div class="hero-content">
-            <h2 style="font-family: 'Montserrat', sans-serif; font-weight: 300; letter-spacing: 6px; text-transform: uppercase; margin-bottom: 10px;">Capturing the Light</h2>
-            <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.2rem; color: #888;">Welcome to my visual world</p>
+            <h1>Capturing the Light</h1>
+            <p>Welcome to my visual world</p>
         </div>
     </section>
 
@@ -62,7 +438,7 @@
     </section>
 
     <footer>
-        <p>&copy; 2026 Sean Photography. Built with GitHub Pages.</p>
+        <p>&copy; 2026 Sean Photography. Built with Passion.</p>
     </footer>
 
     <div id="lightbox" class="lightbox">
@@ -70,6 +446,152 @@
         <img class="lightbox-content" id="lightbox-img" src="">
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // =========================================
+        // script.js (原汁原味路徑 + 展示全部照片版)
+        // =========================================
+
+        // 生成器：支援不同副檔名
+        function generatePhotoList(folderName, prefix, maxCount = 100, ext = 'jpg') {
+            let photoArray = [];
+            for (let i = 1; i <= maxCount; i++) {
+                photoArray.push({
+                    src: `./images/${folderName}/${prefix} (${i}).${ext}`, // 精確匹配你的路徑
+                    category: folderName
+                });
+            }
+            return photoArray;
+        }
+
+        // 📍 關鍵修正區：根據你的資料夾設定正確的副檔名
+        const photoDatabase = {
+            // people 分類是小寫 .jpg
+            people: generatePhotoList('people', 'people', 100, 'jpg'),
+            // things 分類是大寫 .JPG
+            things: generatePhotoList('things', 'things', 100, 'JPG'),
+            // place 分類是大寫 .JPG
+            place: generatePhotoList('place', 'place', 100, 'JPG') 
+        };
+
+        // 合併所有照片用於首頁展示
+        let allPhotosArray = [...photoDatabase.people, ...photoDatabase.things, ...photoDatabase.place];
+
+        // 隨機洗牌
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // 渲染照片逻辑
+        function renderPhotos(photoArray) {
+            const gallery = document.getElementById('gallery');
+            gallery.innerHTML = ''; // 清空畫廊
+
+            if (!photoArray || photoArray.length === 0) {
+                gallery.innerHTML = '<p style="text-align:center; padding: 50px; width: 100%; color: #888;">尚未發現照片。</p>';
+                return;
+            }
+
+            photoArray.forEach((photo) => {
+                // 創建外層容器
+                const card = document.createElement('div');
+                card.className = `gallery-item ${photo.category}`;
+                
+                // 創建圖片
+                const img = document.createElement('img');
+                img.src = photo.src;
+                img.alt = `${photo.category} photography`;
+
+                // 創建懸停漸層與文字區塊
+                const overlay = document.createElement('div');
+                overlay.className = 'item-overlay';
+                
+                // 根據分類給予優雅的標題 (首字母大寫)
+                const titleText = photo.category.charAt(0).toUpperCase() + photo.category.slice(1);
+                overlay.innerHTML = `
+                    <h3>${titleText}</h3>
+                    <p>Collection / ${titleText}</p>
+                `;
+
+                // 防呆：圖片讀取失敗時自動移除該格子，不留空洞
+                img.onerror = () => {
+                    card.remove(); 
+                };
+                
+                // 讀取成功時淡入顯示
+                img.onload = () => { 
+                    img.style.opacity = 1; 
+                };
+
+                // 點擊觸發燈箱
+                card.addEventListener('click', () => {
+                    const lightbox = document.getElementById('lightbox');
+                    const lightboxImg = document.getElementById('lightbox-img');
+                    lightboxImg.src = photo.src;
+                    lightbox.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                });
+
+                // 組裝 DOM
+                card.appendChild(img);
+                card.appendChild(overlay);
+                gallery.appendChild(card);
+            });
+        }
+
+        // 事件監聽：過濾按鈕
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // 處理滑動至 About Me
+                if (this.id === 'about-btn') {
+                    document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+                    return;
+                }
+
+                // 更新按鈕狀態
+                document.querySelectorAll('.filter-btn').forEach(n => n.classList.remove('active'));
+                this.classList.add('active');
+                
+                // 獲取過濾目標
+                const target = this.getAttribute('data-target');
+                if (!target) return; // 確保不是 Contact 連結
+
+                // 執行 DOM 過濾與 Grid 佈局更新
+                if (target === 'all') {
+                    renderPhotos(shuffleArray(allPhotosArray));
+                } else {
+                    renderPhotos(photoDatabase[target]);
+                }
+
+                // 過濾後平滑捲動回頂部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // Logo 點擊：展示「全部照片」隨機洗牌
+        document.getElementById('logo-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            renderPhotos(shuffleArray(allPhotosArray));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // 燈箱關閉邏輯
+        document.getElementById('lightbox').addEventListener('click', (e) => {
+            // 點擊圖片以外的地方才關閉
+            if (e.target !== document.getElementById('lightbox-img')) {
+                document.getElementById('lightbox').classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // 網頁初始啟動：首頁展示全部照片
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPhotos(shuffleArray(allPhotosArray));
+        });
+    </script>
 </body>
 </html>
