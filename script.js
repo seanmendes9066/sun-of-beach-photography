@@ -1,5 +1,5 @@
 // =========================================
-// script.js (純淨 Grid 渲染 + 兩段式點擊 v1.0.0)
+// script.js (乾淨 Grid 渲染 + 標題動態隱藏)
 // =========================================
 
 function generatePhotoList(folderName, prefix, maxCount = 100, ext = 'jpg') {
@@ -13,7 +13,6 @@ function generatePhotoList(folderName, prefix, maxCount = 100, ext = 'jpg') {
     return photoArray;
 }
 
-// 注意：這裡確保副檔名大小寫與你資料夾內完全一致
 const photoDatabase = {
     people: generatePhotoList('people', 'people', 100, 'jpg'),
     things: generatePhotoList('things', 'things', 100, 'JPG'),
@@ -42,7 +41,6 @@ function renderPhotos(photoArray) {
 
     photoArray.forEach((photo) => {
         const card = document.createElement('div');
-        // 🌟 修復關鍵 1：必須使用 gallery-item 才能對應 CSS
         card.className = `gallery-item ${photo.category}`;
         
         const img = document.createElement('img');
@@ -58,10 +56,7 @@ function renderPhotos(photoArray) {
             <p>Collection / ${titleText}</p>
         `;
 
-        // 圖片讀取失敗自動移除
         img.onerror = () => { card.remove(); };
-        
-        // 🌟 修復關鍵 2：讀取成功後只調整透明度，不呼叫舊版 Masonry
         img.onload = () => { img.style.opacity = 1; };
 
         // 兩段式點擊邏輯
@@ -95,7 +90,7 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// 過濾按鈕邏輯
+// 過濾按鈕 (🚨 加入動態隱藏標題邏輯)
 document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', function(e) {
         if (this.id === 'about-btn') {
@@ -113,38 +108,35 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
         const target = this.getAttribute('data-target');
         if (!target) return; 
 
+        const frontpage = document.getElementById('frontpage');
+
         if (target === 'all') {
+            // 點擊 ALL WORKS：顯示大標題
+            frontpage.classList.remove('hide');
             renderPhotos(shuffleArray(allPhotosArray));
         } else {
+            // 點擊特定分類：隱藏大標題，讓畫廊貼齊頂部
+            frontpage.classList.add('hide');
             renderPhotos(photoDatabase[target]);
         }
 
+        // 滾動到最上方 (隱藏標題後，最上方就是照片排)
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 });
 
-// Logo 點擊回首頁
+// Logo 點擊回到首頁 (🚨 加入恢復標題邏輯)
 document.getElementById('logo-btn').addEventListener('click', (e) => {
     e.preventDefault();
+    
+    // 點擊 Logo 恢復大標題
+    document.getElementById('frontpage').classList.remove('hide');
+    
     renderPhotos(shuffleArray(allPhotosArray));
     document.querySelectorAll('.filter-btn').forEach(n => n.classList.remove('active'));
     document.querySelector('[data-target="all"]').classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 });
-
-// 如果你有加左側小圖標，把這段解除註解
-/*
-const navIcon = document.getElementById('nav-icon-link');
-if(navIcon) {
-    navIcon.addEventListener('click', (e) => {
-        e.preventDefault();
-        renderPhotos(shuffleArray(allPhotosArray));
-        document.querySelectorAll('.filter-btn').forEach(n => n.classList.remove('active'));
-        document.querySelector('[data-target="all"]').classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-}
-*/
 
 // 燈箱關閉
 document.getElementById('lightbox').addEventListener('click', (e) => {
@@ -157,4 +149,15 @@ document.getElementById('lightbox').addEventListener('click', (e) => {
 // 啟動渲染
 document.addEventListener('DOMContentLoaded', () => {
     renderPhotos(shuffleArray(allPhotosArray));
+});
+
+// =========================================
+// 防護罩：防右鍵、防拖曳、防偷看原始碼
+// =========================================
+document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+document.addEventListener('dragstart', function(e) { if (e.target.tagName.toLowerCase() === 'img') e.preventDefault(); });
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'F12') e.preventDefault();
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'i')) e.preventDefault();
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'S' || e.key === 's')) e.preventDefault();
 });
