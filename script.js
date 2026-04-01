@@ -1,7 +1,22 @@
 // =========================================
-// script.js (乾淨 Grid 渲染 + 標題動態隱藏修復版)
+// 🌟 啟動 Lenis 慣性絲滑滾動引擎
 // =========================================
+const lenis = new Lenis({
+  duration: 1.2,       // 數值越大，滑動越緩慢、越絲滑
+  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
+  smooth: true,        
+  smoothTouch: false,  // 手機版保留原生手勢，體驗最好
+});
 
+function raf(time) {
+  lenis.raf(time);
+  requestAnimationFrame(raf);
+}
+requestAnimationFrame(raf);
+
+// =========================================
+// 照片資料庫與渲染邏輯
+// =========================================
 function generatePhotoList(folderName, prefix, maxCount = 100, ext = 'jpg') {
     let photoArray = [];
     for (let i = 1; i <= maxCount; i++) {
@@ -71,7 +86,9 @@ function renderPhotos(photoArray) {
                 const lightboxImg = document.getElementById('lightbox-img');
                 lightboxImg.src = photo.src;
                 lightbox.classList.add('show');
-                document.body.style.overflow = 'hidden';
+                
+                // 開啟燈箱時暫停 Lenis 滾動
+                lenis.stop();
             }
         });
 
@@ -90,11 +107,12 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// 過濾按鈕 (🚨 修復衝突：移除 behavior: 'smooth' 讓動畫交給 CSS 負責)
+// 過濾按鈕與隱藏標題邏輯
 document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', function(e) {
         if (this.id === 'about-btn') {
-            document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+            // 使用 Lenis 專屬的滾動方法前往 About 區塊
+            lenis.scrollTo('#about', { offset: -100 });
             return;
         }
 
@@ -118,7 +136,7 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
             renderPhotos(photoDatabase[target]);
         }
 
-        // 🚨 瞬間置頂，解決與 CSS 高度動畫打架的問題
+        // 瞬間置頂
         window.scrollTo(0, 0); 
     });
 });
@@ -131,7 +149,7 @@ document.getElementById('logo-btn').addEventListener('click', (e) => {
     document.querySelectorAll('.filter-btn').forEach(n => n.classList.remove('active'));
     document.querySelector('[data-target="all"]').classList.add('active');
     
-    // 🚨 瞬間置頂
+    // 瞬間置頂
     window.scrollTo(0, 0); 
 });
 
@@ -139,7 +157,9 @@ document.getElementById('logo-btn').addEventListener('click', (e) => {
 document.getElementById('lightbox').addEventListener('click', (e) => {
     if (e.target !== document.getElementById('lightbox-img')) {
         document.getElementById('lightbox').classList.remove('show');
-        document.body.style.overflow = '';
+        
+        // 關閉燈箱時恢復 Lenis 滾動
+        lenis.start();
     }
 });
 
