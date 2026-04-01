@@ -2,10 +2,11 @@
 // 🌟 啟動 Lenis 慣性絲滑滾動引擎
 // =========================================
 const lenis = new Lenis({
-  duration: 1.2,       // 數值越大，滑動越緩慢、越絲滑
+  duration: 1.2,       
   easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
-  smooth: true,        
-  smoothTouch: false,  // 手機版保留原生手勢，體驗最好
+  smoothWheel: true,   // 🚨 修正參數：新版使用 smoothWheel 確保電腦滑鼠支援
+  wheelMultiplier: 1,  // 控制滾輪的速度倍率 (1 為正常，覺得太慢可改 1.2)
+  smoothTouch: false,  
 });
 
 function raf(time) {

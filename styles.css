@@ -78,8 +78,30 @@ main { padding: 0 calc(var(--spacing-base) * 4) calc(var(--spacing-base) * 6); m
 /* ==========================================
    影像項目與兩段式互動
    ========================================== */
-.gallery-item { position: relative; overflow: hidden; height: calc(100svh - 180px); background-color: #efefef; cursor: pointer; border-radius: 2px; }
-.gallery-item img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.9) grayscale(15%); transition: transform 0.6s ease-in-out, filter 0.6s ease, opacity 0.5s ease; opacity: 0; }
+.gallery-item { 
+    position: relative; 
+    overflow: hidden; 
+    height: calc(100svh - 180px); 
+    background-color: #efefef; 
+    cursor: pointer; 
+    border-radius: 2px; 
+    
+    /* 👇 新增：防止滾動時的重繪卡頓 */
+    transform: translateZ(0); 
+}
+
+.gallery-item img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    filter: brightness(0.9) grayscale(15%); 
+    transition: transform 0.6s ease-in-out, filter 0.6s ease, opacity 0.5s ease; 
+    opacity: 0; 
+    
+    /* 👇 新增：強制開啟 GPU 硬體加速，並提前警告瀏覽器準備運算 */
+    transform: translateZ(0); 
+    will-change: transform, filter; 
+}
 .gallery-item:hover img, .gallery-item.preview-active img { transform: scale(1.05); filter: brightness(1.05) grayscale(0%); }
 
 .item-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 3rem 2rem 1.5rem 2rem; background: linear-gradient(to top, var(--color-overlay) 0%, rgba(0,0,0,0) 100%); color: #ffffff; opacity: 0; transform: translateY(15px); transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none; }
