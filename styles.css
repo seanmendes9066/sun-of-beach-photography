@@ -1,5 +1,5 @@
 /* ==========================================
-   v2.7.0: 拍立得瀑布流 + 終極防消失修復版
+   v3.0: 終極純粹版 (無字留白 + 手機相框 + 防破洞)
    ========================================== */
 :root {
     --font-logo: 'Noto Serif TC', serif;
@@ -15,6 +15,9 @@ html { box-sizing: border-box; font-size: 16px; overflow-x: hidden; width: 100%;
 *, *::before, *::after { box-sizing: inherit; margin: 0; padding: 0; }
 body { background-color: var(--color-bg); color: var(--color-text); font-family: var(--font-body); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-y: scroll; overflow-x: hidden; width: 100%; }
 
+/* ==========================================
+   頂部導覽區
+   ========================================== */
 header { 
     position: sticky; top: 0; 
     background-color: rgba(245, 240, 225, 0.85); 
@@ -37,6 +40,9 @@ nav { display: flex; justify-content: center; gap: calc(var(--spacing-base) * 4)
 .filter-btn:hover, .filter-btn.active { opacity: 1; }
 .filter-btn:hover::after, .filter-btn.active::after { width: 100%; }
 
+/* ==========================================
+   🌟 首頁大標區
+   ========================================== */
 #frontpage.hide { display: none !important; }
 .editorial-hero { min-height: auto; display: flex; justify-content: space-between; align-items: center; padding: 5% 5% 2% 5%; position: relative; overflow: visible; }
 .editorial-hero.reverse { flex-direction: row-reverse; }
@@ -50,7 +56,7 @@ nav { display: flex; justify-content: center; gap: calc(var(--spacing-base) * 4)
 .gsap-hero-subtitle { font-family: var(--font-body); color: #888; font-size: clamp(0.7rem, 1vw, 0.9rem); font-style: italic; letter-spacing: 0.15em; opacity: 0; }
 
 /* ==========================================
-   📸 瀑布流網格排版 
+   📸 瀑布流網格排版
    ========================================== */
 main { padding: 30px calc(var(--spacing-base) * 4) 40px; max-width: 100%; }
 
@@ -59,50 +65,41 @@ main { padding: 30px calc(var(--spacing-base) * 4) 40px; max-width: 100%; }
     column-count: 3; 
     column-gap: var(--grid-gap); 
     
-    /* 🚨 終極防護盾 1：強制使用 GPU 渲染容器，防止 WebKit 裁切 */
-    transform: translate3d(0,0,0); 
-    -webkit-transform: translate3d(0,0,0);
+    /* 🚨 解決右上角破大洞的神奇語法 */
+    column-fill: balance; 
+    align-items: start;
 }
 
 /* ==========================================
-   🖼️ 拍立得效果
+   🖼️ 電腦版：拍立得留白效果
    ========================================== */
 .gallery-item { 
     display: inline-block !important; 
     width: 100%; 
     vertical-align: top; 
-    height: auto !important; 
-    aspect-ratio: auto !important; 
     margin-bottom: var(--grid-gap); 
     
     -webkit-column-break-inside: avoid;
     page-break-inside: avoid;
     break-inside: avoid; 
-    transform: translate3d(0,0,0); 
-    -webkit-transform: translate3d(0,0,0);
-    backface-visibility: hidden;
     
     background-color: #ffffff; 
-    /* 🚨 恢復底部的巨大留白 (45px)，創造無字拍立得感 */
+    /* 電腦版：底部留大片空白 (45px) 創造拍立得感 */
     padding: 12px 12px 45px 12px; 
     border-radius: 3px; 
     box-shadow: 0 4px 15px rgba(0,0,0,0.06); 
     position: relative; overflow: hidden; cursor: pointer; 
 }
 
-.gallery-item img { 
-    width: 100%; height: auto; display: block; 
-    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
-}
-.gallery-item:hover img, .gallery-item.preview-active img { 
-    transform: scale(1.02); 
-}
+.gallery-item img { width: 100%; height: auto; display: block; transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); border-radius: 1px;}
+.gallery-item:hover img { transform: scale(1.02); }
 
-/* 🚨 將原本的文字區塊徹底隱藏，把空間還給留白 */
-.item-details { 
-    display: none !important; 
-}
-/* 🍔 懸浮選單 */
+/* 🚨 徹底隱藏文字區塊 */
+.item-details { display: none !important; }
+
+/* ==========================================
+   🍔 高級感懸浮選單
+   ========================================== */
 .fab-menu { position: fixed; bottom: 35px; right: 35px; height: 50px; padding: 0 25px; border: none; border-radius: 30px; background-color: var(--color-text); color: var(--color-bg); cursor: pointer; z-index: 9999 !important; box-shadow: 0 6px 20px rgba(0,0,0,0.25); display: flex; justify-content: center; align-items: center; gap: 12px; opacity: 0; pointer-events: none; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), background-color 0.3s ease, opacity 0.3s ease; }
 .fab-menu.visible { opacity: 1; pointer-events: auto; }
 .fab-menu:hover { background-color: #333; transform: translateY(-4px); }
@@ -116,7 +113,9 @@ main { padding: 30px calc(var(--spacing-base) * 4) 40px; max-width: 100%; }
 .side-nav .filter-btn { font-size: 1.3rem; opacity: 1; color: var(--color-text); } 
 .close-btn { position: absolute; top: 20px; right: 30px; font-size: 3rem; color: var(--color-text); cursor: pointer; }
 
-/* 📱 響應式 */
+/* ==========================================
+   📱 響應式：平板與手機適配
+   ========================================== */
 @media (max-width: 1024px) { 
     .editorial-hero { padding: 8% 5%; }
     .hero-left-image { width: 45%; }
@@ -136,15 +135,20 @@ main { padding: 30px calc(var(--spacing-base) * 4) 40px; max-width: 100%; }
 
     main { padding: 20px 10px 30px 10px !important; }
     .gallery-grid, .gallery-grid.featured-mode { column-count: 2 !important; column-gap: 15px !important; }
-    .gallery-item { margin-bottom: 15px !important; padding: 6px 6px 0 6px !important; }
-    .item-details { padding: 15px 5px 20px 5px; }
-    .item-details h3 { font-size: 1.1rem; }
+    
+    /* 🚨 手機版：化身為高級等距白邊相框 */
+    .gallery-item { 
+        margin-bottom: 15px !important; 
+        padding: 8px !important; /* 四周白邊等寬 */
+        border-radius: 2px !important; 
+    }
+    
     .fab-menu { height: 45px; padding: 0 20px; bottom: 20px; right: 20px; }
     .fab-text { font-size: 0.75rem; }
     #about { padding: 60px 20px !important; }
 }
 
-/* About Me & Footer */
+/* About Me & Footer & Lightbox */
 #about { clear: both; background-color: #ede7d9; padding: 70px 20px 80px 20px; text-align: center; border-top: 1px solid rgba(17,17,17,0.05); }
 .about-content { max-width: 650px; margin: 0 auto; position: relative; }
 .about-content h2 { font-family: var(--font-heading); font-size: 2.2rem; margin-bottom: 20px; color: var(--color-text);}

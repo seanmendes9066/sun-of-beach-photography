@@ -26,38 +26,26 @@ function generatePhotoList(folderName, prefix, maxCount, ext = 'jpg') {
     return photoArray;
 }
 
-// 🚨 確保數字是你真實的照片數量
+// 🚨 請再次確認這裡是你「真實的照片數量」
 const photoDatabase = {
-    people: { photos: generatePhotoList('people', 'people', 20, 'jpg'), word: 'RESONANT' }, 
-    things: { photos: generatePhotoList('things', 'things', 20, 'JPG'), word: 'INTENTIONAL' },
-    place: { photos: generatePhotoList('place', 'place', 20, 'JPG'), word: 'INTIMATE' }  
+    people: { photos: generatePhotoList('people', 'people', 20, 'jpg') }, 
+    things: { photos: generatePhotoList('things', 'things', 20, 'JPG') },
+    place: { photos: generatePhotoList('place', 'place', 20, 'JPG') }  
 };
 
-// =========================================
-// 🌟 首頁 VIP 精選 (自訂文字)
-// =========================================
+// 首頁精選 (文字已用不到，但保留路徑結構)
 const featuredPhotos = [
-    { src: './images/people/people (3).jpg', category: 'people', title: '街角的旋律', collection: 'COLLECTION / PEOPLE', resonantWord: 'HARMONY' },
-    { src: './images/things/things (3).JPG', category: 'things', title: '靜物', collection: 'COLLECTION / THINGS', resonantWord: 'OBSERVANT' },
-    { src: './images/place/place (10).JPG', category: 'place', title: '城市餘光', collection: 'COLLECTION / PLACE', resonantWord: 'ETERNAL' },
-    { src: './images/people/people (4).jpg', category: 'people', title: '凝視', collection: 'COLLECTION / PEOPLE', resonantWord: 'SILENT' },
-    { src: './images/place/place (2).JPG', category: 'place', title: '無人知曉的清晨', collection: 'COLLECTION / PLACE', resonantWord: 'AWAKENING' },
-    { src: './images/things/things (1).JPG', category: 'things', title: '歲月的痕跡', collection: 'COLLECTION / THINGS', resonantWord: 'NOSTALGIA' }
+    { src: './images/people/people (3).jpg', category: 'people' },
+    { src: './images/things/things (3).JPG', category: 'things' },
+    { src: './images/place/place (10).JPG', category: 'place' },
+    { src: './images/people/people (4).jpg', category: 'people' },
+    { src: './images/place/place (2).JPG', category: 'place' },
+    { src: './images/things/things (1).JPG', category: 'things' }
 ];
-
-function shuffleArray(array) {
-    let arr = [...array];
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-}
 
 // =========================================
 // 🚨 極簡穩定版：原生視覺觀察器
 // =========================================
-// 只要照片進入視窗範圍，就立刻浮現，不再做任何複雜計算！
 if (window.simpleObserver) window.simpleObserver.disconnect();
 
 window.simpleObserver = new IntersectionObserver((entries, observer) => {
@@ -69,18 +57,18 @@ window.simpleObserver = new IntersectionObserver((entries, observer) => {
                 duration: 0.8, 
                 ease: "power2.out"
             });
-            observer.unobserve(entry.target); // 浮現後立刻放手，絕對不干擾排版
+            observer.unobserve(entry.target); 
         }
     });
 }, { rootMargin: "50px 0px", threshold: 0.01 });
 
 // =========================================
-// 核心渲染引擎 (回歸最純粹的載入方式)
+// 核心渲染引擎
 // =========================================
 function renderPhotos(photoArray, isFeatured = false) {
     const gallery = document.getElementById('gallery');
     gallery.innerHTML = ''; 
-    window.simpleObserver.disconnect(); // 清空舊的觀察紀錄
+    window.simpleObserver.disconnect(); 
 
     if (isFeatured) {
         gallery.classList.add('featured-mode');
@@ -97,13 +85,12 @@ function renderPhotos(photoArray, isFeatured = false) {
         const card = document.createElement('div');
         card.className = `gallery-item ${photo.category}`;
         
-        // 初始狀態：簡單地下沉 40px 並隱藏
         gsap.set(card, { y: 40, autoAlpha: 0 });
 
         const img = document.createElement('img');
         img.src = photo.src;
         img.alt = `${photo.category} photography`;
-        img.loading = "lazy"; // 全部交給瀏覽器原生 Lazy Load，最穩定
+        img.loading = "lazy"; 
         
         img.onerror = function() {
             if (!this.dataset.retried) {
@@ -116,44 +103,23 @@ function renderPhotos(photoArray, isFeatured = false) {
             }
         };
 
-        const displayTitle = photo.title || (photo.category.charAt(0).toUpperCase() + photo.category.slice(1));
-        const displayCollection = photo.collection || (`COLLECTION / ${displayTitle.toUpperCase()}`);
-        const displayWord = photo.resonantWord || (photoDatabase[photo.category]?.word || '');
-
-        const details = document.createElement('div');
-        details.className = 'item-details';
-        details.innerHTML = `<h3>${displayTitle}</h3><p class="collection-text">${displayCollection}</p><p class="resonant-word">${displayWord}</p>`;
-
+        // 🚨 點擊直通車：沒有 preview-active 預覽，按一下直接放大燈箱！
         card.addEventListener('click', () => {
-            if (!card.classList.contains('preview-active')) {
-                document.querySelectorAll('.gallery-item').forEach(item => item.classList.remove('preview-active'));
-                card.classList.add('preview-active');
-            } else {
-                const lightbox = document.getElementById('lightbox');
-                document.getElementById('lightbox-img').src = img.src; 
-                lightbox.classList.add('show');
-                lenis.stop();
-            }
+            const lightbox = document.getElementById('lightbox');
+            document.getElementById('lightbox-img').src = img.src; 
+            lightbox.classList.add('show');
+            lenis.stop();
         });
 
         card.appendChild(img);
-        card.appendChild(details); 
         gallery.appendChild(card);
         
-        // 建立好卡片後，直接交給觀察器監視
         window.simpleObserver.observe(card);
     });
 
-    // 切換分頁時瞬間回到頂部
     window.scrollTo(0, 0);
     lenis.scrollTo(0, { immediate: true });
 }
-
-document.addEventListener('click', (e) => {
-    if (!e.target.closest('.gallery-item') && !e.target.closest('.lightbox')) {
-        document.querySelectorAll('.gallery-item').forEach(item => item.classList.remove('preview-active'));
-    }
-});
 
 // =========================================
 // 分類導覽與首頁載入邏輯
@@ -190,6 +156,7 @@ document.getElementById('logo-btn').addEventListener('click', (e) => {
     document.querySelector('[data-target="all"]').classList.add('active');
 });
 
+// 燈箱關閉邏輯
 document.getElementById('lightbox').addEventListener('click', (e) => {
     if (e.target !== document.getElementById('lightbox-img')) {
         document.getElementById('lightbox').classList.remove('show');
@@ -197,6 +164,7 @@ document.getElementById('lightbox').addEventListener('click', (e) => {
     }
 });
 
+// 首頁動畫與選單
 document.addEventListener('DOMContentLoaded', () => {
     renderPhotos(featuredPhotos, true); 
     const tl = gsap.timeline();
