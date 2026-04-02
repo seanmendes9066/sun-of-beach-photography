@@ -26,7 +26,7 @@ function generatePhotoList(folderName, prefix, maxCount, ext = 'jpg') {
     return photoArray;
 }
 
-// 🚨 記得保持你真實的照片數量
+// 🚨 確保數字是你真實的照片數量
 const photoDatabase = {
     people: { photos: generatePhotoList('people', 'people', 20, 'jpg'), word: 'RESONANT' }, 
     things: { photos: generatePhotoList('things', 'things', 20, 'JPG'), word: 'INTENTIONAL' },
@@ -54,32 +54,33 @@ function shuffleArray(array) {
     return arr;
 }
 
-// 🚨 原生交叉觀察器 (處理滾動時的優雅浮現)
-if (window.galleryObserver) window.galleryObserver.disconnect();
+// =========================================
+// 🚨 極簡穩定版：原生視覺觀察器
+// =========================================
+// 只要照片進入視窗範圍，就立刻浮現，不再做任何複雜計算！
+if (window.simpleObserver) window.simpleObserver.disconnect();
 
-window.galleryObserver = new IntersectionObserver((entries, observer) => {
+window.simpleObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             gsap.to(entry.target, {
                 y: 0, 
                 autoAlpha: 1, 
-                duration: 1.0, 
+                duration: 0.8, 
                 ease: "power2.out"
             });
-            observer.unobserve(entry.target); 
+            observer.unobserve(entry.target); // 浮現後立刻放手，絕對不干擾排版
         }
     });
-}, { rootMargin: "0px 0px 30px 0px", threshold: 0.05 });
-
+}, { rootMargin: "50px 0px", threshold: 0.01 });
 
 // =========================================
-// 核心渲染引擎 (極致靈敏版：不等待網路下載)
+// 核心渲染引擎 (回歸最純粹的載入方式)
 // =========================================
 function renderPhotos(photoArray, isFeatured = false) {
     const gallery = document.getElementById('gallery');
     gallery.innerHTML = ''; 
-    ScrollTrigger.getAll().forEach(t => t.kill()); 
-    window.galleryObserver.disconnect(); 
+    window.simpleObserver.disconnect(); // 清空舊的觀察紀錄
 
     if (isFeatured) {
         gallery.classList.add('featured-mode');
@@ -92,24 +93,17 @@ function renderPhotos(photoArray, isFeatured = false) {
         return;
     }
 
-    const cards = [];
-
-    photoArray.forEach((photo, index) => {
+    photoArray.forEach((photo) => {
         const card = document.createElement('div');
         card.className = `gallery-item ${photo.category}`;
         
-        // 初始強制隱藏並往下沉
+        // 初始狀態：簡單地下沉 40px 並隱藏
         gsap.set(card, { y: 40, autoAlpha: 0 });
 
         const img = document.createElement('img');
         img.src = photo.src;
         img.alt = `${photo.category} photography`;
-        
-        if (index < 6) {
-            img.loading = "eager"; 
-        } else {
-            img.loading = "lazy";
-        }
+        img.loading = "lazy"; // 全部交給瀏覽器原生 Lazy Load，最穩定
         
         img.onerror = function() {
             if (!this.dataset.retried) {
@@ -145,30 +139,14 @@ function renderPhotos(photoArray, isFeatured = false) {
         card.appendChild(img);
         card.appendChild(details); 
         gallery.appendChild(card);
-        cards.push(card);
+        
+        // 建立好卡片後，直接交給觀察器監視
+        window.simpleObserver.observe(card);
     });
 
+    // 切換分頁時瞬間回到頂部
     window.scrollTo(0, 0);
     lenis.scrollTo(0, { immediate: true });
-
-    // 🚨 極致靈敏修復：切斷圖片載入限制！
-    const initialCards = cards.slice(0, 6);
-    const restCards = cards.slice(6);
-    
-    // 不管圖片下載好了沒，只要 DOM 建好，瞬間讓前 6 張就定位！
-    if (initialCards.length > 0) {
-        ScrollTrigger.refresh();
-        gsap.to(initialCards, {
-            y: 0, 
-            autoAlpha: 1, 
-            duration: 0.8, 
-            ease: "power2.out"
-            // 🚨 徹底拔除 stagger，杜絕任何發牌感，所有照片一瞬間就位
-        });
-    }
-
-    // 剩下的卡片交給滾動觀察器
-    restCards.forEach(card => window.galleryObserver.observe(card));
 }
 
 document.addEventListener('click', (e) => {
