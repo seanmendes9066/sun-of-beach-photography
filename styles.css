@@ -6,8 +6,8 @@
     --font-heading: 'Cormorant Garamond', serif; 
     --font-body: 'Crimson Pro', serif; 
     
-    /* 🌟 黑底米字配色方案 */
-    --color-bg:  #f5f0e1; 
+    /* 🌟 米色底深色字配色方案 */
+    --color-bg: #f5f0e1; 
     --color-text: #111111;
     --color-overlay: rgba(255, 231, 231, 0.85); 
     --spacing-base: 8px;
@@ -19,186 +19,174 @@ html { box-sizing: border-box; font-size: 16px; }
 body { background-color: var(--color-bg); color: var(--color-text); font-family: var(--font-body); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-y: scroll; overflow-x: hidden; }
 
 /* ==========================================
-   頂部導覽區
+   頂部導覽區 (精簡縮小版)
    ========================================== */
-header { position: sticky; top: 0; background-color: rgba(238, 204, 180, 0.527); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 1000; padding: calc(var(--spacing-base) * 5) 0 calc(var(--spacing-base) * 3) 0; text-align: center; border-bottom: 1px solid rgba(245, 240, 225, 0.05); }
-.logo { font-family: var(--font-logo); font-size: 3rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 1rem; color: var(--color-text); }
+header { 
+    position: sticky; 
+    top: 0; 
+    background-color: rgba(238, 204, 180, 0.8); /* 稍微增加不透明度 */
+    backdrop-filter: blur(12px); 
+    -webkit-backdrop-filter: blur(12px); 
+    z-index: 1000; 
+    padding: 20px 0 10px 0; /* 🚨 縮小上下間距 */
+    text-align: center; 
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05); 
+}
+
+.logo { 
+    font-family: var(--font-logo); 
+    font-size: 2.2rem; /* 🚨 縮小字體 */
+    font-weight: 700; 
+    letter-spacing: 0.1em; 
+    margin-bottom: 0.5rem; 
+    color: var(--color-text); 
+}
+
 nav { display: flex; justify-content: center; gap: calc(var(--spacing-base) * 4); flex-wrap: wrap; padding: 0 15px; }
-.filter-btn { background: none; border: none; cursor: pointer; font-family: var(--font-body); font-size: 0.85rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-text); padding: 8px 4px; transition: color 0.4s ease, opacity 0.4s ease; position: relative; outline: none; text-decoration: none; opacity: 0.5; }
-.filter-btn::after { content: ''; position: absolute; bottom: 0; left: 50%; width: 0; height: 1px; background-color: var(--color-text); transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.4s ease; transform: translateX(-50%); }
+
+.filter-btn { 
+    background: none; border: none; cursor: pointer; 
+    font-family: var(--font-body); font-size: 0.85rem; font-weight: 600; 
+    letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-text); 
+    padding: 8px 4px; transition: color 0.4s ease, opacity 0.4s ease; 
+    position: relative; outline: none; text-decoration: none; opacity: 0.5; 
+}
+.filter-btn::after { 
+    content: ''; position: absolute; bottom: 0; left: 50%; width: 0; height: 1px; 
+    background-color: var(--color-text); transition: width 0.4s ease; transform: translateX(-50%); 
+}
 .filter-btn:hover, .filter-btn.active { opacity: 1; }
 .filter-btn:hover::after, .filter-btn.active::after { width: 100%; }
 
 /* ==========================================
    🌟 全新設計：雜誌編輯風首頁大標區
    ========================================== */
-/* 🚨 確保切換分類時，整個首頁區塊能完美隱藏 */
 #frontpage.hide { display: none !important; }
 
 .editorial-hero { 
-    /* 🚨 1. 縮小空隙：拔除原本的 min-height: 70svh，讓高度自然貼合 */
     min-height: auto; 
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
-    
-    /* 🚨 2. 縮小空隙：把下方的 padding 改成 2% (原本是 8%) */
     padding: 5% 5% 2% 5%; 
-    
     position: relative; 
     overflow: visible; 
 }
 
-/* 🌟 3. 新增：左右交錯魔法 Class！ */
-/* 只要加上 .reverse，裡面的元素就會自動左右對調 */
-.editorial-hero.reverse {
-    flex-direction: row-reverse; 
-}
+/* 左右交錯模式 */
+.editorial-hero.reverse { flex-direction: row-reverse; }
+.editorial-hero.reverse .hero-right-text { align-items: flex-end; text-align: right; }
 
-/* 讓反轉時的文字改為靠右對齊，視覺對比感更強烈 */
-.editorial-hero.reverse .hero-right-text {
-    align-items: flex-end;
-    text-align: right;
-}
-
-/* 🖼️ 1. 左/右側相框 */
 .hero-left-image {
-    width: 35%;    
-    height: auto;  
-    position: relative;
-    opacity: 0; 
-    will-change: transform, opacity;
+    width: 35%; height: auto; position: relative; opacity: 0; will-change: transform, opacity;
 }
-
-/* 📸 2. 照片本人 */
 .hero-left-image img {
-    width: 100%;
-    height: auto;  
-    display: block; 
-    filter: brightness(0.85) grayscale(20%); 
+    width: 100%; height: auto; display: block; filter: brightness(0.95); 
 }
 
-/* 📝 3. 右/左側文字區 */
 .hero-right-text {
-    width: 55%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; 
-    padding-bottom: 0; 
+    width: 55%; display: flex; flex-direction: column; align-items: flex-start; padding-bottom: 0; 
 }
 
 .gsap-hero-title { 
-    font-family: var(--font-heading); 
-    font-size: clamp(3rem, 6vw, 6rem); 
-    font-weight: 500; 
-    line-height: 1.1;
-    margin-bottom: 3rem; 
-    color: var(--color-text); 
-    opacity: 0;
+    font-family: var(--font-heading); font-size: clamp(3rem, 6vw, 6rem); 
+    font-weight: 500; line-height: 1.1; margin-bottom: 2rem; color: var(--color-text); opacity: 0;
 }
-
-.hero-keywords {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 3rem;
-}
-
-.gsap-keyword {
-    font-family: var(--font-heading);
-    font-size: clamp(1rem, 1.5vw, 1.5rem);
-    letter-spacing: 0.2em;
-    color: var(--color-text);
-    opacity: 0;
-}
-
-.gsap-hero-subtitle { 
-    font-family: var(--font-body); 
-    color: #888; 
-    font-size: clamp(0.7rem, 1vw, 0.9rem); 
-    font-style: italic; 
-    letter-spacing: 0.15em;
-    opacity: 0;
-}
+.hero-keywords { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem; }
+.gsap-keyword { font-family: var(--font-heading); font-size: clamp(1rem, 1.5vw, 1.5rem); letter-spacing: 0.2em; color: var(--color-text); opacity: 0; }
+.gsap-hero-subtitle { font-family: var(--font-body); color: #888; font-size: clamp(0.7rem, 1vw, 0.9rem); font-style: italic; letter-spacing: 0.15em; opacity: 0; }
 
 /* ==========================================
-   相片網格與響應式
+   相片網格控制
    ========================================== */
 main { 
     padding: 30px calc(var(--spacing-base) * 4) calc(var(--spacing-base) * 6); 
-    max-width: 100%; 
-    min-height: 100svh; 
+    max-width: 100%; min-height: 100svh; 
 }
 
 .gallery-grid { 
-    display: grid; 
-    grid-template-columns: repeat(3, 1fr); /* 預設為 3 欄 (點擊分類時用) */
-    gap: var(--grid-gap); 
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--grid-gap); 
 }
 
-/* 🌟 終極魔法：首頁專屬的「上2、下3」排版 */
-.gallery-grid.featured-mode {
-    grid-template-columns: repeat(6, 1fr); /* 把畫面切成 6 等份來做精準分配 */
-}
-
-/* 上排的兩張照片 (第1、2張) */
+/* 首頁「上2、下3」排版 (電腦版) */
+.gallery-grid.featured-mode { grid-template-columns: repeat(6, 1fr); }
 .gallery-grid.featured-mode .gallery-item:nth-child(1),
 .gallery-grid.featured-mode .gallery-item:nth-child(2) {
-    grid-column: span 3; /* 各佔 3 等份 (也就是 50% 寬) */
-    height: calc(100svh - 200px); /* 上面的照片高一點，更有張力 */
+    grid-column: span 3; height: 70vh; 
 }
-
-/* 下排的三張照片 (第3、4、5張) */
 .gallery-grid.featured-mode .gallery-item:nth-child(n+3) {
-    grid-column: span 2; /* 各佔 2 等份 (也就是 33.3% 寬) */
-    height: 50svh; /* 下面三張稍微矮一點，比例更好看 */
+    grid-column: span 2; height: 50vh; 
 }
 
 /* ==========================================
-   🌟 影像項目互動 (極致硬體加速)
+   🌟 影像項目互動
    ========================================== */
 .gallery-item { 
-    position: relative; 
-    overflow: hidden; 
-    height: calc(100svh - 180px); 
-    background-color: #222; 
-    cursor: pointer; 
-    border-radius: 2px; 
-    opacity: 0; 
-    visibility: hidden; 
-    will-change: transform, opacity; 
-    transform: translateZ(0); 
+    position: relative; overflow: hidden; height: calc(100svh - 180px); 
+    background-color: #e8e3d5; cursor: pointer; border-radius: 2px; 
+    opacity: 0; visibility: hidden; will-change: transform, opacity; transform: translateZ(0); 
 }
 .gallery-item img { 
     width: 100%; height: 100%; object-fit: cover; 
-    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
-    transform: translateZ(0); 
+    transition: transform 0.6s ease; transform: translateZ(0); 
 }
 .gallery-item:hover img, .gallery-item.preview-active img { transform: scale(1.05); }
 
-.item-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 3rem 2rem 1.5rem 2rem; background: linear-gradient(to top, var(--color-overlay) 0%, rgba(0,0,0,0) 100%); color: var(--color-text); opacity: 0; transform: translateY(20px); transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none; }
-.gallery-item:hover .item-overlay, .gallery-item.preview-active .item-overlay { opacity: 1; transform: translateY(0); }
-.item-overlay h3 { font-family: var(--font-heading); font-size: 1.7rem; font-weight: 400; font-style: italic; letter-spacing: 0.03em; margin-bottom: 0.2rem; }
-.item-overlay p { font-family: var(--font-body); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.6; }
-
-/* 網格內照片配對文字樣式 */
-.resonant-word { font-family: var(--font-heading); font-size: 0.8rem; letter-spacing: 2px; opacity: 0.8; margin-top: 8px; font-style: italic; color: #d4cfc1; }
+.item-overlay { 
+    position: absolute; bottom: 0; left: 0; width: 100%; padding: 2rem; 
+    background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%); 
+    color: #fff; opacity: 0; transform: translateY(10px); transition: 0.4s ease; pointer-events: none; 
+}
+.gallery-item:hover .item-overlay { opacity: 1; transform: translateY(0); }
+.item-overlay h3 { font-family: var(--font-heading); font-size: 1.5rem; font-style: italic; }
+.resonant-word { font-family: var(--font-heading); font-size: 0.8rem; letter-spacing: 2px; margin-top: 5px; opacity: 0.9; }
 
 /* ==========================================
-   About Me & Footer
+   📱 終極手機版修復 (RWD)
    ========================================== */
-#about { clear: both; background-color: #1a1a1a; padding: 100px 20px; text-align: center; position: relative; border-top: 1px solid rgba(245, 240, 225, 0.05); }
-.about-content { max-width: 650px; margin: 0 auto; position: relative; }
-.about-content h2 { font-family: var(--font-heading); font-size: 2.2rem; margin-bottom: 20px; color: var(--color-text);}
-.subtitle { font-family: var(--font-body); color: #888; font-size: 0.85rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 40px; }
-.main-text { font-family: var(--font-body); font-size: 1.15rem; color: #ccc; margin-bottom: 25px; text-align: justify; }
-.divider { width: 40px; margin: 50px auto; border-top: 2px solid #555; }
-.quote { font-family: var(--font-body); font-style: italic; font-size: 1.3rem; color: #aaa; }
+@media (max-width: 768px) {
+    /* 1. 導覽列縮小 */
+    header { padding: 15px 0; }
+    .logo { font-size: 1.8rem; }
+    nav { gap: 10px; }
+    .filter-btn { font-size: 0.7rem; }
 
-.lightbox { display: none; position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); justify-content: center; align-items: center; opacity: 0; transition: opacity 0.4s; }
+    /* 2. 首頁大標區改為上下堆疊 */
+    .editorial-hero, .editorial-hero.reverse { 
+        flex-direction: column !important; 
+        padding: 40px 20px; 
+        align-items: center;
+        text-align: center;
+    }
+    .hero-left-image, .hero-right-text { 
+        width: 100% !important; 
+        align-items: center !important; 
+        text-align: center !important;
+    }
+    .hero-left-image { margin-bottom: 30px; }
+    .gsap-hero-title { font-size: 2.5rem; margin-bottom: 1.5rem; }
+
+    /* 3. 照片網格：手機一律變回 1 欄或 2 欄，不要用 6 格切換 */
+    .gallery-grid, .gallery-grid.featured-mode { 
+        grid-template-columns: 1fr !important; /* 🚨 強制變回單欄 */
+        gap: 20px; 
+    }
+    
+    .gallery-grid.featured-mode .gallery-item:nth-child(n),
+    .gallery-item { 
+        grid-column: span 1 !important; 
+        height: 60vh !important; /* 🚨 給予固定好看的高度 */
+    }
+
+    /* 4. About 區塊調整 */
+    #about { padding: 60px 20px; }
+    .main-text { font-size: 1rem; text-align: center; }
+}
+
+/* Lightbox & Other */
+#about { background-color: #ede7d9; padding: 100px 20px; text-align: center; border-top: 1px solid rgba(0,0,0,0.05); }
+.lightbox { display: none; position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; opacity: 0; transition: 0.4s; }
 .lightbox.show { display: flex; opacity: 1; }
-.lightbox-content { max-width: 90%; max-height: 85vh; object-fit: contain; border-radius: 2px; }
-.close-btn { position: absolute; top: 20px; right: 30px; color: var(--color-text); font-size: 40px; cursor: pointer; }
-footer { text-align: center; padding: 60px; color: #555; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; background-color: #111;}
-
-img { -webkit-user-drag: none; -khtml-user-drag: none; -moz-user-drag: none; -o-user-drag: none; user-drag: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -o-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.lightbox-content { max-width: 90%; max-height: 85vh; object-fit: contain; }
+.close-btn { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 40px; cursor: pointer; }
+footer { text-align: center; padding: 40px; color: #888; font-size: 0.7rem; letter-spacing: 2px; }
