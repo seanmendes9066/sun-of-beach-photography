@@ -75,31 +75,33 @@ main { padding: 30px calc(var(--spacing-base) * 4) 40px; max-width: 100%; }
     aspect-ratio: auto !important; 
     margin-bottom: var(--grid-gap); 
     
-    /* 🚨 終極防護盾 2：嚴格禁止照片被從中間切斷 */
     -webkit-column-break-inside: avoid;
     page-break-inside: avoid;
     break-inside: avoid; 
-    
-    /* 🚨 終極防護盾 3：防止滾動時突然消失 */
     transform: translate3d(0,0,0); 
     -webkit-transform: translate3d(0,0,0);
     backface-visibility: hidden;
     
     background-color: #ffffff; 
-    padding: 12px 12px 0 12px; 
+    /* 🚨 恢復底部的巨大留白 (45px)，創造無字拍立得感 */
+    padding: 12px 12px 45px 12px; 
     border-radius: 3px; 
     box-shadow: 0 4px 15px rgba(0,0,0,0.06); 
     position: relative; overflow: hidden; cursor: pointer; 
 }
 
-.gallery-item img { width: 100%; height: auto; display: block; transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-.gallery-item:hover img, .gallery-item.preview-active img { transform: scale(1.02); }
+.gallery-item img { 
+    width: 100%; height: auto; display: block; 
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+}
+.gallery-item:hover img, .gallery-item.preview-active img { 
+    transform: scale(1.02); 
+}
 
-.item-details { padding: 20px 10px 25px 10px; background: #ffffff; text-align: left; }
-.item-details h3 { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 500; font-style: italic; color: #111; margin-bottom: 4px; }
-.item-details .collection-text { font-family: var(--font-body); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: #888; margin-bottom: 10px; }
-.item-details .resonant-word { font-family: var(--font-heading); font-size: 0.8rem; letter-spacing: 0.2em; font-style: italic; color: #555; }
-
+/* 🚨 將原本的文字區塊徹底隱藏，把空間還給留白 */
+.item-details { 
+    display: none !important; 
+}
 /* 🍔 懸浮選單 */
 .fab-menu { position: fixed; bottom: 35px; right: 35px; height: 50px; padding: 0 25px; border: none; border-radius: 30px; background-color: var(--color-text); color: var(--color-bg); cursor: pointer; z-index: 9999 !important; box-shadow: 0 6px 20px rgba(0,0,0,0.25); display: flex; justify-content: center; align-items: center; gap: 12px; opacity: 0; pointer-events: none; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), background-color 0.3s ease, opacity 0.3s ease; }
 .fab-menu.visible { opacity: 1; pointer-events: auto; }
