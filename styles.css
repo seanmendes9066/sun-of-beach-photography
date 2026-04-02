@@ -1,5 +1,5 @@
 /* ==========================================
-   v2.6.0: 拍立得瀑布流 + 防破圖消失修復版
+   v2.7.0: 拍立得瀑布流 + 終極防消失修復版
    ========================================== */
 :root {
     --font-logo: 'Noto Serif TC', serif;
@@ -15,17 +15,13 @@ html { box-sizing: border-box; font-size: 16px; overflow-x: hidden; width: 100%;
 *, *::before, *::after { box-sizing: inherit; margin: 0; padding: 0; }
 body { background-color: var(--color-bg); color: var(--color-text); font-family: var(--font-body); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-y: scroll; overflow-x: hidden; width: 100%; }
 
-/* ==========================================
-   頂部導覽區
-   ========================================== */
 header { 
     position: sticky; top: 0; 
     background-color: rgba(245, 240, 225, 0.85); 
     backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); 
     z-index: 1000; 
     padding: calc(var(--spacing-base) * 5) 0 calc(var(--spacing-base) * 3) 0; 
-    text-align: center; 
-    border-bottom: 1px solid rgba(17, 17, 17, 0.1); 
+    text-align: center; border-bottom: 1px solid rgba(17, 17, 17, 0.1); 
 }
 .logo { font-family: var(--font-logo); font-size: 3rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 1rem; color: var(--color-text); }
 nav { display: flex; justify-content: center; gap: calc(var(--spacing-base) * 4); flex-wrap: wrap; padding: 0 15px; }
@@ -37,26 +33,15 @@ nav { display: flex; justify-content: center; gap: calc(var(--spacing-base) * 4)
     padding: 8px 4px; transition: color 0.4s ease, opacity 0.4s ease; 
     position: relative; outline: none; text-decoration: none; opacity: 0.5; 
 }
-.filter-btn::after { 
-    content: ''; position: absolute; bottom: 0; left: 50%; width: 0; height: 1px; 
-    background-color: var(--color-text); transition: width 0.4s ease; transform: translateX(-50%); 
-}
+.filter-btn::after { content: ''; position: absolute; bottom: 0; left: 50%; width: 0; height: 1px; background-color: var(--color-text); transition: width 0.4s ease; transform: translateX(-50%); }
 .filter-btn:hover, .filter-btn.active { opacity: 1; }
 .filter-btn:hover::after, .filter-btn.active::after { width: 100%; }
 
-/* ==========================================
-   🌟 首頁大標區
-   ========================================== */
 #frontpage.hide { display: none !important; }
-
-.editorial-hero { 
-    min-height: auto; display: flex; justify-content: space-between; align-items: center; 
-    padding: 5% 5% 2% 5%; position: relative; overflow: visible; 
-}
+.editorial-hero { min-height: auto; display: flex; justify-content: space-between; align-items: center; padding: 5% 5% 2% 5%; position: relative; overflow: visible; }
 .editorial-hero.reverse { flex-direction: row-reverse; }
 .editorial-hero.reverse .hero-right-text { align-items: flex-end; text-align: right; }
-
-.hero-left-image { width: 35%; height: auto; position: relative; opacity: 0; will-change: transform, opacity; }
+.hero-left-image { width: 35%; height: auto; position: relative; opacity: 0; }
 .hero-left-image img { width: 100%; height: auto; display: block; filter: brightness(0.95); }
 .hero-right-text { width: 55%; display: flex; flex-direction: column; align-items: flex-start; padding-bottom: 0; }
 .gsap-hero-title { font-family: var(--font-heading); font-size: clamp(3rem, 6vw, 6rem); font-weight: 500; line-height: 1.1; margin-bottom: 3rem; color: var(--color-text); opacity: 0; }
@@ -65,21 +50,22 @@ nav { display: flex; justify-content: center; gap: calc(var(--spacing-base) * 4)
 .gsap-hero-subtitle { font-family: var(--font-body); color: #888; font-size: clamp(0.7rem, 1vw, 0.9rem); font-style: italic; letter-spacing: 0.15em; opacity: 0; }
 
 /* ==========================================
-   📸 瀑布流網格排版
+   📸 瀑布流網格排版 
    ========================================== */
-main { 
-    padding: 30px calc(var(--spacing-base) * 4) 40px; 
-    max-width: 100%; 
-}
+main { padding: 30px calc(var(--spacing-base) * 4) 40px; max-width: 100%; }
 
 .gallery-grid, .gallery-grid.featured-mode { 
     display: block !important; 
     column-count: 3; 
     column-gap: var(--grid-gap); 
+    
+    /* 🚨 終極防護盾 1：強制使用 GPU 渲染容器，防止 WebKit 裁切 */
+    transform: translate3d(0,0,0); 
+    -webkit-transform: translate3d(0,0,0);
 }
 
 /* ==========================================
-   🖼️ 拍立得效果 (修復渲染裁切消失 Bug)
+   🖼️ 拍立得效果
    ========================================== */
 .gallery-item { 
     display: inline-block !important; 
@@ -89,84 +75,46 @@ main {
     aspect-ratio: auto !important; 
     margin-bottom: var(--grid-gap); 
     
-    /* 🚨 終極防破圖設定：確保所有瀏覽器都不會把照片切斷 */
+    /* 🚨 終極防護盾 2：嚴格禁止照片被從中間切斷 */
     -webkit-column-break-inside: avoid;
     page-break-inside: avoid;
     break-inside: avoid; 
+    
+    /* 🚨 終極防護盾 3：防止滾動時突然消失 */
+    transform: translate3d(0,0,0); 
+    -webkit-transform: translate3d(0,0,0);
+    backface-visibility: hidden;
     
     background-color: #ffffff; 
     padding: 12px 12px 0 12px; 
     border-radius: 3px; 
     box-shadow: 0 4px 15px rgba(0,0,0,0.06); 
-    
-    position: relative; overflow: hidden; 
-    cursor: pointer; opacity: 0; visibility: hidden; 
-    
-    /* 🚨 拔除會引起衝突的 will-change 和 translateZ */
+    position: relative; overflow: hidden; cursor: pointer; 
 }
 
-.gallery-item img { 
-    width: 100%; height: auto; display: block; 
-    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
-}
+.gallery-item img { width: 100%; height: auto; display: block; transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
 .gallery-item:hover img, .gallery-item.preview-active img { transform: scale(1.02); }
 
-/* 🌟 直接嵌在拍立得白邊內的文字設計 */
-.item-details { 
-    padding: 20px 10px 25px 10px; 
-    background: #ffffff; 
-    text-align: left; 
-}
-.item-details h3 { 
-    font-family: var(--font-heading); font-size: 1.5rem; font-weight: 500; 
-    font-style: italic; color: #111; margin-bottom: 4px; 
-}
-.item-details .collection-text { 
-    font-family: var(--font-body); font-size: 0.65rem; letter-spacing: 0.15em; 
-    text-transform: uppercase; color: #888; margin-bottom: 10px; 
-}
-.item-details .resonant-word { 
-    font-family: var(--font-heading); font-size: 0.8rem; letter-spacing: 0.2em; 
-    font-style: italic; color: #555; 
-}
+.item-details { padding: 20px 10px 25px 10px; background: #ffffff; text-align: left; }
+.item-details h3 { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 500; font-style: italic; color: #111; margin-bottom: 4px; }
+.item-details .collection-text { font-family: var(--font-body); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: #888; margin-bottom: 10px; }
+.item-details .resonant-word { font-family: var(--font-heading); font-size: 0.8rem; letter-spacing: 0.2em; font-style: italic; color: #555; }
 
-/* ==========================================
-   🍔 高級感懸浮選單
-   ========================================== */
-.fab-menu {
-    position: fixed; bottom: 35px; right: 35px;
-    height: 50px; padding: 0 25px; 
-    border: none; border-radius: 30px;
-    background-color: var(--color-text); color: var(--color-bg);
-    cursor: pointer; z-index: 9999 !important; 
-    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-    display: flex; justify-content: center; align-items: center; gap: 12px;
-    opacity: 0; pointer-events: none; 
-    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), background-color 0.3s ease, opacity 0.3s ease;
-}
+/* 🍔 懸浮選單 */
+.fab-menu { position: fixed; bottom: 35px; right: 35px; height: 50px; padding: 0 25px; border: none; border-radius: 30px; background-color: var(--color-text); color: var(--color-bg); cursor: pointer; z-index: 9999 !important; box-shadow: 0 6px 20px rgba(0,0,0,0.25); display: flex; justify-content: center; align-items: center; gap: 12px; opacity: 0; pointer-events: none; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), background-color 0.3s ease, opacity 0.3s ease; }
 .fab-menu.visible { opacity: 1; pointer-events: auto; }
 .fab-menu:hover { background-color: #333; transform: translateY(-4px); }
-
 .fab-text { font-family: var(--font-body); font-size: 0.85rem; letter-spacing: 0.15em; font-weight: 600; text-transform: uppercase; }
 .fab-icon { display: flex; flex-direction: column; gap: 4px; }
 .fab-icon span { width: 16px; height: 1.5px; background-color: var(--color-bg); }
 
-.side-menu {
-    position: fixed; top: 0; right: -100%; 
-    width: 300px; max-width: 100%; height: 100vh;
-    background-color: var(--color-bg); z-index: 10000 !important;
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    transition: right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    box-shadow: -5px 0 20px rgba(0,0,0,0.1);
-}
+.side-menu { position: fixed; top: 0; right: -100%; width: 300px; max-width: 100%; height: 100vh; background-color: var(--color-bg); z-index: 10000 !important; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); box-shadow: -5px 0 20px rgba(0,0,0,0.1); }
 .side-menu.open { right: 0; }
 .side-nav { display: flex; flex-direction: column; gap: 2rem; text-align: center; }
 .side-nav .filter-btn { font-size: 1.3rem; opacity: 1; color: var(--color-text); } 
 .close-btn { position: absolute; top: 20px; right: 30px; font-size: 3rem; color: var(--color-text); cursor: pointer; }
 
-/* ==========================================
-   📱 響應式：平板與手機適配
-   ========================================== */
+/* 📱 響應式 */
 @media (max-width: 1024px) { 
     .editorial-hero { padding: 8% 5%; }
     .hero-left-image { width: 45%; }
@@ -179,10 +127,7 @@ main {
     nav { gap: 10px 15px !important; padding: 0 10px !important; }
     .filter-btn { font-size: 0.75rem !important; padding: 4px 2px !important; }
 
-    .editorial-hero, .editorial-hero.reverse { 
-        flex-direction: column !important; padding: 40px 20px !important; 
-        align-items: center !important; text-align: center !important;
-    }
+    .editorial-hero, .editorial-hero.reverse { flex-direction: column !important; padding: 40px 20px !important; align-items: center !important; text-align: center !important; }
     .hero-left-image { width: 100% !important; margin-bottom: 30px !important; margin-top: 0 !important; }
     .hero-right-text { width: 100% !important; align-items: center !important; text-align: center !important; }
     .gsap-hero-title { font-size: 2.5rem !important; margin-bottom: 2rem !important; }
@@ -192,16 +137,12 @@ main {
     .gallery-item { margin-bottom: 15px !important; padding: 6px 6px 0 6px !important; }
     .item-details { padding: 15px 5px 20px 5px; }
     .item-details h3 { font-size: 1.1rem; }
-    
     .fab-menu { height: 45px; padding: 0 20px; bottom: 20px; right: 20px; }
     .fab-text { font-size: 0.75rem; }
-    
     #about { padding: 60px 20px !important; }
 }
 
-/* ==========================================
-   About Me, Lightbox & Footer
-   ========================================== */
+/* About Me & Footer */
 #about { clear: both; background-color: #ede7d9; padding: 70px 20px 80px 20px; text-align: center; border-top: 1px solid rgba(17,17,17,0.05); }
 .about-content { max-width: 650px; margin: 0 auto; position: relative; }
 .about-content h2 { font-family: var(--font-heading); font-size: 2.2rem; margin-bottom: 20px; color: var(--color-text);}

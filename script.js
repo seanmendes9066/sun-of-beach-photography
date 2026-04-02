@@ -18,7 +18,7 @@ requestAnimationFrame(raf);
 // =========================================
 // 照片資料庫生成
 // =========================================
-function generatePhotoList(folderName, prefix, maxCount = 100, ext = 'jpg') {
+function generatePhotoList(folderName, prefix, maxCount, ext = 'jpg') {
     let photoArray = [];
     for (let i = 1; i <= maxCount; i++) {
         photoArray.push({ src: `./images/${folderName}/${prefix} (${i}).${ext}`, category: folderName });
@@ -26,12 +26,16 @@ function generatePhotoList(folderName, prefix, maxCount = 100, ext = 'jpg') {
     return photoArray;
 }
 
+// =========================================
+// 🚨 終極修復：請在這裡填入你「真實的照片數量」！
+// =========================================
+// 請去你的資料夾看，People 有幾張就填幾，Things 有幾張就填幾。
+// 這樣電腦就不會產生「幽靈照片」導致往下滾時版面錯亂了！
 const photoDatabase = {
-    people: { photos: generatePhotoList('people', 'people', 100, 'jpg'), word: 'RESONANT' },
-    things: { photos: generatePhotoList('things', 'things', 100, 'JPG'), word: 'INTENTIONAL' },
-    place: { photos: generatePhotoList('place', 'place', 100, 'JPG'), word: 'INTIMATE' } 
+    people: { photos: generatePhotoList('people', 'people', 12, 'jpg'), word: 'RESONANT' }, // 👈 把 20 改成你真實的數量
+    things: { photos: generatePhotoList('things', 'things', 13, 'JPG'), word: 'INTENTIONAL' }, // 👈 把 20 改成你真實的數量
+    place: { photos: generatePhotoList('place', 'place', 23, 'JPG'), word: 'INTIMATE' }   // 👈 把 20 改成你真實的數量
 };
-let allPhotosArray = [...photoDatabase.people.photos, ...photoDatabase.things.photos, ...photoDatabase.place.photos];
 
 // =========================================
 // 🌟 首頁 VIP 精選 (自訂文字)
@@ -45,22 +49,32 @@ const featuredPhotos = [
     { src: './images/things/things (1).JPG', category: 'things', title: '歲月的痕跡', collection: 'COLLECTION / THINGS', resonantWord: 'NOSTALGIA' }
 ];
 
-function shuffleArray(array) {
-    let arr = [...array];
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-}
+// 🚨 原生交叉觀察器 (優雅浮現)
+if (window.galleryObserver) window.galleryObserver.disconnect();
+
+window.galleryObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            gsap.to(entry.target, {
+                y: 0, 
+                autoAlpha: 1, 
+                duration: 1.2, 
+                ease: "power2.out"
+            });
+            observer.unobserve(entry.target); 
+        }
+    });
+}, { rootMargin: "0px 0px 30px 0px", threshold: 0.05 });
+
 
 // =========================================
-// 核心渲染引擎
+// 核心渲染引擎 
 // =========================================
 function renderPhotos(photoArray, isFeatured = false) {
     const gallery = document.getElementById('gallery');
     gallery.innerHTML = ''; 
     ScrollTrigger.getAll().forEach(t => t.kill()); 
+    window.galleryObserver.disconnect(); 
 
     if (isFeatured) {
         gallery.classList.add('featured-mode');
@@ -73,22 +87,25 @@ function renderPhotos(photoArray, isFeatured = false) {
         return;
     }
 
-    let refreshTimeout;
+    const cards = [];
 
     photoArray.forEach((photo, index) => {
         const card = document.createElement('div');
         card.className = `gallery-item ${photo.category}`;
         
+        gsap.set(card, { y: 40, autoAlpha: 0 });
+
         const img = document.createElement('img');
         img.src = photo.src;
         img.alt = `${photo.category} photography`;
-        img.loading = "lazy"; 
         
-        img.onload = () => {
-            clearTimeout(refreshTimeout);
-            refreshTimeout = setTimeout(() => { ScrollTrigger.refresh(); }, 150);
-        };
-
+        if (index < 6) {
+            img.loading = "eager"; 
+        } else {
+            img.loading = "lazy";
+        }
+        
+        // 如果依然有副檔名大小寫錯誤，這裡還是會幫你自動修正，但不會再引發幽靈大排版了
         img.onerror = function() {
             if (!this.dataset.retried) {
                 this.dataset.retried = true; 
@@ -108,7 +125,7 @@ function renderPhotos(photoArray, isFeatured = false) {
         details.className = 'item-details';
         details.innerHTML = `<h3>${displayTitle}</h3><p class="collection-text">${displayCollection}</p><p class="resonant-word">${displayWord}</p>`;
 
-        card.addEventListener('click', (e) => {
+        card.addEventListener('click', () => {
             if (!card.classList.contains('preview-active')) {
                 document.querySelectorAll('.gallery-item').forEach(item => item.classList.remove('preview-active'));
                 card.classList.add('preview-active');
@@ -123,34 +140,44 @@ function renderPhotos(photoArray, isFeatured = false) {
         card.appendChild(img);
         card.appendChild(details); 
         gallery.appendChild(card);
+        cards.push(card);
     });
 
-    requestAnimationFrame(() => {
-        gallery.offsetHeight; 
-        window.scrollTo(0, 0);
-        lenis.scrollTo(0, { immediate: true });
-        
-        setTimeout(() => {
+    window.scrollTo(0, 0);
+    lenis.scrollTo(0, { immediate: true });
+
+    let imagesLoaded = 0;
+    const initialCards = cards.slice(0, 6);
+    
+    if (initialCards.length === 0) return;
+
+    initialCards.forEach(card => {
+        const img = card.querySelector('img');
+        if (img.complete) {
+            imagesLoaded++;
+            checkAllLoaded();
+        } else {
+            img.addEventListener('load', () => { imagesLoaded++; checkAllLoaded(); });
+            img.addEventListener('error', () => { imagesLoaded++; checkAllLoaded(); }); 
+        }
+    });
+
+    function checkAllLoaded() {
+        if (imagesLoaded === initialCards.length) {
             ScrollTrigger.refresh();
-
-            gsap.set('.gallery-item', { y: 80, autoAlpha: 0 });
-
-            ScrollTrigger.batch('.gallery-item', {
-                start: "top 95%", 
-                once: true, // 🚨 終極修復：動畫只執行一次，絕對不再干擾版面！
-                onEnter: batch => {
-                    gsap.to(batch, {
-                        y: 0, 
-                        autoAlpha: 1, 
-                        duration: 1.2, 
-                        stagger: 0.15, 
-                        ease: "power3.out",
-                        overwrite: true
-                    });
-                }
+            
+            gsap.to(initialCards, {
+                y: 0, 
+                autoAlpha: 1, 
+                duration: 1.0, 
+                stagger: 0.05, 
+                ease: "power2.out"
             });
-        }, 100);
-    });
+
+            const restCards = cards.slice(6);
+            restCards.forEach(card => window.galleryObserver.observe(card));
+        }
+    }
 }
 
 document.addEventListener('click', (e) => {
