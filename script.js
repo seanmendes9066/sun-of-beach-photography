@@ -26,15 +26,11 @@ function generatePhotoList(folderName, prefix, maxCount, ext = 'jpg') {
     return photoArray;
 }
 
-// =========================================
-// 🚨 終極修復：請在這裡填入你「真實的照片數量」！
-// =========================================
-// 請去你的資料夾看，People 有幾張就填幾，Things 有幾張就填幾。
-// 這樣電腦就不會產生「幽靈照片」導致往下滾時版面錯亂了！
+// 🚨 記得保持你真實的照片數量
 const photoDatabase = {
-    people: { photos: generatePhotoList('people', 'people', 12, 'jpg'), word: 'RESONANT' }, // 👈 把 20 改成你真實的數量
-    things: { photos: generatePhotoList('things', 'things', 13, 'JPG'), word: 'INTENTIONAL' }, // 👈 把 20 改成你真實的數量
-    place: { photos: generatePhotoList('place', 'place', 23, 'JPG'), word: 'INTIMATE' }   // 👈 把 20 改成你真實的數量
+    people: { photos: generatePhotoList('people', 'people', 20, 'jpg'), word: 'RESONANT' }, 
+    things: { photos: generatePhotoList('things', 'things', 20, 'JPG'), word: 'INTENTIONAL' },
+    place: { photos: generatePhotoList('place', 'place', 20, 'JPG'), word: 'INTIMATE' }  
 };
 
 // =========================================
@@ -49,7 +45,16 @@ const featuredPhotos = [
     { src: './images/things/things (1).JPG', category: 'things', title: '歲月的痕跡', collection: 'COLLECTION / THINGS', resonantWord: 'NOSTALGIA' }
 ];
 
-// 🚨 原生交叉觀察器 (優雅浮現)
+function shuffleArray(array) {
+    let arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+// 🚨 原生交叉觀察器 (處理滾動時的優雅浮現)
 if (window.galleryObserver) window.galleryObserver.disconnect();
 
 window.galleryObserver = new IntersectionObserver((entries, observer) => {
@@ -58,7 +63,7 @@ window.galleryObserver = new IntersectionObserver((entries, observer) => {
             gsap.to(entry.target, {
                 y: 0, 
                 autoAlpha: 1, 
-                duration: 1.2, 
+                duration: 1.0, 
                 ease: "power2.out"
             });
             observer.unobserve(entry.target); 
@@ -68,7 +73,7 @@ window.galleryObserver = new IntersectionObserver((entries, observer) => {
 
 
 // =========================================
-// 核心渲染引擎 
+// 核心渲染引擎 (極致靈敏版：不等待網路下載)
 // =========================================
 function renderPhotos(photoArray, isFeatured = false) {
     const gallery = document.getElementById('gallery');
@@ -93,6 +98,7 @@ function renderPhotos(photoArray, isFeatured = false) {
         const card = document.createElement('div');
         card.className = `gallery-item ${photo.category}`;
         
+        // 初始強制隱藏並往下沉
         gsap.set(card, { y: 40, autoAlpha: 0 });
 
         const img = document.createElement('img');
@@ -105,7 +111,6 @@ function renderPhotos(photoArray, isFeatured = false) {
             img.loading = "lazy";
         }
         
-        // 如果依然有副檔名大小寫錯誤，這裡還是會幫你自動修正，但不會再引發幽靈大排版了
         img.onerror = function() {
             if (!this.dataset.retried) {
                 this.dataset.retried = true; 
@@ -146,38 +151,24 @@ function renderPhotos(photoArray, isFeatured = false) {
     window.scrollTo(0, 0);
     lenis.scrollTo(0, { immediate: true });
 
-    let imagesLoaded = 0;
+    // 🚨 極致靈敏修復：切斷圖片載入限制！
     const initialCards = cards.slice(0, 6);
+    const restCards = cards.slice(6);
     
-    if (initialCards.length === 0) return;
-
-    initialCards.forEach(card => {
-        const img = card.querySelector('img');
-        if (img.complete) {
-            imagesLoaded++;
-            checkAllLoaded();
-        } else {
-            img.addEventListener('load', () => { imagesLoaded++; checkAllLoaded(); });
-            img.addEventListener('error', () => { imagesLoaded++; checkAllLoaded(); }); 
-        }
-    });
-
-    function checkAllLoaded() {
-        if (imagesLoaded === initialCards.length) {
-            ScrollTrigger.refresh();
-            
-            gsap.to(initialCards, {
-                y: 0, 
-                autoAlpha: 1, 
-                duration: 1.0, 
-                stagger: 0.05, 
-                ease: "power2.out"
-            });
-
-            const restCards = cards.slice(6);
-            restCards.forEach(card => window.galleryObserver.observe(card));
-        }
+    // 不管圖片下載好了沒，只要 DOM 建好，瞬間讓前 6 張就定位！
+    if (initialCards.length > 0) {
+        ScrollTrigger.refresh();
+        gsap.to(initialCards, {
+            y: 0, 
+            autoAlpha: 1, 
+            duration: 0.8, 
+            ease: "power2.out"
+            // 🚨 徹底拔除 stagger，杜絕任何發牌感，所有照片一瞬間就位
+        });
     }
+
+    // 剩下的卡片交給滾動觀察器
+    restCards.forEach(card => window.galleryObserver.observe(card));
 }
 
 document.addEventListener('click', (e) => {
