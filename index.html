@@ -13,8 +13,6 @@
     <meta property="og:image" content="https://seanmendes9066.github.io/sun-of-beach-photography/og-image.jpg">
     <meta property="og:url" content="https://seanmendes9066.github.io/sun-of-beach-photography/">
     <meta property="og:type" content="website">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://seanmendes9066.github.io/sun-of-beach-photography/og-image.jpg">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,10 +37,39 @@
     </header>
 
     <section id="frontpage">
-        <div class="hero-content">
-            <h1>FREEZE THE LIGHT</h1>
-            <p>Welcome to my visual world</p>
+        
+        <div class="editorial-hero">
+            <div class="hero-left-image">
+                <img src="./images/people/people (1).jpg" alt="Hero Photography 1">
+            </div>
+            
+            <div class="hero-right-text">
+                <h1 class="gsap-hero-title">FREEZE<br>THE LIGHT</h1>
+                <div class="hero-keywords">
+                    <span class="gsap-keyword">RESONANT</span>
+                    <span class="gsap-keyword">INTENTIONAL</span>
+                    <span class="gsap-keyword">INTIMATE</span>
+                </div>
+                <p class="gsap-hero-subtitle">WELCOME TO MY VISUAL WORLD</p>
+            </div>
         </div>
+
+        <div class="editorial-hero reverse">
+            <div class="hero-left-image">
+                <img src="./images/place/place (1).JPG" alt="Hero Photography 2">
+            </div>
+            
+            <div class="hero-right-text">
+                <h1 class="gsap-hero-title">CHASING<br>THE SHADOW</h1>
+                <div class="hero-keywords">
+                    <span class="gsap-keyword">SILENT</span>
+                    <span class="gsap-keyword">OBSERVANT</span>
+                    <span class="gsap-keyword">ETERNAL</span>
+                </div>
+                <p class="gsap-hero-subtitle">EVERY FRAME TELLS A STORY</p>
+            </div>
+        </div>
+
     </section>
 
     <main id="gallery-section">
@@ -70,6 +97,9 @@
     </div>
 
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
     <script src="script.js"></script>
 </body>
 </html>
