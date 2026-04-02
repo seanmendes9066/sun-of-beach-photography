@@ -18,7 +18,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body id="top">
 
@@ -37,12 +37,10 @@
     </header>
 
     <section id="frontpage">
-        
         <div class="editorial-hero">
             <div class="hero-left-image">
                 <img src="./images/people/people (1).jpg" alt="Hero Photography 1">
             </div>
-            
             <div class="hero-right-text">
                 <h1 class="gsap-hero-title">FREEZE<br>THE LIGHT</h1>
                 <div class="hero-keywords">
@@ -58,7 +56,6 @@
             <div class="hero-left-image">
                 <img src="./images/place/place (1).JPG" alt="Hero Photography 2">
             </div>
-            
             <div class="hero-right-text">
                 <h1 class="gsap-hero-title">CHASING<br>THE SHADOW</h1>
                 <div class="hero-keywords">
@@ -69,7 +66,6 @@
                 <p class="gsap-hero-subtitle">EVERY FRAME TELLS A STORY</p>
             </div>
         </div>
-
     </section>
 
     <main id="gallery-section">
@@ -96,10 +92,23 @@
         <img class="lightbox-content" id="lightbox-img" src="">
     </div>
 
+    <button id="fab-menu" class="fab-menu">
+        <div class="fab-icon">
+            <span></span>
+            <span></span>
+        </div>
+        <div class="fab-text">Menu</div>
+    </button>
+    <div id="side-menu" class="side-menu">
+        <div id="close-menu" class="close-btn">×</div>
+        <nav class="side-nav">
+            </nav>
+    </div>
+
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     
-    <script src="script.js"></script>
+    <script src="script.js?v=5"></script>
 </body>
 </html>

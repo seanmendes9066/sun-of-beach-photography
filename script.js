@@ -34,14 +34,15 @@ const photoDatabase = {
 let allPhotosArray = [...photoDatabase.people.photos, ...photoDatabase.things.photos, ...photoDatabase.place.photos];
 
 // =========================================
-// 🌟 你的首頁專屬精選照片 (VIP 名單 - 5張)
+// 🌟 首頁 VIP 精選 (自訂文字)
 // =========================================
 const featuredPhotos = [
-    { src: './images/people/people (3).jpg', category: 'people' },
-    { src: './images/place/place (2).JPG', category: 'place' },
-    { src: './images/things/things (3).JPG', category: 'things' },
-    { src: './images/people/people (4).jpg', category: 'people' },
-    { src: './images/place/place (10).JPG', category: 'place' }
+    { src: './images/people/people (3).jpg', category: 'people', title: '街角的旋律', collection: 'COLLECTION / PEOPLE', resonantWord: 'HARMONY' },
+    { src: './images/things/things (3).JPG', category: 'things', title: '靜物', collection: 'COLLECTION / THINGS', resonantWord: 'OBSERVANT' },
+    { src: './images/place/place (10).JPG', category: 'place', title: '城市餘光', collection: 'COLLECTION / PLACE', resonantWord: 'ETERNAL' },
+    { src: './images/people/people (4).jpg', category: 'people', title: '凝視', collection: 'COLLECTION / PEOPLE', resonantWord: 'SILENT' },
+    { src: './images/place/place (2).JPG', category: 'place', title: '無人知曉的清晨', collection: 'COLLECTION / PLACE', resonantWord: 'AWAKENING' },
+    { src: './images/things/things (1).JPG', category: 'things', title: '歲月的痕跡', collection: 'COLLECTION / THINGS', resonantWord: 'NOSTALGIA' }
 ];
 
 function shuffleArray(array) {
@@ -56,13 +57,11 @@ function shuffleArray(array) {
 // =========================================
 // 核心渲染引擎
 // =========================================
-// 🚨 加入 isFeatured 參數，預設為 false
 function renderPhotos(photoArray, isFeatured = false) {
     const gallery = document.getElementById('gallery');
     gallery.innerHTML = ''; 
     ScrollTrigger.getAll().forEach(t => t.kill()); 
 
-    // 🌟 關鍵邏輯：如果是首頁精選，就加上 featured-mode 啟動 CSS 的「上2下3」排版
     if (isFeatured) {
         gallery.classList.add('featured-mode');
     } else {
@@ -70,11 +69,12 @@ function renderPhotos(photoArray, isFeatured = false) {
     }
 
     if (!photoArray || photoArray.length === 0) {
-        gallery.innerHTML = '<p style="text-align:center; padding: 50px; grid-column: 1/-1; color: #888;">尚未發現照片。</p>';
+        gallery.innerHTML = '<p style="text-align:center; padding: 50px; color: #888;">尚未發現照片。</p>';
         return;
     }
 
-    // 這裡我們不使用 limit 了，因為如果是 featured 就是 5 張，不是的話就是全部
+    let refreshTimeout;
+
     photoArray.forEach((photo, index) => {
         const card = document.createElement('div');
         card.className = `gallery-item ${photo.category}`;
@@ -84,6 +84,11 @@ function renderPhotos(photoArray, isFeatured = false) {
         img.alt = `${photo.category} photography`;
         img.loading = "lazy"; 
         
+        img.onload = () => {
+            clearTimeout(refreshTimeout);
+            refreshTimeout = setTimeout(() => { ScrollTrigger.refresh(); }, 150);
+        };
+
         img.onerror = function() {
             if (!this.dataset.retried) {
                 this.dataset.retried = true; 
@@ -95,16 +100,13 @@ function renderPhotos(photoArray, isFeatured = false) {
             }
         };
 
-        const overlay = document.createElement('div');
-        overlay.className = 'item-overlay';
-        const titleText = photo.category.charAt(0).toUpperCase() + photo.category.slice(1);
-        let word = photoDatabase[photo.category]?.word || '';
-        
-        overlay.innerHTML = `
-            <h3>${titleText}</h3>
-            <p>Collection / ${titleText}</p>
-            <p class="resonant-word">${word}</p>
-        `;
+        const displayTitle = photo.title || (photo.category.charAt(0).toUpperCase() + photo.category.slice(1));
+        const displayCollection = photo.collection || (`COLLECTION / ${displayTitle.toUpperCase()}`);
+        const displayWord = photo.resonantWord || (photoDatabase[photo.category]?.word || '');
+
+        const details = document.createElement('div');
+        details.className = 'item-details';
+        details.innerHTML = `<h3>${displayTitle}</h3><p class="collection-text">${displayCollection}</p><p class="resonant-word">${displayWord}</p>`;
 
         card.addEventListener('click', (e) => {
             if (!card.classList.contains('preview-active')) {
@@ -119,7 +121,7 @@ function renderPhotos(photoArray, isFeatured = false) {
         });
 
         card.appendChild(img);
-        card.appendChild(overlay);
+        card.appendChild(details); 
         gallery.appendChild(card);
     });
 
@@ -127,25 +129,27 @@ function renderPhotos(photoArray, isFeatured = false) {
         gallery.offsetHeight; 
         window.scrollTo(0, 0);
         lenis.scrollTo(0, { immediate: true });
-        ScrollTrigger.refresh();
+        
+        setTimeout(() => {
+            ScrollTrigger.refresh();
 
-        gsap.utils.toArray('.gallery-item').forEach((item, index) => {
-            let isLeft = index % 2 === 0;
-            let startDelay = index < 6 ? (index * 0.15) : 0;
-            
-            gsap.fromTo(item, 
-                { yPercent: 20, xPercent: isLeft ? -10 : 10, autoAlpha: 0, scale: 0.9, rotation: isLeft ? -2 : 2 },
-                {
-                    scrollTrigger: { 
-                        trigger: item, 
-                        start: "top 100%", 
-                        toggleActions: "play none none none" 
-                    },
-                    yPercent: 0, xPercent: 0, autoAlpha: 1, scale: 1, rotation: 0, 
-                    duration: 1.2, ease: "power3.out", delay: startDelay
+            gsap.set('.gallery-item', { y: 80, autoAlpha: 0 });
+
+            ScrollTrigger.batch('.gallery-item', {
+                start: "top 95%", 
+                once: true, // 🚨 終極修復：動畫只執行一次，絕對不再干擾版面！
+                onEnter: batch => {
+                    gsap.to(batch, {
+                        y: 0, 
+                        autoAlpha: 1, 
+                        duration: 1.2, 
+                        stagger: 0.15, 
+                        ease: "power3.out",
+                        overwrite: true
+                    });
                 }
-            );
-        });
+            });
+        }, 100);
     });
 }
 
@@ -172,14 +176,10 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
         const frontpage = document.getElementById('frontpage');
         
         if (target === 'all') {
-            // 如果你還有保留圖文大標區，就解除隱藏
             if(frontpage) frontpage.classList.remove('hide');
-            // 🚨 傳入 true，啟用首頁精選排版
             renderPhotos(featuredPhotos, true); 
         } else {
-            // 隱藏大標區
             if(frontpage) frontpage.classList.add('hide');
-            // 🚨 傳入 false，恢復一般網格排版
             renderPhotos(photoDatabase[target].photos, false);
         }
     });
@@ -189,10 +189,7 @@ document.getElementById('logo-btn').addEventListener('click', (e) => {
     e.preventDefault();
     const frontpage = document.getElementById('frontpage');
     if(frontpage) frontpage.classList.remove('hide');
-    
-    // 🚨 傳入 true，啟用首頁精選排版
     renderPhotos(featuredPhotos, true); 
-    
     document.querySelectorAll('.filter-btn').forEach(n => n.classList.remove('active'));
     document.querySelector('[data-target="all"]').classList.add('active');
 });
@@ -204,24 +201,50 @@ document.getElementById('lightbox').addEventListener('click', (e) => {
     }
 });
 
-// =========================================
-// 首頁大標區進場動畫
-// =========================================
 document.addEventListener('DOMContentLoaded', () => {
-    // 🚨 初始載入時傳入 true，啟用首頁精選排版
     renderPhotos(featuredPhotos, true); 
-    
-    // 如果你已經把 HTML 的大標區刪了，這段動畫會找不到元素，但不會報錯
     const tl = gsap.timeline();
-    tl.fromTo(".hero-left-image", 
-        { yPercent: 30, xPercent: -10, autoAlpha: 0, rotation: -2 }, 
-        { yPercent: 0, xPercent: 0, autoAlpha: 1, rotation: 0, duration: 1.5, ease: "power3.out", delay: 0.2 }
-    )
-    .fromTo(".gsap-hero-title", { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1, ease: "power3.out" }, "-=0.8")
-    .fromTo(".gsap-keyword", { y: 20, autoAlpha: 0, x: -10 }, { y: 0, autoAlpha: 1, x: 0, duration: 0.8, stagger: 0.15, ease: "power2.out" }, "-=0.6")
-    .fromTo(".gsap-hero-subtitle", { autoAlpha: 0 }, { autoAlpha: 1, duration: 1, ease: "power2.out" }, "-=0.4");
+    tl.fromTo(".hero-left-image", { yPercent: 30, xPercent: -10, autoAlpha: 0, rotation: -2 }, { yPercent: 0, xPercent: 0, autoAlpha: 1, rotation: 0, duration: 1.5, ease: "power3.out", delay: 0.2 })
+      .fromTo(".gsap-hero-title", { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1, ease: "power3.out" }, "-=0.8")
+      .fromTo(".gsap-keyword", { y: 20, autoAlpha: 0, x: -10 }, { y: 0, autoAlpha: 1, x: 0, duration: 0.8, stagger: 0.15, ease: "power2.out" }, "-=0.6")
+      .fromTo(".gsap-hero-subtitle", { autoAlpha: 0 }, { autoAlpha: 1, duration: 1, ease: "power2.out" }, "-=0.4");
 });
 
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('dragstart', e => { if (e.target.tagName.toLowerCase() === 'img') e.preventDefault(); });
 document.addEventListener('keydown', e => { if (e.key === 'F12' || ((e.ctrlKey || e.metaKey) && (e.key === 'I' || e.key === 'i' || e.key === 'S' || e.key === 's'))) e.preventDefault(); });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const fabMenu = document.getElementById('fab-menu');
+    const sideMenu = document.getElementById('side-menu');
+    const closeMenu = document.getElementById('close-menu');
+    const sideNav = document.querySelector('.side-nav');
+    const mainNav = document.querySelector('header nav');
+
+    if (!fabMenu || !sideMenu || !mainNav || !sideNav) return;
+
+    sideNav.innerHTML = mainNav.innerHTML;
+
+    sideNav.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('data-target');
+            if (targetId) {
+                const mainBtn = document.querySelector(`header nav [data-target="${targetId}"]`);
+                if(mainBtn) mainBtn.click();
+            } else if (this.id === 'about-btn') {
+                const aboutBtn = document.getElementById('about-btn');
+                if(aboutBtn) aboutBtn.click();
+            }
+            sideMenu.classList.remove('open');
+        });
+    });
+
+    fabMenu.addEventListener('click', () => sideMenu.classList.add('open'));
+    if(closeMenu) { closeMenu.addEventListener('click', () => sideMenu.classList.remove('open')); }
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 200) { fabMenu.classList.add('visible'); } 
+        else { fabMenu.classList.remove('visible'); sideMenu.classList.remove('open'); }
+    });
+});
