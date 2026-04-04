@@ -1,8 +1,5 @@
-/* ==========================================
-   v3.0: 終極純粹版 (無字留白 + 手機相框 + 防破洞)
-   ========================================== */
 :root {
-    --font-logo: 'Noto Serif TC', serif;
+    --font-logo: 'Noto Serif TC', serif; 
     --font-heading: 'Cormorant Garamond', serif; 
     --font-body: 'Crimson Pro', serif; 
     --color-bg: #f5f0e1; 
@@ -18,31 +15,18 @@ body { background-color: var(--color-bg); color: var(--color-text); font-family:
 /* ==========================================
    頂部導覽區
    ========================================== */
-header { 
-    position: sticky; top: 0; 
-    background-color: rgba(245, 240, 225, 0.85); 
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); 
-    z-index: 1000; 
-    padding: calc(var(--spacing-base) * 5) 0 calc(var(--spacing-base) * 3) 0; 
-    text-align: center; border-bottom: 1px solid rgba(17, 17, 17, 0.1); 
-}
-.logo { font-family: var(--font-logo); font-size: 3rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 1rem; color: var(--color-text); }
+header { position: sticky; top: 0; background-color: rgba(245, 240, 225, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 1000; padding: calc(var(--spacing-base) * 5) 0 calc(var(--spacing-base) * 3) 0; text-align: center; border-bottom: 1px solid rgba(17, 17, 17, 0.1); }
+.logo { font-family: var(--font-logo); font-size: 3rem; font-weight: 700; letter-spacing: 0.15em; margin-bottom: 1rem; color: var(--color-text); }
 nav { display: flex; justify-content: center; gap: calc(var(--spacing-base) * 4); flex-wrap: wrap; padding: 0 15px; }
-
-.filter-btn { 
-    background: none; border: none; cursor: pointer; 
-    font-family: var(--font-body); font-size: 0.85rem; font-weight: 600; 
-    letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-text); 
-    padding: 8px 4px; transition: color 0.4s ease, opacity 0.4s ease; 
-    position: relative; outline: none; text-decoration: none; opacity: 0.5; 
-}
+.filter-btn { background: none; border: none; cursor: pointer; font-family: var(--font-body); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; color: var(--color-text); padding: 8px 4px; transition: color 0.4s ease, opacity 0.4s ease; position: relative; outline: none; text-decoration: none; opacity: 0.5; }
 .filter-btn::after { content: ''; position: absolute; bottom: 0; left: 50%; width: 0; height: 1px; background-color: var(--color-text); transition: width 0.4s ease; transform: translateX(-50%); }
 .filter-btn:hover, .filter-btn.active { opacity: 1; }
 .filter-btn:hover::after, .filter-btn.active::after { width: 100%; }
 
 /* ==========================================
-   🌟 首頁大標區
+   首頁大標區
    ========================================== */
+#frontpage { padding-bottom: 80px; } 
 #frontpage.hide { display: none !important; }
 .editorial-hero { min-height: auto; display: flex; justify-content: space-between; align-items: center; padding: 5% 5% 2% 5%; position: relative; overflow: visible; }
 .editorial-hero.reverse { flex-direction: row-reverse; }
@@ -53,52 +37,24 @@ nav { display: flex; justify-content: center; gap: calc(var(--spacing-base) * 4)
 .gsap-hero-title { font-family: var(--font-heading); font-size: clamp(3rem, 6vw, 6rem); font-weight: 500; line-height: 1.1; margin-bottom: 3rem; color: var(--color-text); opacity: 0; }
 .hero-keywords { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 3rem; }
 .gsap-keyword { font-family: var(--font-heading); font-size: clamp(1rem, 1.5vw, 1.5rem); letter-spacing: 0.2em; color: var(--color-text); opacity: 0; }
-.gsap-hero-subtitle { font-family: var(--font-body); color: #888; font-size: clamp(0.7rem, 1vw, 0.9rem); font-style: italic; letter-spacing: 0.15em; opacity: 0; }
+.gsap-hero-subtitle { font-family: var(--font-body); color: #888; font-size: clamp(0.7rem, 1vw, 0.9rem); font-style: italic; letter-spacing: 0.25em; opacity: 0; }
 
 /* ==========================================
-   📸 瀑布流網格排版
+   瀑布流網格排版 
    ========================================== */
 main { padding: 30px calc(var(--spacing-base) * 4) 40px; max-width: 100%; }
-
-.gallery-grid, .gallery-grid.featured-mode { 
-    display: block !important; 
-    column-count: 3; 
-    column-gap: var(--grid-gap); 
-    
-    /* 🚨 解決右上角破大洞的神奇語法 */
-    column-fill: balance; 
-    align-items: start;
-}
+.gallery-grid, .gallery-grid.featured-mode { display: block !important; column-count: 3; column-gap: var(--grid-gap); column-fill: balance; align-items: start; }
 
 /* ==========================================
-   🖼️ 電腦版：拍立得留白效果
+   電腦版：無字拍立得留白效果
    ========================================== */
-.gallery-item { 
-    display: inline-block !important; 
-    width: 100%; 
-    vertical-align: top; 
-    margin-bottom: var(--grid-gap); 
-    
-    -webkit-column-break-inside: avoid;
-    page-break-inside: avoid;
-    break-inside: avoid; 
-    
-    background-color: #ffffff; 
-    /* 電腦版：底部留大片空白 (45px) 創造拍立得感 */
-    padding: 12px 12px 45px 12px; 
-    border-radius: 3px; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.06); 
-    position: relative; overflow: hidden; cursor: pointer; 
-}
-
-.gallery-item img { width: 100%; height: auto; display: block; transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); border-radius: 1px;}
+.gallery-item { display: inline-block !important; width: 100%; vertical-align: top; margin-bottom: var(--grid-gap); -webkit-column-break-inside: avoid; page-break-inside: avoid; break-inside: avoid; transform: translate3d(0,0,0); -webkit-transform: translate3d(0,0,0); backface-visibility: hidden; background-color: #ffffff; padding: 12px 12px 45px 12px; border-radius: 3px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); position: relative; overflow: hidden; cursor: pointer; }
+.gallery-item img { width: 100%; height: auto; display: block; transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); border-radius: 1px; }
 .gallery-item:hover img { transform: scale(1.02); }
-
-/* 🚨 徹底隱藏文字區塊 */
 .item-details { display: none !important; }
 
 /* ==========================================
-   🍔 高級感懸浮選單
+   🍔 懸浮選單
    ========================================== */
 .fab-menu { position: fixed; bottom: 35px; right: 35px; height: 50px; padding: 0 25px; border: none; border-radius: 30px; background-color: var(--color-text); color: var(--color-bg); cursor: pointer; z-index: 9999 !important; box-shadow: 0 6px 20px rgba(0,0,0,0.25); display: flex; justify-content: center; align-items: center; gap: 12px; opacity: 0; pointer-events: none; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), background-color 0.3s ease, opacity 0.3s ease; }
 .fab-menu.visible { opacity: 1; pointer-events: auto; }
@@ -114,52 +70,66 @@ main { padding: 30px calc(var(--spacing-base) * 4) 40px; max-width: 100%; }
 .close-btn { position: absolute; top: 20px; right: 30px; font-size: 3rem; color: var(--color-text); cursor: pointer; }
 
 /* ==========================================
+   🚨 升級版：About Me 左右不對稱排版
+   ========================================== */
+#about { clear: both; background-color: #ede7d9; padding: 120px 5%; border-top: 1px solid rgba(17,17,17,0.05); }
+.about-container { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 80px; }
+.about-image { width: 45%; }
+.about-image img { width: 100%; height: auto; border-radius: 2px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); display: block; }
+.about-text { width: 55%; text-align: left; }
+.about-text h2 { font-family: var(--font-heading); font-size: 2.8rem; margin-bottom: 10px; color: var(--color-text);}
+.about-text .subtitle { font-family: var(--font-body); color: #888; font-size: 0.85rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 30px; }
+.about-text .main-text { font-family: var(--font-body); font-size: 1.15rem; color: #333; margin-bottom: 25px; line-height: 1.8; }
+.about-text .divider { width: 50px; margin: 40px 0; border-top: 2px solid #555; }
+
+.contact-info { display: flex; flex-direction: column; gap: 15px; }
+.contact-link { display: inline-flex; align-items: center; gap: 20px; text-decoration: none; color: var(--color-text); transition: opacity 0.3s ease; }
+.contact-link:hover { opacity: 0.6; }
+.contact-label { font-family: var(--font-body); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.15em; width: 120px; }
+.contact-detail { font-family: var(--font-body); font-size: 1.15rem; font-style: italic; }
+
+/* ==========================================
+   🚨 導覽式燈箱 CSS
+   ========================================== */
+.lightbox { display: none; position: fixed; z-index: 20000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; opacity: 0; transition: opacity 0.4s; }
+.lightbox.show { display: flex; opacity: 1; }
+.lightbox-content-wrapper { position: relative; max-width: 85%; max-height: 85vh; display: flex; justify-content: center; align-items: center; }
+.lightbox-content { max-width: 100%; max-height: 85vh; object-fit: contain; border-radius: 2px; }
+.lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(255,255,255,0.5); font-size: 50px; cursor: pointer; padding: 20px; transition: color 0.3s ease; z-index: 20001; outline: none; }
+.lightbox-nav:hover { color: rgba(255,255,255,1); }
+.lightbox-prev { left: 20px; }
+.lightbox-next { right: 20px; }
+
+/* ==========================================
    📱 響應式：平板與手機適配
    ========================================== */
 @media (max-width: 1024px) { 
-    .editorial-hero { padding: 8% 5%; }
-    .hero-left-image { width: 45%; }
-    .gallery-grid, .gallery-grid.featured-mode { column-count: 2 !important; }
+    .editorial-hero { padding: 8% 5%; } .hero-left-image { width: 45%; } 
+    .gallery-grid, .gallery-grid.featured-mode { column-count: 2 !important; } 
+    .about-container { gap: 40px; }
 }
 
 @media (max-width: 768px) { 
-    header { padding: 20px 0 15px 0 !important; }
-    .logo { font-size: 2.2rem !important; margin-bottom: 0.5rem !important; }
-    nav { gap: 10px 15px !important; padding: 0 10px !important; }
-    .filter-btn { font-size: 0.75rem !important; padding: 4px 2px !important; }
-
-    .editorial-hero, .editorial-hero.reverse { flex-direction: column !important; padding: 40px 20px !important; align-items: center !important; text-align: center !important; }
-    .hero-left-image { width: 100% !important; margin-bottom: 30px !important; margin-top: 0 !important; }
-    .hero-right-text { width: 100% !important; align-items: center !important; text-align: center !important; }
-    .gsap-hero-title { font-size: 2.5rem !important; margin-bottom: 2rem !important; }
-
-    main { padding: 20px 10px 30px 10px !important; }
-    .gallery-grid, .gallery-grid.featured-mode { column-count: 2 !important; column-gap: 15px !important; }
+    header { padding: 20px 0 15px 0 !important; } .logo { font-size: 2.2rem !important; margin-bottom: 0.5rem !important; } nav { gap: 10px 15px !important; padding: 0 10px !important; } .filter-btn { font-size: 0.75rem !important; padding: 4px 2px !important; }
+    .editorial-hero, .editorial-hero.reverse { flex-direction: column !important; padding: 40px 20px !important; align-items: center !important; text-align: center !important; } .hero-left-image { width: 100% !important; margin-bottom: 30px !important; margin-top: 0 !important; } .hero-right-text { width: 100% !important; align-items: center !important; text-align: center !important; } .gsap-hero-title { font-size: 2.5rem !important; margin-bottom: 2rem !important; }
+    main { padding: 20px 10px 30px 10px !important; } .gallery-grid, .gallery-grid.featured-mode { column-count: 2 !important; column-gap: 15px !important; }
     
     /* 🚨 手機版：化身為高級等距白邊相框 */
-    .gallery-item { 
-        margin-bottom: 15px !important; 
-        padding: 8px !important; /* 四周白邊等寬 */
-        border-radius: 2px !important; 
-    }
+    .gallery-item { margin-bottom: 15px !important; padding: 8px !important; border-radius: 2px !important; }
     
-    .fab-menu { height: 45px; padding: 0 20px; bottom: 20px; right: 20px; }
-    .fab-text { font-size: 0.75rem; }
-    #about { padding: 60px 20px !important; }
+    .fab-menu { height: 45px; padding: 0 20px; bottom: 20px; right: 20px; } .fab-text { font-size: 0.75rem; }
+    
+    /* 🚨 手機版 About Me 改回上下直式 */
+    #about { padding: 80px 20px; }
+    .about-container { flex-direction: column; gap: 40px; }
+    .about-image, .about-text { width: 100%; text-align: center; }
+    .about-text .divider { margin: 40px auto; }
+    .contact-link { justify-content: center; gap: 10px; }
+    .contact-label { width: auto; }
+    
+    .lightbox-nav { font-size: 40px; padding: 10px; }
+    .lightbox-prev { left: 5px; } .lightbox-next { right: 5px; }
 }
 
-/* About Me & Footer & Lightbox */
-#about { clear: both; background-color: #ede7d9; padding: 70px 20px 80px 20px; text-align: center; border-top: 1px solid rgba(17,17,17,0.05); }
-.about-content { max-width: 650px; margin: 0 auto; position: relative; }
-.about-content h2 { font-family: var(--font-heading); font-size: 2.2rem; margin-bottom: 20px; color: var(--color-text);}
-.subtitle { font-family: var(--font-body); color: #888; font-size: 0.85rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 40px; }
-.main-text { font-family: var(--font-body); font-size: 1.15rem; color: #333; margin-bottom: 25px; text-align: justify; }
-.divider { width: 40px; margin: 50px auto; border-top: 2px solid #555; }
-.quote { font-family: var(--font-body); font-style: italic; font-size: 1.3rem; color: #555; }
-
-.lightbox { display: none; position: fixed; z-index: 20000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; opacity: 0; transition: opacity 0.4s; }
-.lightbox.show { display: flex; opacity: 1; }
-.lightbox-content { max-width: 90%; max-height: 85vh; object-fit: contain; border-radius: 2px; }
-.close-btn { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 40px; cursor: pointer; }
 footer { text-align: center; padding: 60px; color: #888; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; background-color: var(--color-bg);}
 img { -webkit-user-drag: none; user-drag: none; -webkit-user-select: none; user-select: none; }
