@@ -17,7 +17,7 @@ body { background-color: var(--color-bg); color: var(--color-text); font-family:
    ========================================== */
 header { position: sticky; top: 0; background-color: rgba(245, 240, 225, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 1000; padding: calc(var(--spacing-base) * 6) 0 calc(var(--spacing-base) * 4) 0; text-align: center; border-bottom: 1px solid rgba(17, 17, 17, 0.1); }
 .logo { margin-bottom: 1.5rem; display: flex; justify-content: center; align-items: center; cursor: pointer; }
-.logo img { height: 125px; width: auto; display: block; transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.logo img { height: 140px; width: 200px; display: fill; transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
 .logo img:hover { opacity: 0.7; transform: scale(1.03); }
 nav { display: flex; justify-content: center; gap: calc(var(--spacing-base) * 6); flex-wrap: wrap; padding: 0 15px; }
 .filter-btn { background: none; border: none; cursor: pointer; font-family: var(--font-body); font-size: 1.1rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-text); padding: 10px 5px; transition: color 0.4s ease, opacity 0.4s ease; position: relative; outline: none; text-decoration: none; opacity: 0.5; }
