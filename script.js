@@ -26,7 +26,6 @@ function generatePhotoList(folderName, prefix, maxCount, ext = 'jpg') {
     return photoArray;
 }
 
-// 🚨 確保這裡是你資料夾裡「真實的照片數量」
 const photoDatabase = {
     people: { photos: generatePhotoList('people', 'people', 20, 'jpg') }, 
     things: { photos: generatePhotoList('things', 'things', 20, 'JPG') },
@@ -43,23 +42,36 @@ const featuredPhotos = [
 ];
 
 // =========================================
-// 🚨 極簡穩定版：原生視覺觀察器 (不破版、不消失)
+// 🚨 無負擔版：優雅的中心展開動畫 (無扭曲、無閃爍)
 // =========================================
 if (window.simpleObserver) window.simpleObserver.disconnect();
 
 window.simpleObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            gsap.to(entry.target, {
+            const card = entry.target;
+            const img = card.querySelector('img');
+
+            // 卡片從下方浮出
+            gsap.to(card, {
                 y: 0, 
                 autoAlpha: 1, 
-                duration: 1.2, 
-                ease: "power3.out"
+                duration: 0.8, 
+                ease: "power2.out"
             });
-            observer.unobserve(entry.target); 
+
+            // 圖片以柔和的圓形展開，時間縮短為 1.2 秒，乾淨俐落
+            if (img) {
+                gsap.fromTo(img, 
+                    { "--ink-size": "0%" },
+                    { "--ink-size": "150%", duration: 1.2, ease: "power2.inOut" }
+                );
+            }
+            
+            observer.unobserve(card); 
         }
     });
-}, { rootMargin: "50px 0px", threshold: 0.01 });
+}, { rootMargin: "50px 0px", threshold: 0.05 });
 
 // =========================================
 // 核心渲染引擎與燈箱邏輯
@@ -97,7 +109,6 @@ function renderPhotos(photoArray, isFeatured = false) {
             } else { card.remove(); }
         };
 
-        // 🚨 點擊直通車：按一下直接放大
         card.addEventListener('click', () => {
             activePhotoIndex = index; 
             openLightbox(photo.src);
@@ -112,9 +123,6 @@ function renderPhotos(photoArray, isFeatured = false) {
     lenis.scrollTo(0, { immediate: true });
 }
 
-// =========================================
-// 🚨 燈箱左右切換與鍵盤支援
-// =========================================
 function openLightbox(src) {
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');

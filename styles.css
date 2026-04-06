@@ -15,10 +15,16 @@ body { background-color: var(--color-bg); color: var(--color-text); font-family:
 /* ==========================================
    頂部導覽區
    ========================================== */
-header { position: sticky; top: 0; background-color: rgba(245, 240, 225, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 1000; padding: calc(var(--spacing-base) * 5) 0 calc(var(--spacing-base) * 3) 0; text-align: center; border-bottom: 1px solid rgba(17, 17, 17, 0.1); }
-.logo { font-family: var(--font-logo); font-size: 3rem; font-weight: 700; letter-spacing: 0.15em; margin-bottom: 1rem; color: var(--color-text); }
-nav { display: flex; justify-content: center; gap: calc(var(--spacing-base) * 4); flex-wrap: wrap; padding: 0 15px; }
-.filter-btn { background: none; border: none; cursor: pointer; font-family: var(--font-body); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; color: var(--color-text); padding: 8px 4px; transition: color 0.4s ease, opacity 0.4s ease; position: relative; outline: none; text-decoration: none; opacity: 0.5; }
+header { position: sticky; top: 0; background-color: rgba(245, 240, 225, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 1000; padding: calc(var(--spacing-base) * 6) 0 calc(var(--spacing-base) * 4) 0; text-align: center; border-bottom: 1px solid rgba(17, 17, 17, 0.1); }
+
+/* 🚨 書法 Logo 圖片大小與懸停設定 */
+.logo { margin-bottom: 1.5rem; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+.logo img { height: 125px; width: auto; display: block; transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.logo img:hover { opacity: 0.7; transform: scale(1.03); }
+
+/* 🚨 導覽列字體放大與間距加寬 */
+nav { display: flex; justify-content: center; gap: calc(var(--spacing-base) * 6); flex-wrap: wrap; padding: 0 15px; }
+.filter-btn { background: none; border: none; cursor: pointer; font-family: var(--font-body); font-size: 1.1rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-text); padding: 10px 5px; transition: color 0.4s ease, opacity 0.4s ease; position: relative; outline: none; text-decoration: none; opacity: 0.5; }
 .filter-btn::after { content: ''; position: absolute; bottom: 0; left: 50%; width: 0; height: 1px; background-color: var(--color-text); transition: width 0.4s ease; transform: translateX(-50%); }
 .filter-btn:hover, .filter-btn.active { opacity: 1; }
 .filter-btn:hover::after, .filter-btn.active::after { width: 100%; }
@@ -40,96 +46,149 @@ nav { display: flex; justify-content: center; gap: calc(var(--spacing-base) * 4)
 .gsap-hero-subtitle { font-family: var(--font-body); color: #888; font-size: clamp(0.7rem, 1vw, 0.9rem); font-style: italic; letter-spacing: 0.25em; opacity: 0; }
 
 /* ==========================================
-   瀑布流網格排版 
+   瀑布流網格排版 (拍立得留白版)
    ========================================== */
 main { padding: 30px calc(var(--spacing-base) * 4) 40px; max-width: 100%; }
 .gallery-grid, .gallery-grid.featured-mode { display: block !important; column-count: 3; column-gap: var(--grid-gap); column-fill: balance; align-items: start; }
 
-/* ==========================================
-   電腦版：無字拍立得留白效果
-   ========================================== */
-.gallery-item { display: inline-block !important; width: 100%; vertical-align: top; margin-bottom: var(--grid-gap); -webkit-column-break-inside: avoid; page-break-inside: avoid; break-inside: avoid; transform: translate3d(0,0,0); -webkit-transform: translate3d(0,0,0); backface-visibility: hidden; background-color: #ffffff; padding: 12px 12px 45px 12px; border-radius: 3px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); position: relative; overflow: hidden; cursor: pointer; }
-.gallery-item img { width: 100%; height: auto; display: block; transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); border-radius: 1px; }
-.gallery-item:hover img { transform: scale(1.02); }
-.item-details { display: none !important; }
-
-/* ==========================================
-   🍔 懸浮選單
-   ========================================== */
-.fab-menu { position: fixed; bottom: 35px; right: 35px; height: 50px; padding: 0 25px; border: none; border-radius: 30px; background-color: var(--color-text); color: var(--color-bg); cursor: pointer; z-index: 9999 !important; box-shadow: 0 6px 20px rgba(0,0,0,0.25); display: flex; justify-content: center; align-items: center; gap: 12px; opacity: 0; pointer-events: none; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), background-color 0.3s ease, opacity 0.3s ease; }
-.fab-menu.visible { opacity: 1; pointer-events: auto; }
-.fab-menu:hover { background-color: #333; transform: translateY(-4px); }
-.fab-text { font-family: var(--font-body); font-size: 0.85rem; letter-spacing: 0.15em; font-weight: 600; text-transform: uppercase; }
-.fab-icon { display: flex; flex-direction: column; gap: 4px; }
-.fab-icon span { width: 16px; height: 1.5px; background-color: var(--color-bg); }
-
-.side-menu { position: fixed; top: 0; right: -100%; width: 300px; max-width: 100%; height: 100vh; background-color: var(--color-bg); z-index: 10000 !important; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); box-shadow: -5px 0 20px rgba(0,0,0,0.1); }
-.side-menu.open { right: 0; }
-.side-nav { display: flex; flex-direction: column; gap: 2rem; text-align: center; }
-.side-nav .filter-btn { font-size: 1.3rem; opacity: 1; color: var(--color-text); } 
-.close-btn { position: absolute; top: 20px; right: 30px; font-size: 3rem; color: var(--color-text); cursor: pointer; }
-
-/* ==========================================
-   🚨 升級版：About Me 左右不對稱排版
-   ========================================== */
-#about { clear: both; background-color: #ede7d9; padding: 120px 5%; border-top: 1px solid rgba(17,17,17,0.05); }
-.about-container { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 80px; }
-.about-image { width: 45%; }
-.about-image img { width: 100%; height: auto; border-radius: 2px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); display: block; }
-.about-text { width: 55%; text-align: left; }
-.about-text h2 { font-family: var(--font-heading); font-size: 2.8rem; margin-bottom: 10px; color: var(--color-text);}
-.about-text .subtitle { font-family: var(--font-body); color: #888; font-size: 0.85rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 30px; }
-.about-text .main-text { font-family: var(--font-body); font-size: 1.15rem; color: #333; margin-bottom: 25px; line-height: 1.8; }
-.about-text .divider { width: 50px; margin: 40px 0; border-top: 2px solid #555; }
-
-.contact-info { display: flex; flex-direction: column; gap: 15px; }
-.contact-link { display: inline-flex; align-items: center; gap: 20px; text-decoration: none; color: var(--color-text); transition: opacity 0.3s ease; }
-.contact-link:hover { opacity: 0.6; }
-.contact-label { font-family: var(--font-body); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.15em; width: 120px; }
-.contact-detail { font-family: var(--font-body); font-size: 1.15rem; font-style: italic; }
-
-/* ==========================================
-   🚨 導覽式燈箱 CSS
-   ========================================== */
-.lightbox { display: none; position: fixed; z-index: 20000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; opacity: 0; transition: opacity 0.4s; }
-.lightbox.show { display: flex; opacity: 1; }
-.lightbox-content-wrapper { position: relative; max-width: 85%; max-height: 85vh; display: flex; justify-content: center; align-items: center; }
-.lightbox-content { max-width: 100%; max-height: 85vh; object-fit: contain; border-radius: 2px; }
-.lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(255,255,255,0.5); font-size: 50px; cursor: pointer; padding: 20px; transition: color 0.3s ease; z-index: 20001; outline: none; }
-.lightbox-nav:hover { color: rgba(255,255,255,1); }
-.lightbox-prev { left: 20px; }
-.lightbox-next { right: 20px; }
-
-/* ==========================================
-   📱 響應式：平板與手機適配
-   ========================================== */
-@media (max-width: 1024px) { 
-    .editorial-hero { padding: 8% 5%; } .hero-left-image { width: 45%; } 
-    .gallery-grid, .gallery-grid.featured-mode { column-count: 2 !important; } 
-    .about-container { gap: 40px; }
+.gallery-item { 
+    display: inline-block !important; 
+    width: 100%; 
+    background-color: #fff; 
+    padding: 10px 10px 40px 10px; 
+    margin-bottom: var(--grid-gap); 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.6s ease; 
+    cursor: pointer; 
+    opacity: 0; 
+    transform: translateY(40px); 
 }
 
-@media (max-width: 768px) { 
-    header { padding: 20px 0 15px 0 !important; } .logo { font-size: 2.2rem !important; margin-bottom: 0.5rem !important; } nav { gap: 10px 15px !important; padding: 0 10px !important; } .filter-btn { font-size: 0.75rem !important; padding: 4px 2px !important; }
-    .editorial-hero, .editorial-hero.reverse { flex-direction: column !important; padding: 40px 20px !important; align-items: center !important; text-align: center !important; } .hero-left-image { width: 100% !important; margin-bottom: 30px !important; margin-top: 0 !important; } .hero-right-text { width: 100% !important; align-items: center !important; text-align: center !important; } .gsap-hero-title { font-size: 2.5rem !important; margin-bottom: 2rem !important; }
-    main { padding: 20px 10px 30px 10px !important; } .gallery-grid, .gallery-grid.featured-mode { column-count: 2 !important; column-gap: 15px !important; }
-    
-    /* 🚨 手機版：化身為高級等距白邊相框 */
-    .gallery-item { margin-bottom: 15px !important; padding: 8px !important; border-radius: 2px !important; }
-    
-    .fab-menu { height: 45px; padding: 0 20px; bottom: 20px; right: 20px; } .fab-text { font-size: 0.75rem; }
-    
-    /* 🚨 手機版 About Me 改回上下直式 */
-    #about { padding: 80px 20px; }
-    .about-container { flex-direction: column; gap: 40px; }
-    .about-image, .about-text { width: 100%; text-align: center; }
-    .about-text .divider { margin: 40px auto; }
-    .contact-link { justify-content: center; gap: 10px; }
-    .contact-label { width: auto; }
-    
-    .lightbox-nav { font-size: 40px; padding: 10px; }
-    .lightbox-prev { left: 5px; } .lightbox-next { right: 5px; }
+.gallery-item:hover { 
+    transform: translateY(-5px); 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
 }
 
-footer { text-align: center; padding: 60px; color: #888; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; background-color: var(--color-bg);}
-img { -webkit-user-drag: none; user-drag: none; -webkit-user-select: none; user-select: none; }
+/* 🚨 無疲勞潑墨遮罩設定 (無黑白、無扭曲) */
+@property --ink-size { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+.gallery-item img { 
+    width: 100%; height: auto; display: block; 
+    -webkit-mask-image: radial-gradient(circle at center, black var(--ink-size), transparent calc(var(--ink-size) + 15%));
+    mask-image: radial-gradient(circle at center, black var(--ink-size), transparent calc(var(--ink-size) + 15%));
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    --ink-size: 0%; 
+}
+
+/* ==========================================
+   ABOUT / CONTACT
+   ========================================== */
+#about { padding: 100px 5%; background-color: #fdfaf0; border-top: 1px solid rgba(17,17,17,0.05); }
+.about-container { display: flex; align-items: center; gap: 5%; }
+.about-image { width: 30%; height: auto; position: relative; }
+.about-image img { width: 100%; height: auto; display: block; }
+.about-text { width: 60%; }
+.about-text h2 { font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 500; letter-spacing: 0.1em; margin-bottom: 0.5rem; color: var(--color-text); }
+.about-text p.subtitle { font-family: var(--font-body); font-style: italic; color: #888; font-size: 0.9rem; letter-spacing: 0.2em; margin-bottom: 3rem; text-transform: uppercase; }
+.about-text p.main-text { font-family: var(--font-body); font-size: 1.1rem; color: var(--color-text); margin-bottom: 1.5rem; }
+.divider { border: none; border-top: 1px solid rgba(17,17,17,0.1); margin: 3rem 0; width: 100px; }
+.contact-info { display: flex; flex-direction: column; gap: 1rem; }
+.contact-link { display: flex; align-items: baseline; text-decoration: none; border-bottom: 1px solid transparent; width: fit-content; transition: border-color 0.4s ease; }
+.contact-label { font-family: var(--font-body); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; color: var(--color-text); opacity: 0.6; width: 100px; }
+.contact-detail { font-family: var(--font-heading); font-size: 1.2rem; color: var(--color-text); }
+.contact-link:hover { border-color: rgba(17,17,17,0.5); }
+
+/* ==========================================
+   LIGHTBOX / FOOTER / MENU
+   ========================================== */
+.lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(11, 11, 11, 0.98); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+.lightbox.show { opacity: 1; pointer-events: auto; }
+.lightbox-content-wrapper { position: relative; display: flex; justify-content: center; align-items: center; max-width: 90%; max-height: 90%; }
+.lightbox-content { max-width: 100%; max-height: 90vh; display: block; border: 15px solid #fff; box-shadow: 0 10px 50px rgba(0,0,0,0.5); opacity: 0; }
+.close-btn { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 3rem; font-weight: 300; cursor: pointer; opacity: 0.7; transition: opacity 0.3s ease; }
+.close-btn:hover { opacity: 1; }
+.lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(255,255,255,0.7); font-size: 3rem; cursor: pointer; padding: 20px; z-index: 2010; transition: color 0.3s ease; outline: none; }
+.lightbox-nav:hover { color: #fff; }
+.lightbox-prev { left: 10px; } .lightbox-next { right: 10px; }
+footer { text-align: center; padding: 40px 0; border-top: 1px solid rgba(17, 17, 17, 0.05); }
+footer p { font-family: var(--font-body); font-size: 0.8rem; color: #888; }
+
+/* ==========================================
+   🚨 懸浮選單按鈕 (膠囊外觀修正版)
+   ========================================== */
+.fab-menu {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    
+    /* 🚨 關鍵：寬度 120px，高度 50px，配合圓角達成膠囊狀 */
+    width: 120px;       
+    height: 50px;       
+    border-radius: 25px; 
+    
+    background-color: #111111;
+    display: flex;
+    flex-direction: row; /* 🚨 橫向排列圖示與文字 */
+    justify-content: center;
+    align-items: center;
+    gap: 12px;           /* 圖示與文字間的距離 */
+    
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    z-index: 1050;
+    
+    /* 動態效果 */
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease, background-color 0.3s ease;
+    border: none;
+}
+
+.fab-menu.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.fab-menu:hover {
+    background-color: #333333;
+}
+
+/* 🚨 圖示設定：兩條細線 */
+.fab-icon {
+    width: 20px;
+    height: 8px; /* 控制兩條線的總高度 */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 0 !important; /* 確保沒有多餘間距 */
+}
+
+.fab-icon span {
+    width: 100%;
+    height: 1.5px;
+    background-color: #ffffff;
+    display: block;
+}
+
+/* 🚨 文字設定：MENU */
+.fab-text {
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #ffffff;
+    line-height: 1;
+}
+.fab-icon { width: 24px; height: 16px; position: relative; display: flex; flex-direction: column; justify-content: space-between; margin-bottom: 2px; }
+.fab-icon span { width: 100%; height: 2px; background-color: #fff; border-radius: 1px; }
+.fab-text { font-family: var(--font-body); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.15em; color: #fff; }
+.side-menu { position: fixed; top: 0; right: 0; width: 300px; height: 100%; background-color: rgba(245, 240, 225, 0.98); backdrop-filter: blur(10px); z-index: 1500; padding: 80px 40px; transform: translateX(100%); transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.side-menu.open { transform: translateX(0); }
+#close-menu { top: 20px; right: 25px; color: #111; }
+.side-nav { display: flex; flex-direction: column; gap: 20px; }
+.side-nav .filter-btn { opacity: 1; font-size: 1rem; width: 100%; text-align: left; }
+.side-nav .filter-btn::after { display: none; }
