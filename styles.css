@@ -16,9 +16,12 @@ body { background-color: var(--color-bg); color: var(--color-text); font-family:
    頂部導覽區
    ========================================== */
 header { position: sticky; top: 0; background-color: rgba(245, 240, 225, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 1000; padding: calc(var(--spacing-base) * 6) 0 calc(var(--spacing-base) * 4) 0; text-align: center; border-bottom: 1px solid rgba(17, 17, 17, 0.1); }
+
+/* 🚨 修復 Logo 語法：正確使用 object-fit 壓扁圖片 */
 .logo { margin-bottom: 1.5rem; display: flex; justify-content: center; align-items: center; cursor: pointer; }
-.logo img { height: 140px; width: 200px; display: fill; transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.logo img { height: 150px; width: 200px; display: block; object-fit: fill; transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
 .logo img:hover { opacity: 0.7; transform: scale(1.03); }
+
 nav { display: flex; justify-content: center; gap: calc(var(--spacing-base) * 6); flex-wrap: wrap; padding: 0 15px; }
 .filter-btn { background: none; border: none; cursor: pointer; font-family: var(--font-body); font-size: 1.1rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-text); padding: 10px 5px; transition: color 0.4s ease, opacity 0.4s ease; position: relative; outline: none; text-decoration: none; opacity: 0.5; }
 .filter-btn::after { content: ''; position: absolute; bottom: 0; left: 50%; width: 0; height: 1px; background-color: var(--color-text); transition: width 0.4s ease; transform: translateX(-50%); }
@@ -50,6 +53,11 @@ main { padding: 30px calc(var(--spacing-base) * 4) 40px; max-width: 100%; }
 
 .gallery-item { 
     display: inline-block !important; 
+    
+    /* 🚨 關鍵防破版：禁止照片在雙欄中被切斷 */
+    break-inside: avoid;
+    page-break-inside: avoid;
+    
     width: 100%; 
     background-color: #fff; 
     padding: 10px 10px 40px 10px; 
@@ -102,14 +110,15 @@ main { padding: 30px calc(var(--spacing-base) * 4) 40px; max-width: 100%; }
 .lightbox.show { opacity: 1; pointer-events: auto; }
 .lightbox-content-wrapper { position: relative; display: flex; justify-content: center; align-items: center; max-width: 90%; max-height: 90%; }
 
-/* 🚨 已移除 border: 15px solid #fff; 讓照片無邊框全螢幕顯示 */
-.lightbox-content { max-width: 100%; max-height: 90vh; display: block; box-shadow: 0 10px 50px rgba(0,0,0,0.5); opacity: 0; filter: grayscale(0%) !important; }
+/* 🚨 徹底移除 opacity: 0; 防止燈箱出現載入空白 Bug */
+.lightbox-content { max-width: 100%; max-height: 90vh; display: block; box-shadow: 0 10px 50px rgba(0,0,0,0.5); filter: grayscale(0%) !important; }
 
 .close-btn { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 3rem; font-weight: 300; cursor: pointer; opacity: 0.7; transition: opacity 0.3s ease; }
 .close-btn:hover { opacity: 1; }
 .lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(255,255,255,0.7); font-size: 3rem; cursor: pointer; padding: 20px; z-index: 2010; transition: color 0.3s ease; outline: none; }
 .lightbox-nav:hover { color: #fff; }
 .lightbox-prev { left: 10px; } .lightbox-next { right: 10px; }
+
 /* ==========================================
    膠囊懸浮選單按鈕 (強制覆蓋)
    ========================================== */
@@ -131,28 +140,27 @@ main { padding: 30px calc(var(--spacing-base) * 4) 40px; max-width: 100%; }
    ========================================== */
 @media (max-width: 768px) {
     header { padding: 30px 0 20px 0; }
-    .logo img { height: 80px; }
+    
+    /* 🚨 確保 Logo 縮小時寬度一併調整，防止撐破螢幕或變形 */
+    .logo img { height: 90px; width: 120px; } 
+    
     nav { gap: 15px; }
     .filter-btn { font-size: 0.9rem; }
     
-    /* 首頁大圖區改為直式 */
     .editorial-hero, .editorial-hero.reverse { flex-direction: column; padding: 20px 5%; text-align: center; }
     .hero-left-image { width: 100%; margin-bottom: 30px; }
     .hero-right-text { width: 100%; align-items: center; }
     .gsap-hero-title { font-size: 2.5rem; margin-bottom: 1.5rem; }
 
-    /* 畫廊改為雙欄緊湊排列，保留白邊相框 */
     main { padding: 20px 10px 40px 10px !important; }
     .gallery-grid, .gallery-grid.featured-mode { column-count: 2 !important; column-gap: 15px !important; }
     .gallery-item { margin-bottom: 15px !important; padding: 6px 6px 20px 6px !important; }
     
-    /* About Me 改為直式 */
     #about { padding: 60px 20px; }
     .about-container { flex-direction: column !important; gap: 30px; }
     .about-image, .about-text { width: 100% !important; text-align: center; }
     .contact-info { align-items: center; }
     
-    /* 手機版膠囊稍微縮小 */
     .fab-menu { width: 100px !important; height: 45px !important; bottom: 20px; right: 20px; }
     .fab-text { font-size: 0.8rem; }
 }
