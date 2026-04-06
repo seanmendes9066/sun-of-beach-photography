@@ -15,9 +15,6 @@ function raf(time) {
 }
 requestAnimationFrame(raf);
 
-// =========================================
-// 照片資料庫生成
-// =========================================
 function generatePhotoList(folderName, prefix, maxCount, ext = 'jpg') {
     let photoArray = [];
     for (let i = 1; i <= maxCount; i++) {
@@ -42,7 +39,7 @@ const featuredPhotos = [
 ];
 
 // =========================================
-// 🚨 無負擔版：優雅的中心展開動畫 (無扭曲、無閃爍)
+// 🚨 無負擔版潑墨：速度加快，乾淨俐落
 // =========================================
 if (window.simpleObserver) window.simpleObserver.disconnect();
 
@@ -52,7 +49,7 @@ window.simpleObserver = new IntersectionObserver((entries, observer) => {
             const card = entry.target;
             const img = card.querySelector('img');
 
-            // 卡片從下方浮出
+            // 卡片浮現
             gsap.to(card, {
                 y: 0, 
                 autoAlpha: 1, 
@@ -60,11 +57,11 @@ window.simpleObserver = new IntersectionObserver((entries, observer) => {
                 ease: "power2.out"
             });
 
-            // 圖片以柔和的圓形展開，時間縮短為 1.2 秒，乾淨俐落
+            // 🚨 照片遮罩展開：縮短為 1.0 秒，減輕視覺疲勞
             if (img) {
                 gsap.fromTo(img, 
                     { "--ink-size": "0%" },
-                    { "--ink-size": "150%", duration: 1.2, ease: "power2.inOut" }
+                    { "--ink-size": "150%", duration: 1.0, ease: "power2.out" }
                 );
             }
             
@@ -73,9 +70,6 @@ window.simpleObserver = new IntersectionObserver((entries, observer) => {
     });
 }, { rootMargin: "50px 0px", threshold: 0.05 });
 
-// =========================================
-// 核心渲染引擎與燈箱邏輯
-// =========================================
 let currentPhotoList = []; 
 let activePhotoIndex = 0;  
 
@@ -123,11 +117,18 @@ function renderPhotos(photoArray, isFeatured = false) {
     lenis.scrollTo(0, { immediate: true });
 }
 
+// =========================================
+// 🚨 修復燈箱 Bug
+// =========================================
 function openLightbox(src) {
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     lightboxImg.src = src; 
     lightbox.classList.add('show');
+    
+    // 🚨 強制將透明度設回 1，避免被上一次的切換動畫卡在 0
+    gsap.set(lightboxImg, { autoAlpha: 1 }); 
+    
     lenis.stop(); 
 }
 
@@ -172,7 +173,7 @@ document.getElementById('lightbox').addEventListener('click', (e) => {
 });
 
 // =========================================
-// 分類導覽與首頁載入邏輯
+// 分類導覽與首頁大標動畫
 // =========================================
 document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', function(e) {
@@ -200,7 +201,6 @@ document.getElementById('logo-btn').addEventListener('click', (e) => {
     document.querySelector('[data-target="all"]').classList.add('active');
 });
 
-// 首頁大標動畫 
 document.addEventListener('DOMContentLoaded', () => {
     renderPhotos(featuredPhotos, true); 
     const tl = gsap.timeline();
@@ -235,4 +235,46 @@ document.addEventListener('DOMContentLoaded', () => {
     if(closeMenu) { closeMenu.addEventListener('click', () => sideMenu.classList.remove('open')); }
     window.addEventListener('scroll', () => { if (window.scrollY > 200) { fabMenu.classList.add('visible'); } 
         else { fabMenu.classList.remove('visible'); sideMenu.classList.remove('open'); } });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const aboutTexts = document.querySelectorAll('#about .main-text');
+    
+    aboutTexts.forEach(p => {
+        let html = '';
+        p.childNodes.forEach(node => {
+            if (node.nodeType === 3) { 
+                const chars = node.nodeValue.split('');
+                chars.forEach(char => {
+                    if(char === ' ') html += '&nbsp;';
+                    else html += `<span class="ink-char">${char}</span>`;
+                });
+            } else if (node.nodeType === 1) { 
+                 const chars = node.innerText.split('');
+                 let innerHtml = '';
+                 chars.forEach(char => {
+                    if(char === ' ') innerHtml += '&nbsp;';
+                    else innerHtml += `<span class="ink-char">${char}</span>`;
+                 });
+                 html += `<${node.tagName.toLowerCase()}>${innerHtml}</${node.tagName.toLowerCase()}>`;
+            }
+        });
+        p.innerHTML = html;
+        
+        gsap.to(p.querySelectorAll('.ink-char'), {
+            scrollTrigger: {
+                trigger: p, 
+                start: "top 85%", 
+                end: "bottom 55%", 
+                scrub: 1, 
+            },
+            opacity: 1,
+            filter: "blur(0px)", 
+            y: 0,
+            rotation: 0, 
+            stagger: 0.05, 
+            color: "#111111", 
+            ease: "none" 
+        });
+    });
 });
