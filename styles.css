@@ -75,13 +75,28 @@ main { padding: 30px calc(var(--spacing-base) * 4) 40px; max-width: 100%; }
 }
 
 @property --ink-size { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
-.gallery-item img { 
-    width: 100%; height: auto; display: block; 
+.gallery-item img {
+    width: 100%; height: auto; display: block;
+    --ink-size: 0%;
     -webkit-mask-image: radial-gradient(circle at center, black var(--ink-size), transparent calc(var(--ink-size) + 15%));
     mask-image: radial-gradient(circle at center, black var(--ink-size), transparent calc(var(--ink-size) + 15%));
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
-    --ink-size: 0%; 
+    transition: --ink-size 1.0s ease-out;
+}
+.gallery-item img.ink-reveal {
+    --ink-size: 150%;
+}
+@supports not (syntax: '<percentage>') {
+    .gallery-item img {
+        -webkit-mask-image: none !important;
+        mask-image: none !important;
+        opacity: 0;
+        transition: opacity 0.8s ease;
+    }
+    .gallery-item img.ink-reveal {
+        opacity: 1;
+    }
 }
 
 /* ==========================================
@@ -163,4 +178,42 @@ main { padding: 30px calc(var(--spacing-base) * 4) 40px; max-width: 100%; }
     
     .fab-menu { width: 100px !important; height: 45px !important; bottom: 20px; right: 20px; }
     .fab-text { font-size: 0.8rem; }
+
+    /* Mobile: ink-char animation is disabled in JS, so force chars visible here as a safety net */
+    .ink-char {
+        opacity: 1 !important;
+        filter: none !important;
+        transform: none !important;
+        color: #111111 !important;
+    }
+}
+
+/* ==========================================
+   FOOTER
+   ========================================== */
+footer {
+    text-align: center;
+    padding: 40px 20px;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    color: #aaa;
+    border-top: 1px solid rgba(17, 17, 17, 0.07);
+    background-color: var(--color-bg);
+}
+
+/* ==========================================
+   Firefox fallback: @property not supported
+   below Firefox 128 — fade in instead of ink
+   ========================================== */
+@supports not (syntax: '<percentage>') {
+    .gallery-item img {
+        -webkit-mask-image: none;
+        mask-image: none;
+        opacity: 0;
+        transition: opacity 0.8s ease;
+    }
+    .gallery-item img.loaded {
+        opacity: 1;
+    }
 }
