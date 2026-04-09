@@ -20,7 +20,7 @@ header { position: sticky; top: 0; background-color: rgba(245, 240, 225, 0.85); 
 
 /* 🚨 確保這裡的寬高設定依然在，它會負責把 font-image.png 壓扁 */
 .logo img { 
-    height: 150px; 
+    height: 180px; 
     width: 200px; 
     display: block; 
     object-fit: fill; 
