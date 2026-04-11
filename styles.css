@@ -10,7 +10,9 @@
 
 html { box-sizing: border-box; font-size: 16px; overflow-x: hidden; width: 100%; }
 *, *::before, *::after { box-sizing: inherit; margin: 0; padding: 0; }
-body { background-color: var(--color-bg); color: var(--color-text); font-family: var(--font-body); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-y: scroll; overflow-x: hidden; width: 100%; }
+
+/* 移除 overflow-y: scroll，避免干擾 Lenis 高度運算 */
+body { background-color: var(--color-bg); color: var(--color-text); font-family: var(--font-body); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; width: 100%; }
 
 /* ==========================================
    頂部導覽區
@@ -18,17 +20,15 @@ body { background-color: var(--color-bg); color: var(--color-text); font-family:
 header { position: sticky; top: 0; background-color: rgba(245, 240, 225, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 1000; padding: calc(var(--spacing-base) * 6) 0 calc(var(--spacing-base) * 4) 0; text-align: center; border-bottom: 1px solid rgba(17, 17, 17, 0.1); }
 .logo { margin-bottom: 1.5rem; display: flex; justify-content: center; align-items: center; cursor: pointer; }
 
-/* 🚨 確保這裡的寬高設定依然在，它會負責把 font-image.png 壓扁 */
 .logo img { 
-    height: 90px; 
-    width: 240px; 
+    height: 150px; 
+    width: 200px; 
     display: block; 
     object-fit: fill; 
     
-    /* 🚨 畫質急救屬性 */
-    image-rendering: -webkit-optimize-contrast; /* 讓 Chrome/Safari 強化邊緣對比 */
-    image-rendering: crisp-edges;               /* 盡量保持銳利邊緣 */
-    filter: contrast(1.2) brightness(0.9);      /* 稍微加深黑色，讓字體看起來更實 */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;               
+    filter: contrast(1.2) brightness(0.9);      
 
     transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
 }

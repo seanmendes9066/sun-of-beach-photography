@@ -1,5 +1,6 @@
 gsap.registerPlugin(ScrollTrigger);
 
+// 1. Lenis 與 GSAP 的標準同步寫法 (修復滾動偵測與卡頓)
 const lenis = new Lenis({
     duration: 1.5,       
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
@@ -8,12 +9,18 @@ const lenis = new Lenis({
     smoothTouch: false,  
 });
 
-function raf(time) {
-    lenis.raf(time);
-    ScrollTrigger.update();
-    requestAnimationFrame(raf);
-}
-requestAnimationFrame(raf);
+lenis.on('scroll', ScrollTrigger.update);
+
+gsap.ticker.add((time)=>{
+  lenis.raf(time * 1000);
+});
+gsap.ticker.lagSmoothing(0);
+
+// 2. 加入 ResizeObserver：當照片載入撐開頁面時，自動刷新滾動高度 (修復無法滑到底的 Bug)
+const resizeObserver = new ResizeObserver(() => {
+    ScrollTrigger.refresh();
+});
+resizeObserver.observe(document.body);
 
 function generatePhotoList(folderName, prefix, maxCount, ext = 'jpg') {
     let photoArray = [];
@@ -210,15 +217,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainNav = document.querySelector('header nav');
 
     if (!fabMenu || !sideMenu || !mainNav || !sideNav) return;
+    
     sideNav.innerHTML = mainNav.innerHTML;
+    
+    // 3. 移除複製選單中的 ID，避免同個畫面出現兩個 ID='about-btn' 造成的衝突
+    sideNav.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+
     sideNav.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) { e.preventDefault();
+        btn.addEventListener('click', function(e) { 
+            e.preventDefault();
             const targetId = this.getAttribute('data-target');
-            if (targetId) { const mainBtn = document.querySelector(`header nav [data-target="${targetId}"]`); if(mainBtn) mainBtn.click(); } 
-            else if (this.id === 'about-btn') { const aboutBtn = document.getElementById('about-btn'); if(aboutBtn) aboutBtn.click(); }
+            if (targetId) { 
+                const mainBtn = document.querySelector(`header nav [data-target="${targetId}"]`); 
+                if(mainBtn) mainBtn.click(); 
+            } else if (this.textContent.trim() === 'About Me') { 
+                // 改用純文字判斷來觸發正確的 about-btn
+                const aboutBtn = document.querySelector('header nav #about-btn'); 
+                if(aboutBtn) aboutBtn.click(); 
+            }
             sideMenu.classList.remove('open');
         });
     });
+    
     fabMenu.addEventListener('click', () => sideMenu.classList.add('open'));
     if(closeMenu) { closeMenu.addEventListener('click', () => sideMenu.classList.remove('open')); }
     window.addEventListener('scroll', () => { if (window.scrollY > 200) { fabMenu.classList.add('visible'); } 
@@ -236,14 +256,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (node.nodeType === 3) { 
                 const chars = node.nodeValue.split('');
                 chars.forEach(char => {
-                    if(char === ' ') html += '&nbsp;';
+                    // 4. 將原本的 '&nbsp;' 換回正常的空格 ' '，修復手機版文字超出的 Bug
+                    if(char === ' ') html += ' ';
                     else html += `<span class="ink-char">${char}</span>`;
                 });
             } else if (node.nodeType === 1) { 
                  const chars = node.innerText.split('');
                  let innerHtml = '';
                  chars.forEach(char => {
-                    if(char === ' ') innerHtml += '&nbsp;';
+                    if(char === ' ') innerHtml += ' ';
                     else innerHtml += `<span class="ink-char">${char}</span>`;
                  });
                  html += `<${node.tagName.toLowerCase()}>${innerHtml}</${node.tagName.toLowerCase()}>`;
