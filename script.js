@@ -1,6 +1,5 @@
 gsap.registerPlugin(ScrollTrigger);
 
-// 1. Lenis 與 GSAP 的標準同步寫法 (修復滾動偵測與卡頓)
 const lenis = new Lenis({
     duration: 1.5,       
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
@@ -16,7 +15,6 @@ gsap.ticker.add((time)=>{
 });
 gsap.ticker.lagSmoothing(0);
 
-// 2. 加入 ResizeObserver：當照片載入撐開頁面時，自動刷新滾動高度 (修復無法滑到底的 Bug)
 const resizeObserver = new ResizeObserver(() => {
     ScrollTrigger.refresh();
 });
@@ -25,24 +23,26 @@ resizeObserver.observe(document.body);
 function generatePhotoList(folderName, prefix, maxCount, ext = 'jpg') {
     let photoArray = [];
     for (let i = 1; i <= maxCount; i++) {
-        photoArray.push({ src: `./images/${folderName}/${prefix} (${i}).${ext}`, category: folderName });
+        // 新增 failed 屬性，用來標記實際上不存在的照片
+        photoArray.push({ src: `./images/${folderName}/${prefix} (${i}).${ext}`, category: folderName, failed: false });
     }
     return photoArray;
 }
 
+// 🚨 修改 1：將最高上限提升到 100 張，確保涵蓋你所有的照片
 const photoDatabase = {
-    people: { photos: generatePhotoList('people', 'people', 20, 'jpg') }, 
-    things: { photos: generatePhotoList('things', 'things', 20, 'JPG') },
-    place: { photos: generatePhotoList('place', 'place', 20, 'JPG') }  
+    people: { photos: generatePhotoList('people', 'people', 100, 'jpg') }, 
+    things: { photos: generatePhotoList('things', 'things', 100, 'JPG') },
+    place: { photos: generatePhotoList('place', 'place', 100, 'JPG') }  
 };
 
 const featuredPhotos = [
-    { src: './images/people/people (3).jpg', category: 'people' },
-    { src: './images/things/things (3).JPG', category: 'things' },
-    { src: './images/place/place (10).JPG', category: 'place' },
-    { src: './images/people/people (4).jpg', category: 'people' },
-    { src: './images/place/place (2).JPG', category: 'place' },
-    { src: './images/things/things (1).JPG', category: 'things' }
+    { src: './images/people/people (3).jpg', category: 'people', failed: false },
+    { src: './images/things/things (3).JPG', category: 'things', failed: false },
+    { src: './images/place/place (10).JPG', category: 'place', failed: false },
+    { src: './images/people/people (4).jpg', category: 'people', failed: false },
+    { src: './images/place/place (2).JPG', category: 'place', failed: false },
+    { src: './images/things/things (1).JPG', category: 'things', failed: false }
 ];
 
 if (window.simpleObserver) window.simpleObserver.disconnect();
@@ -53,12 +53,7 @@ window.simpleObserver = new IntersectionObserver((entries, observer) => {
             const card = entry.target;
             const img = card.querySelector('img');
 
-            gsap.to(card, {
-                y: 0, 
-                autoAlpha: 1, 
-                duration: 0.8, 
-                ease: "power2.out"
-            });
+            gsap.to(card, { y: 0, autoAlpha: 1, duration: 0.8, ease: "power2.out" });
 
             if (img) {
                 gsap.fromTo(img, 
@@ -66,27 +61,46 @@ window.simpleObserver = new IntersectionObserver((entries, observer) => {
                     { "--ink-size": "150%", duration: 1.0, ease: "power2.out" }
                 );
             }
-            
             observer.unobserve(card); 
         }
     });
 }, { rootMargin: "50px 0px", threshold: 0.05 });
 
+
+// 🚨 修改 2：實作分頁 / 載入更多機制
 let currentPhotoList = []; 
 let activePhotoIndex = 0;  
+let currentPage = 1;
+const itemsPerPage = 15; // 每次載入 15 張
 
-function renderPhotos(photoArray, isFeatured = false) {
+function renderPhotos(photoArray, isFeatured = false, isLoadMore = false) {
     const gallery = document.getElementById('gallery');
-    gallery.innerHTML = ''; 
-    window.simpleObserver.disconnect(); 
-    currentPhotoList = photoArray; 
+    
+    // 如果不是按「載入更多」，就清空畫廊重新開始
+    if (!isLoadMore) {
+        gallery.innerHTML = ''; 
+        window.simpleObserver.disconnect(); 
+        currentPhotoList = photoArray; 
+        currentPage = 1;
+        // 重置所有失敗標記
+        photoArray.forEach(p => p.failed = false); 
+    }
 
     if (isFeatured) { gallery.classList.add('featured-mode'); } 
     else { gallery.classList.remove('featured-mode'); }
 
-    if (!photoArray || photoArray.length === 0) { gallery.innerHTML = '<p style="text-align:center; padding: 50px; color: #888;">尚未發現照片。</p>'; return; }
+    if (!photoArray || photoArray.length === 0) { 
+        gallery.innerHTML = '<p style="text-align:center; padding: 50px; color: #888;">尚未發現照片。</p>'; 
+        return; 
+    }
 
-    photoArray.forEach((photo, index) => {
+    // 計算這一批要載入的照片範圍
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const batch = photoArray.slice(startIndex, endIndex);
+
+    batch.forEach((photo, index) => {
+        const globalIndex = startIndex + index;
         const card = document.createElement('div');
         card.className = `gallery-item ${photo.category}`;
         gsap.set(card, { y: 40, autoAlpha: 0 });
@@ -102,12 +116,15 @@ function renderPhotos(photoArray, isFeatured = false) {
                 let currentExt = photo.src.split('.').pop();
                 let newExt = currentExt === 'jpg' ? 'JPG' : 'jpg';
                 this.src = photo.src.replace('.' + currentExt, '.' + newExt);
-            } else { card.remove(); }
+            } else { 
+                card.remove(); 
+                photo.failed = true; // 標記這張照片不存在，讓 Lightbox 略過它
+            }
         };
 
         card.addEventListener('click', () => {
-            activePhotoIndex = index; 
-            openLightbox(photo.src);
+            activePhotoIndex = globalIndex; 
+            openLightbox(img.src); 
         });
 
         card.appendChild(img);
@@ -115,28 +132,112 @@ function renderPhotos(photoArray, isFeatured = false) {
         window.simpleObserver.observe(card);
     });
 
-    window.scrollTo(0, 0);
-    lenis.scrollTo(0, { immediate: true });
+    if (!isLoadMore) {
+        window.scrollTo(0, 0);
+        lenis.scrollTo(0, { immediate: true });
+    }
+
+    manageLoadMoreButton(photoArray.length, endIndex);
+}
+
+// 建立或管理「LOAD MORE」按鈕
+// 建立或管理「LOAD MORE」按鈕
+// 建立或管理「LOAD MORE」按鈕
+function manageLoadMoreButton(totalItems, currentIndex) {
+    let btnContainer = document.getElementById('load-more-container');
+    
+    // 如果已經載入完全部（或超過上限），移除按鈕
+    if (currentIndex >= totalItems) {
+        if (btnContainer) btnContainer.remove();
+        return;
+    }
+
+    // 如果按鈕還不存在，建立一個
+    if (!btnContainer) {
+        btnContainer = document.createElement('div');
+        btnContainer.id = 'load-more-container';
+        btnContainer.style.cssText = "text-align: center; margin: 60px 0 20px 0; width: 100%; clear: both;"; 
+        
+        const btn = document.createElement('button');
+        btn.id = 'load-more-btn';
+        btn.textContent = 'LOAD MORE';
+        btn.style.cssText = "background: transparent; border: 1px solid var(--color-text); color: var(--color-text); padding: 12px 40px; font-family: var(--font-body); font-size: 1rem; cursor: pointer; transition: all 0.3s ease; letter-spacing: 0.15em; text-transform: uppercase;";
+        
+        btn.onmouseover = () => { btn.style.background = 'var(--color-text)'; btn.style.color = 'var(--color-bg)'; };
+        btn.onmouseout = () => { btn.style.background = 'transparent'; btn.style.color = 'var(--color-text)'; };
+
+        btn.addEventListener('click', function() {
+            // 視覺回饋：改為 Loading 狀態
+            this.textContent = 'LOADING...';
+            this.style.opacity = '0.5';
+            this.style.pointerEvents = 'none'; // 防止連續點擊
+
+            // 極短暫延遲讓畫面更新按鈕狀態，然後原地載入新照片
+            setTimeout(() => {
+                currentPage++;
+                renderPhotos(currentPhotoList, document.getElementById('gallery').classList.contains('featured-mode'), true);
+                
+                // 恢復按鈕狀態，新照片會自然把按鈕往下推
+                this.textContent = 'LOAD MORE';
+                this.style.opacity = '1';
+                this.style.pointerEvents = 'auto';
+
+                // 刷新滾動高度，讓 GSAP 知道頁面變長了
+                ScrollTrigger.refresh();
+            }, 100); 
+        });
+
+        btnContainer.appendChild(btn);
+        const gallery = document.getElementById('gallery');
+        gallery.parentNode.insertBefore(btnContainer, gallery.nextSibling);
+    }
 }
 
 function openLightbox(src) {
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     lightboxImg.src = src; 
+    
+    // 每次開啟時重置狀態
+    delete lightboxImg.dataset.retried;
+    
     lightbox.classList.add('show');
-    
     gsap.set(lightboxImg, { opacity: 1 }); 
-    
     lenis.stop(); 
 }
 
 function changePhoto(direction) {
-    activePhotoIndex = (activePhotoIndex + direction + currentPhotoList.length) % currentPhotoList.length;
+    let nextIndex = activePhotoIndex;
+    let attempts = 0;
+    const maxAttempts = currentPhotoList.length;
+
+    // 🚨 修改 3：智慧跳過不存在的照片，防止 Lightbox 當機或破圖
+    do {
+        nextIndex = (nextIndex + direction + currentPhotoList.length) % currentPhotoList.length;
+        attempts++;
+        if (attempts > maxAttempts) return; // 避免極端情況下的無窮迴圈
+    } while (currentPhotoList[nextIndex].failed); 
+
+    activePhotoIndex = nextIndex;
     const newPhoto = currentPhotoList[activePhotoIndex];
     const lightboxImg = document.getElementById('lightbox-img');
     
     gsap.to(lightboxImg, { opacity: 0, duration: 0.15, onComplete: () => {
+        delete lightboxImg.dataset.retried; // 換照片前重置
         lightboxImg.src = newPhoto.src;
+        
+        lightboxImg.onerror = function() {
+            if (!this.dataset.retried) {
+                this.dataset.retried = true;
+                let currentExt = newPhoto.src.split('.').pop();
+                let newExt = currentExt === 'jpg' ? 'JPG' : 'jpg';
+                this.src = newPhoto.src.replace('.' + currentExt, '.' + newExt);
+            } else {
+                currentPhotoList[activePhotoIndex].failed = true; // 還是失敗，標記並自動跳下一張
+                changePhoto(direction); 
+            }
+        };
+
         gsap.to(lightboxImg, { opacity: 1, duration: 0.3, ease: "power2.out" });
     }});
 }
@@ -219,8 +320,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!fabMenu || !sideMenu || !mainNav || !sideNav) return;
     
     sideNav.innerHTML = mainNav.innerHTML;
-    
-    // 3. 移除複製選單中的 ID，避免同個畫面出現兩個 ID='about-btn' 造成的衝突
     sideNav.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
 
     sideNav.querySelectorAll('.filter-btn').forEach(btn => {
@@ -231,7 +330,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const mainBtn = document.querySelector(`header nav [data-target="${targetId}"]`); 
                 if(mainBtn) mainBtn.click(); 
             } else if (this.textContent.trim() === 'About Me') { 
-                // 改用純文字判斷來觸發正確的 about-btn
                 const aboutBtn = document.querySelector('header nav #about-btn'); 
                 if(aboutBtn) aboutBtn.click(); 
             }
@@ -246,37 +344,55 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (window.innerWidth <= 768) return; 
-
     const aboutTexts = document.querySelectorAll('#about .main-text');
     
     aboutTexts.forEach(p => {
-        let html = '';
+        let newHtml = '';
+        
         p.childNodes.forEach(node => {
             if (node.nodeType === 3) { 
-                const chars = node.nodeValue.split('');
-                chars.forEach(char => {
-                    // 4. 將原本的 '&nbsp;' 換回正常的空格 ' '，修復手機版文字超出的 Bug
-                    if(char === ' ') html += ' ';
-                    else html += `<span class="ink-char">${char}</span>`;
+                const text = node.nodeValue;
+                const words = text.split(/(\s+)/); 
+                
+                words.forEach(word => {
+                    if (!word.trim()) {
+                        newHtml += word; 
+                    } else {
+                        newHtml += `<span style="display:inline-block;">`;
+                        word.split('').forEach(char => {
+                            newHtml += `<span class="ink-char">${char}</span>`;
+                        });
+                        newHtml += `</span>`;
+                    }
                 });
             } else if (node.nodeType === 1) { 
-                 const chars = node.innerText.split('');
+                 const tagName = node.tagName.toLowerCase();
+                 const text = node.innerText;
+                 const words = text.split(/(\s+)/);
                  let innerHtml = '';
-                 chars.forEach(char => {
-                    if(char === ' ') innerHtml += ' ';
-                    else innerHtml += `<span class="ink-char">${char}</span>`;
+                 
+                 words.forEach(word => {
+                    if (!word.trim()) {
+                        innerHtml += word;
+                    } else {
+                        innerHtml += `<span style="display:inline-block;">`;
+                        word.split('').forEach(char => {
+                            innerHtml += `<span class="ink-char">${char}</span>`;
+                        });
+                        innerHtml += `</span>`;
+                    }
                  });
-                 html += `<${node.tagName.toLowerCase()}>${innerHtml}</${node.tagName.toLowerCase()}>`;
+                 newHtml += `<${tagName}>${innerHtml}</${tagName}>`;
             }
         });
-        p.innerHTML = html;
+        
+        p.innerHTML = newHtml;
         
         gsap.to(p.querySelectorAll('.ink-char'), {
             scrollTrigger: {
                 trigger: p, 
-                start: "top 85%", 
-                end: "bottom 20%", 
+                start: "top 95%", 
+                end: "bottom 75%", 
                 scrub: 1, 
             },
             opacity: 1,
